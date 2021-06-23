@@ -1,6 +1,6 @@
 ---
 name: Task Issue
-about: Make specific schedules
+about: 'Task를 만들어봅시다! '
 title: ''
 labels: ''
 assignees: ''
