@@ -1,7 +1,7 @@
 ---
 name: Task Issue
 about: 'Task를 만들어봅시다! '
-title: ''
+title: "[ \U0001F5C2️ Task ]"
 labels: ''
 assignees: ''
 
