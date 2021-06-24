@@ -1,7 +1,7 @@
 ---
 name: Dev log
 about: '개발일기! '
-title: ''
+title: "[ ✒️ Dev Log]"
 labels: ''
 assignees: ''
 
