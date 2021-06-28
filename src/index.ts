@@ -16,12 +16,14 @@ app.use(cors({
     methods: ["GET", "POST", "DELETE", "PATCH", "PUT"]
 }))
 
+//////////////////////////////////////// https server test
 let console: Console
 
-app.get('/', (req, res) => {
+app.post('/user/login', (req, res) => {
     console.log('Hello TypeScript!')
     res.send('Hello TypeScript!');
 });
+////////////////////////////////////////
 
 app.listen(port, () => {
     console.log(`server listening ${port}`);
