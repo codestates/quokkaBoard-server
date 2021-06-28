@@ -1,7 +1,7 @@
 ---
 name: Error Handling
 about: 어떤 ERROR를 어떻게 해결하셨나요?
-title: '[ ⚠️ Error Handling]'
+title: '[ 📌 Error Handling]'
 labels: ''
 assignees: ''
 
