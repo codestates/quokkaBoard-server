@@ -6,7 +6,7 @@ import { Request, Response } from 'express';
 // import { generateAccessToken, generateRefreshToken } from 'util/token';
 
 const app = express();
-const port = 443;
+const port = 4000;
 
 app.use(express.json());
 app.use(logger('dev'));
@@ -19,7 +19,7 @@ app.use(cors({
 }))
 
 //////////////////////////////////////// https server test
-let console: Console
+// let console: Console
 
 // app.post('/user/login', (req: Request, res: Response) => {
 //     console.log('Hello TypeScript!')
