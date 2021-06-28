@@ -3,7 +3,7 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
 import { Request, Response } from 'express';
-import { generateAccessToken, generateRefreshToken } from 'util/token'
+// import { generateAccessToken, generateRefreshToken } from 'util/token';
 
 const app = express();
 const port = 443;
@@ -21,22 +21,22 @@ app.use(cors({
 //////////////////////////////////////// https server test
 let console: Console
 
-app.post('/user/login', (req: Request, res: Response) => {
-    console.log('Hello TypeScript!')
+// app.post('/user/login', (req: Request, res: Response) => {
+//     console.log('Hello TypeScript!')
     
-    const {id, email} = req.body
-    if(id !== 'number' || email !== 'string') res.status(202).send('not fit')
+//     const {id, email} = req.body
+//     if(id !== 'number' || email !== 'string') res.status(202).send('not fit')
     
-    const accessToken = generateAccessToken({id, email});
-    const refreshToken = generateRefreshToken({id, email});
+//     const accessToken = generateAccessToken({id, email});
+//     const refreshToken = generateRefreshToken({id, email});
     
-    res.cookie('Refresh Token:', refreshToken, {
-        httpOnly: true,
-        sameSite: 'none',
-        secure: true
-    });
-    res.status(200).send({data: {accessToken: accessToken}, message: 'ok'});
-});
+//     res.cookie('Refresh Token:', refreshToken, {
+//         httpOnly: true,
+//         sameSite: 'none',
+//         secure: true
+//     });
+//     res.status(200).send({data: {accessToken: accessToken}, message: 'ok'});
+// });
 ////////////////////////////////////////
 
 app.listen(port, () => {
