@@ -29,7 +29,7 @@ export class User {
     @Column("mediumblob", { // ()
         nullable: true
     })
-    image!: Blob
+    image!: string;
 
     @OneToMany(() => FollowTable, followTable => followTable.userId)
     followTable!: FollowTable[];
