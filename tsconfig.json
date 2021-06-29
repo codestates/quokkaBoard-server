@@ -11,7 +11,8 @@
       "@token/*": ["src/token/*"],
       "@ormconfig": ["src/ormconfig"],
       "@routes/*": ["src/routes/*"],
-      "@controllers/*": ["src/controllers/*"]
+      "@controllers/*": ["src/controllers/*"],
+      "@entity/*": ["src/db/entity/*"]
     },
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,

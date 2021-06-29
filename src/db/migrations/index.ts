@@ -1,23 +1,36 @@
 import "reflect-metadata";
+import { urlencoded } from "express";
 import {createConnection} from "typeorm";
-import {User} from "../entity/User";
+import { FollowTable } from "@entity/FollowTable";
+import { User } from "@entity/User";
+import { UserProject } from "@entity/UserProject";
+import { Project } from "@entity/Project";
 
-createConnection().then(async connection => {
+createConnection({
+    type: "mysql",
+    host: "127.0.0.1",
+    port: 3306,
+    username: "root",
+    password: "woo1988",
+    database: "quokkaBoard",
+    entities: [
+        User, Project, FollowTable, UserProject
+    ],
+    synchronize: true,
+    logging: false
+})
+.then(async connection => {
 
-    console.log("Inserting a new user into the database...");
-    const user = new User();
+    let user = new User();
     user.nickname = "SashaInSPb";
     user.name = "Sasha";
     user.email = "88parksw@gmail.com";
     user.role = "Intern";
-    user.password = "password"
+    user.password = "password",
+    // user.image = "dwqdqdq" 
+
     await connection.manager.save(user);
-    console.log("Saved a new user with id: " + user.nickname);
 
-    console.log("Loading users from the database...");
-    const users = await connection.manager.find(User);
-    console.log("Loaded users: ", users);
-
-    console.log("Here you can setup and run express/koa/any other framework.");
-
+    console.log("Photo has been saved");
+    // const users = await connection.manager.find(User);
 }).catch(error => console.log(error));

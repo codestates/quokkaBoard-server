@@ -1,5 +1,7 @@
 import "reflect-metadata";
-import {Entity, PrimaryGeneratedColumn, Column} from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne, OneToMany, ManyToMany, ManyToOne } from "typeorm";
+import { FollowTable } from "./FollowTable";
+import { UserProject } from "./UserProject";
 
 @Entity()
 export class User {
@@ -24,7 +26,15 @@ export class User {
     @Column()
     password!: string;
 
-    @Column("mediumblob", {nullable: true})
-    image!: string;
+    @Column("mediumblob", { // ()
+        nullable: true
+    })
+    image!: Blob
+
+    @OneToMany(() => FollowTable, followTable => followTable.userId)
+    followTable!: FollowTable[];
+
+    @OneToMany(() => UserProject, userProject => userProject.user)
+    userProject!: UserProject[];
 
 }
