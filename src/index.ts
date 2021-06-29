@@ -3,7 +3,7 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
 import { Request, Response } from 'express';
-import { mintAccessToken, mintRefreshToken } from 'token/jwt';
+import { mintAccessToken, mintRefreshToken } from '@token/jwt';
 import 'dotenv/config';
 
 
