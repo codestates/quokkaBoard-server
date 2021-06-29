@@ -1,11 +1,10 @@
-// import { Blob } from "buffer";
 import "reflect-metadata";
 import {Entity, PrimaryGeneratedColumn, Column} from "typeorm";
 
 @Entity()
 export class User {
 
-    @PrimaryGeneratedColumn("uuid") //auto-increment 기능포함
+    @PrimaryGeneratedColumn('uuid') //auto-increment 기능포함
     id!: string;
 
     @Column({
@@ -25,7 +24,7 @@ export class User {
     @Column()
     password!: string;
 
-    @Column()
+    @Column("mediumblob", {nullable: true})
     image!: string;
 
 }

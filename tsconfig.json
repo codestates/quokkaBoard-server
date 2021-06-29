@@ -8,7 +8,8 @@
     "moduleResolution": "node",
     "baseUrl": ".",
     "paths": {
-      "@token/*": ["src/token/*"]
+      "@token/*": ["src/token/*"],
+      "@ormconfig": ["src/ormconfig"]
     },
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
@@ -20,7 +21,8 @@
     "sourceMap": true, //typeorm setting
     // "allowJs": true,
   },
-  "include": ["**/*.ts"]
+  "include": ["**/*.ts"],
+  "exclude": ["node_modules"]
 }
 
 ///////////////////////////////////////////////////////////////////* Options */////////////////////////////////////////////////////////////////////////////////////
