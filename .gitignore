@@ -12,7 +12,7 @@ dist
 build/
 
 # config
-ormconfig.json
+ormconfig.ts
 
 # Etc
 .idea/

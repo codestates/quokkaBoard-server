@@ -1,9 +1,11 @@
+import { ConnectionOptions } from 'typeorm';
 import 'dotenv/config';
 
-module.exports = {
+const ormconfig: ConnectionOptions = {
+
    "type": "mysql",
    "host": process.env.DB_HOST!,
-   "port": process.env.DB_PORT!,
+   "port": Number(process.env.DB_PORT!),
    "username": process.env.DB_USER!,
    "password": process.env.DB_PASS!,
    "database": "quokkaBoard",
@@ -18,3 +20,5 @@ module.exports = {
       "subscribersDir": "src/db/subscriber"
    }
 };
+
+export default ormconfig;

@@ -9,19 +9,20 @@
     "baseUrl": ".",
     "paths": {
       "@token/*": ["src/token/*"],
-      "@ormconfig": ["src/ormconfig"]
+      "@ormconfig": ["src/ormconfig"],
+      "@routes/*": ["src/routes/*"],
+      "@controllers/*": ["src/controllers/*"]
     },
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
-    "emitDecoratorMetadata": true, //typeorm setting
-    "experimentalDecorators": true, //typeorm setting
-    "sourceMap": true, //typeorm setting
-    // "allowJs": true,
+    "emitDecoratorMetadata": true, 
+    "experimentalDecorators": true, 
+    "sourceMap": true, 
   },
-  "include": ["**/*.ts"],
+  "include": ["src"],
   "exclude": ["node_modules"]
 }
 
