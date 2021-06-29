@@ -3,7 +3,7 @@
    "host": "127.0.0.1",
    "port": 3306,
    "username": "root",
-   "password": "woo1988",
+   "password": "root",
    "database": "quokkaBoard",
    "synchronize": true,
    "logging": false,
