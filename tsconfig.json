@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    // "lib": ["ES5","ES6"], //typeorm setting
     "target": "ES6",
     "module": "CommonJS",
     "outDir": "./dist",
@@ -14,10 +15,10 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true
-    // "emitDecoratorMetadata": true,
-    // "experimentalDecorators": true,
-    // "sourceMap": true,
+    "resolveJsonModule": true,
+    "emitDecoratorMetadata": true, //typeorm setting
+    "experimentalDecorators": true, //typeorm setting
+    "sourceMap": true, //typeorm setting
     // "allowJs": true,
   },
   "include": ["**/*.ts"]
