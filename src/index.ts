@@ -5,7 +5,7 @@ import logger from 'morgan';
 import { Request, Response } from 'express';
 import { mintAccessToken, mintRefreshToken } from '@token/jwt';
 import 'dotenv/config';
-
+import 'reflect-metadata';
 
 const app = express();
 const port = process.env.SERVER_PORT || 4000;
