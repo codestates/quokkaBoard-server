@@ -1,9 +1,14 @@
 import { sign, verify, Secret } from "jsonwebtoken";
 import "dotenv/config";
 
+interface Data {
+    id: string;
+    email: string;
+}
+
 const jwtToken = {
     
-    mintAccessToken: (data: {id: string, email: string}) => {    
+    mintAccessToken: (data: Data) => {    
         
         return sign(
             data, process.env.ACCESS_SALT as Secret, 
