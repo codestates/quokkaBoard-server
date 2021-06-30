@@ -2,6 +2,7 @@ import "reflect-metadata";
 import { Entity, PrimaryGeneratedColumn, Column, OneToOne, OneToMany, ManyToMany, ManyToOne } from "typeorm";
 import { FollowTable } from "./FollowTable";
 import { UserProject } from "./UserProject";
+import bcrypt from "bcrypt";
 
 @Entity()
 export class User {
@@ -36,5 +37,13 @@ export class User {
 
     @OneToMany(() => UserProject, userProject => userProject.user)
     userProject!: UserProject[];
+
+    hashPass() {
+        this.password = bcrypt.hashSync(this.password, 8)
+    }
+
+    checkPass(password: string) {
+        return bcrypt.compareSync(password, this.password)
+    }
 
 }

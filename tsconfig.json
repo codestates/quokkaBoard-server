@@ -12,7 +12,8 @@
       "@ormconfig": ["src/ormconfig"],
       "@routes/*": ["src/routes/*"],
       "@controllers/*": ["src/controllers/*"],
-      "@entity/*": ["src/db/entity/*"]
+      "@entity/*": ["src/db/entity/*"],
+      "@repo/*": ["src/db/repo/*"]
     },
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
