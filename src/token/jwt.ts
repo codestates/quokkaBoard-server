@@ -1,27 +1,31 @@
 import { sign, verify, Secret } from "jsonwebtoken";
 import "dotenv/config";
 
-interface Data {
+interface UserInfo {
     id: string;
     email: string;
 }
 
 const jwtToken = {
     
-    mintAccessToken: (data: Data) => {    
-        
+    mintAccessToken: (payload: UserInfo) => {    
+
         return sign(
-            data, process.env.ACCESS_SALT as Secret, 
-            { algorithm: 'HS256', expiresIn: '1h' }
+            payload, 
+            process.env.ACCESS_SALT as Secret, 
+            { expiresIn: '1h' }
         );
+
     },
       
-    mintRefreshToken: (data: {id: string, email: string}) => {
+    mintRefreshToken: (payload: UserInfo) => {
         
         return sign(
-            data, process.env.REFRESH_SALT as Secret, 
-            { algorithm: 'HS256', expiresIn: '7d' }
+            payload, 
+            process.env.REFRESH_SALT as Secret, 
+            { expiresIn: '7d' }
         );
+
     },
       
     checkAuthority: (auth: string | null) => {
