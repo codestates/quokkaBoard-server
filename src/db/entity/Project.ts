@@ -1,7 +1,6 @@
 import "reflect-metadata";
 import {Entity, PrimaryGeneratedColumn, Column, OneToOne, OneToMany, ManyToMany, ManyToOne} from "typeorm";
-import {User} from "./User";
-import { UserProject } from "./userProject";
+import { UserProject } from "./UserProject";
 
 @Entity()
 export class Project {

@@ -1,13 +1,12 @@
-import { Blob } from "buffer";
 import "reflect-metadata";
 import { Entity, PrimaryGeneratedColumn, Column, OneToOne, OneToMany, ManyToMany, ManyToOne } from "typeorm";
 import { FollowTable } from "./FollowTable";
-import { UserProject } from "./userProject";
+import { UserProject } from "./UserProject";
 
 @Entity()
 export class User {
 
-    @PrimaryGeneratedColumn("uuid") //auto-increment 기능포함
+    @PrimaryGeneratedColumn('uuid') //auto-increment 기능포함
     id!: string;
 
     @Column({
@@ -30,7 +29,7 @@ export class User {
     @Column("mediumblob", { // ()
         nullable: true
     })
-    image!: Blob
+    image!: string;
 
     @OneToMany(() => FollowTable, followTable => followTable.userId)
     followTable!: FollowTable[];
