@@ -8,7 +8,7 @@ export class UserRepo extends Repository <User> {
         .where("user.email = :email", { email })
         .getOne();
     }
-
+    
     findNickName(nickname: string) {
         return this.createQueryBuilder("user")
         .where("user.nickname = :nickname", { nickname })
