@@ -1,31 +1,24 @@
 import { sign, verify, Secret } from "jsonwebtoken";
+import { UserInfo } from "@types"
 import "dotenv/config";
 
-interface UserInfo {
-    id: string;
-    email: string;
-}
 
 const jwtToken = {
     
     mintAccessToken: (payload: UserInfo) => {    
-
-        return sign(
-            payload, 
+     
+        return sign(payload, 
             process.env.ACCESS_SALT as Secret, 
             { expiresIn: '1h' }
         );
-
     },
       
     mintRefreshToken: (payload: UserInfo) => {
         
-        return sign(
-            payload, 
+        return sign(payload, 
             process.env.REFRESH_SALT as Secret, 
             { expiresIn: '7d' }
         );
-
     },
       
     checkAuthority: (auth: string | null) => {
