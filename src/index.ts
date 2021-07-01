@@ -28,7 +28,7 @@ app.use(cors({
 /* API routing */
 app.use('/user', userRouter);
 app.get('/', (req, res) => {
-    console.log('Welcom quokkaBoard')
+    res.send('Welcom quokkaBoard')
 });
 
 ///////////////////////* local https test *///////////////////////////////
