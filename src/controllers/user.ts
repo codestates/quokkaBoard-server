@@ -1,13 +1,67 @@
 import { Request, Response } from 'express';
+import { getCustomRepository, getRepository } from 'typeorm';
+import { UserRepo } from '@repo/userDm';
+import { User } from '@entity/User';
+import { UserInfo, UserReq } from '@types';
 import jwtToken from '@token/jwt';
+
 
 const user = {
 
-    register: async (req: Request, res: Response) => {
+    userRepo: getRepository(User), // user 테이블에서 load
+    customUserRepo: getCustomRepository(UserRepo), // data mapping custom userrepo 에서 load
+
+    register: async (req: UserReq<UserInfo>, res: Response) => {
         
+        const { email, nickname, password } = req.body;
+        const newUser = new User();
+        newUser.email = email;
+        newUser.nickname = nickname!;
+        newUser.password = password!;
+        newUser.hashPass();
+
+        try {
+            await user.userRepo.save!(newUser);
+        } catch (e) {
+            res.status(500).send('err');
+        }
+        res.status(200).send({ success: true });
+
     },
 
-    login: async (req: Request, res: Response) => {
+    existEmail: async (req: UserReq<UserInfo>, res: Response) => {
+
+        const findUser = await user.customUserRepo.findEmail(req.body.email);
+        if(findUser === undefined) res.status(200).send({ success: true });
+        res.status(202).send({ success: false });
+
+    },
+
+    existNickName: async (req: UserReq<UserInfo>, res: Response) => {
+        
+        const findUser = await user.customUserRepo.findNickName(req.body.nickname!);
+        if(findUser === undefined) res.status(200).send({ success: true });
+        res.status(202).send({ success: false });
+
+    },
+
+    login: async (req: UserReq<UserInfo>, res: Response) => {
+
+        const { email, password } = req.body;
+        const findUser = await user.customUserRepo.findEmail(email);
+        
+        if(findUser === undefined) return res.status(202).send({ 
+            success: false, message: '존재하지 않는 이메일입니다' 
+        });
+        else if(!findUser.checkPass(password!)) res.status(202).send({ 
+            success: false, message: '비밀번호가 일치하지 않습니다' 
+        });
+
+        const accToken = jwtToken.mintAccessToken({id: findUser.id, email: email});
+        const refToken = jwtToken.mintRefreshToken({id: findUser.id, email: email });
+        
+        res.cookie('refreshToken', refToken, { httpOnly: true, sameSite: 'none', secure: true });
+        res.status(200).send({ success: true, data: { accToken, userId: findUser.id} });
 
     },
 
@@ -20,14 +74,6 @@ const user = {
     },
 
     socialInfo: async (req: Request, res: Response) => {
-        
-    },
-
-    existEmail: async (req: Request, res: Response) => {
-        
-    },
-
-    existNickName: async (req: Request, res: Response) => {
         
     },
 

@@ -14,3 +14,4 @@ export class FollowTable {
     @ManyToOne(() => User, user => user.id)
     user!: User;    
 }
+

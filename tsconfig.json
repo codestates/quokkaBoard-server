@@ -10,9 +10,11 @@
     "paths": {
       "@token/*": ["src/token/*"],
       "@ormconfig": ["src/ormconfig"],
+      "@types": ["src/types"],
       "@routes/*": ["src/routes/*"],
       "@controllers/*": ["src/controllers/*"],
-      "@entity/*": ["src/db/entity/*"]
+      "@entity/*": ["src/db/entity/*"],
+      "@repo/*": ["src/db/repo/*"]
     },
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
