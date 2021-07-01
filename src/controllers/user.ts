@@ -8,11 +8,9 @@ import jwtToken from '@token/jwt';
 
 const user = {
 
-    userRepo: getRepository(User), // user 테이블에서 load
-    customUserRepo: getCustomRepository(UserRepo), // data mapping custom userrepo 에서 load
-
     register: async (req: UserReq<UserInfo>, res: Response) => {
         
+        const userRepo = getRepository(User)
         const { email, nickname, password } = req.body;
         const newUser = new User();
         newUser.email = email;
@@ -21,7 +19,7 @@ const user = {
         newUser.hashPass();
 
         try {
-            await user.userRepo.save!(newUser);
+            await userRepo.save(newUser);
         } catch (e) {
             res.status(500).send('err');
         }
@@ -31,7 +29,8 @@ const user = {
 
     existEmail: async (req: UserReq<UserInfo>, res: Response) => {
 
-        const findUser = await user.customUserRepo.findEmail(req.body.email);
+        const customUserRepo = getCustomRepository(UserRepo)
+        const findUser = await customUserRepo.findEmail(req.body.email);
         if(findUser === undefined) res.status(200).send({ success: true });
         res.status(202).send({ success: false });
 
@@ -39,7 +38,8 @@ const user = {
 
     existNickName: async (req: UserReq<UserInfo>, res: Response) => {
         
-        const findUser = await user.customUserRepo.findNickName(req.body.nickname!);
+        const customUserRepo = getCustomRepository(UserRepo)
+        const findUser = await customUserRepo.findNickName(req.body.nickname!);
         if(findUser === undefined) res.status(200).send({ success: true });
         res.status(202).send({ success: false });
 
@@ -47,8 +47,9 @@ const user = {
 
     login: async (req: UserReq<UserInfo>, res: Response) => {
 
+        const customUserRepo = getCustomRepository(UserRepo)
         const { email, password } = req.body;
-        const findUser = await user.customUserRepo.findEmail(email);
+        const findUser = await customUserRepo.findEmail(email);
         
         if(findUser === undefined) return res.status(202).send({ 
             success: false, message: '존재하지 않는 이메일입니다' 
@@ -60,8 +61,9 @@ const user = {
         const accToken = jwtToken.mintAccessToken({id: findUser.id, email: email});
         const refToken = jwtToken.mintRefreshToken({id: findUser.id, email: email });
         
-        res.cookie('refreshToken', refToken, { httpOnly: true, sameSite: 'none', secure: true });
-        res.status(200).send({ success: true, data: { accToken, userId: findUser.id} });
+        
+        res.cookie('accessToken', accToken, { httpOnly: true, sameSite: 'none', secure: true });
+        res.status(200).send({ success: true, userId: findUser.id });
 
     },
 
@@ -84,20 +86,20 @@ const user = {
 
 export default user;
 
-// app.use('/')
-/* test code */
-// app.get('/', (req: Request, res: Response) => {
-//     res.status(200).send('Do you know quokka?')
-//     // const {id, email} = req.body
-//     // if(id !== 'string' || email !== 'string') res.status(202).send('not fit')
+// // app.use('/')
+// /* test code */
+// // app.get('/', (req: Request, res: Response) => {
+// //     res.status(200).send('Do you know quokka?')
+// //     // const {id, email} = req.body
+// //     // if(id !== 'string' || email !== 'string') res.status(202).send('not fit')
     
-//     // const accessToken = mintAccessToken({id, email});
-//     // const refreshToken = mintRefreshToken({id, email});
+// //     // const accessToken = mintAccessToken({id, email});
+// //     // const refreshToken = mintRefreshToken({id, email});
     
-//     // res.cookie('Refresh Token:', refreshToken, {
-//     //     httpOnly: true,
-//     //     sameSite: 'none',
-//     //     secure: true
-//     // });
-//     // res.status(200).send({data: {accessToken: accessToken}, message: 'ok'});
-// }
+// //     // res.cookie('Refresh Token:', refreshToken, {
+// //     //     httpOnly: true,
+// //     //     sameSite: 'none',
+// //     //     secure: true
+// //     // });
+// //     // res.status(200).send({data: {accessToken: accessToken}, message: 'ok'});
+// // }
