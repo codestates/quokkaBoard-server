@@ -14,7 +14,8 @@
       "@routes/*": ["src/routes/*"],
       "@controllers/*": ["src/controllers/*"],
       "@entity/*": ["src/db/entity/*"],
-      "@repo/*": ["src/db/repo/*"]
+      "@repo/*": ["src/db/repo/*"],
+      "@middleware/*": ["src/middleware/*"]
     },
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
