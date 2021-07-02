@@ -26,10 +26,22 @@ app.use(cors({
 }));
 
 /* API routing */
-app.use('/user', userRouter);
+app.use('/', userRouter);
 app.get('/', (req, res) => {
     res.send('Welcom quokkaBoard')
 });
+
+/* DB & Server connect */
+createConnection(ormconfig)
+    .then(() => {
+        console.log('ORM success DB connect!');            
+        app.listen(port, () => {            
+            console.log(`server listening ${port}`);
+        });        
+    })
+    .catch(err => console.log(err)
+);
+
 
 ///////////////////////* local https test *///////////////////////////////
 //                                                                      //
@@ -42,13 +54,3 @@ app.get('/', (req, res) => {
 //                                                                      //
 //////////////////////////////////////////////////////////////////////////
 
-/* DB & Server connect */
-createConnection(ormconfig)
-    .then(() => {
-        console.log('ORM success DB connect!');            
-        app.listen(port, () => {            
-            console.log(`server listening ${port}`);
-        });        
-    })
-    .catch(err => console.log(err)
-);

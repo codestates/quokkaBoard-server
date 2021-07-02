@@ -8,6 +8,8 @@ export interface UserInfo {
     nickname?: string;
     password?: string;
     image?: Blob;
+    created_at?: Date;
+    updated_at?: Date;
 }
 
 export interface UserReq<T> extends Request {
