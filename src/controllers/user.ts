@@ -60,15 +60,38 @@ const user = {
 
         const accToken = jwtToken.mintAccessToken({id: findUser.id, email: email});
         const refToken = jwtToken.mintRefreshToken({id: findUser.id, email: email });
-        
+        customUserRepo.saveRefToken(findUser.id, refToken);
         
         res.cookie('accessToken', accToken, { httpOnly: true, sameSite: 'none', secure: true });
         res.status(200).send({ success: true, userId: findUser.id });
 
     },
 
-    logout: async (req: Request, res: Response) => {
+    logout: (req: UserReq<UserInfo>, res: Response) => {
         
+        const customUserRepo = getCustomRepository(UserRepo)
+        try {
+            customUserRepo.removeRefToken(req.body.id!)
+            res.status(200).clearCookie('accessToken').send({ 
+                success: true, message: '로그아웃 되었습니다' 
+            });
+        } catch (e) { res.status(500).send('error') };
+        
+    },
+
+    userInfo: async (req: UserReq<UserInfo>, res: Response) => {
+        
+        const customUserRepo = getCustomRepository(UserRepo);
+        try {
+            const findUser = await customUserRepo.findId(req.body.id!);
+            if(!findUser) return res.status(202).send({ success: false, data: null });
+            
+            const { id, email, nickname, image, created_at, updated_at } = findUser;
+            res.status(200).send({ success: true, data: {
+                id, email, nickname, image, created_at, updated_at
+            }});
+        } catch (e) { res.status(500).send('error') };
+
     },
 
     socialLogin: async (req: Request, res: Response) => {
@@ -79,27 +102,6 @@ const user = {
         
     },
 
-    userInfo: async (req: Request, res: Response) => {
-        
-    },
 }
 
 export default user;
-
-// // app.use('/')
-// /* test code */
-// // app.get('/', (req: Request, res: Response) => {
-// //     res.status(200).send('Do you know quokka?')
-// //     // const {id, email} = req.body
-// //     // if(id !== 'string' || email !== 'string') res.status(202).send('not fit')
-    
-// //     // const accessToken = mintAccessToken({id, email});
-// //     // const refreshToken = mintRefreshToken({id, email});
-    
-// //     // res.cookie('Refresh Token:', refreshToken, {
-// //     //     httpOnly: true,
-// //     //     sameSite: 'none',
-// //     //     secure: true
-// //     // });
-// //     // res.status(200).send({data: {accessToken: accessToken}, message: 'ok'});
-// // }
