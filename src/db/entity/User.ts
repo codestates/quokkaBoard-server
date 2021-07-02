@@ -32,6 +32,15 @@ export class User {
     })
     image!: string;
 
+    @Column({ nullable: true, default: null })
+    refresh_token?: string;
+
+    @Column()
+    created_at!: Date;
+
+    @Column()
+    updated_at!: Date; 
+
     @OneToMany(() => FollowTable, followTable => followTable.userId)
     followTable!: FollowTable[];
 
