@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne, OneToMany, ManyToMany, ManyToOne } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne, OneToMany, ManyToMany, ManyToOne, CreateDateColumn, UpdateDateColumn } from "typeorm";
 import { FollowTable } from "./FollowTable";
 import { UserProject } from "./UserProject";
 import bcrypt from "bcrypt";
@@ -10,9 +10,7 @@ export class User {
     @PrimaryGeneratedColumn('uuid') //auto-increment 기능포함
     id!: string;
 
-    @Column({
-        length: 15
-    })
+    @Column()
     name!: string;
 
     @Column()
@@ -28,9 +26,22 @@ export class User {
     password!: string;
 
     @Column("mediumblob", { // ()
-        nullable: true
+        nullable: true,
+        default: null
     })
     image!: string;
+
+    @Column({
+        nullable: true,
+        default: null
+    })
+    refresh_token?: string;
+
+    @CreateDateColumn({ name: 'created_at'})
+    created_at!: Date;
+
+    @UpdateDateColumn({ name: 'updated_at'})
+    updated_at!: Date;
 
     @OneToMany(() => FollowTable, followTable => followTable.userId)
     followTable!: FollowTable[];

@@ -49,6 +49,7 @@ const user = {
 
         const { email, password } = req.body;
         const findUser = await user.customUserRepo.findEmail(email);
+        console.log("findUser: ", findUser)
         
         if(findUser === undefined) return res.status(202).send({ 
             success: false, message: '존재하지 않는 이메일입니다' 

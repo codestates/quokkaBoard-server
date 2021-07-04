@@ -18,6 +18,9 @@ export class Project {
     updated_at!: Date;
 
     @Column()
+    start_date!: Date;
+
+    @Column()
     end_date!: Date;
 
     @OneToMany(() => UserProject, userProject => userProject.project)

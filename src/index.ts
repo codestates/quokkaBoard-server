@@ -4,12 +4,12 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
 import { createConnection } from 'typeorm';
-import ormconfig from '@ormconfig'
 import 'reflect-metadata';
 import 'dotenv/config';
+import { User } from './db/entity/User'
 
 /* Routers */
-import userRouter from '@routes/user'
+import userRouter from './routes/user'
 
 /* Express setting */
 const app = express();
@@ -25,7 +25,7 @@ app.use(cors({
     methods: ["GET", "POST", "DELETE", "PATCH", "PUT"]
 }));
 
-/* API routing */
+/* API routing */   
 app.use('/user', userRouter);
 
 
@@ -41,7 +41,13 @@ app.use('/user', userRouter);
 //////////////////////////////////////////////////////////////////////////
 
 /* DB & Server connect */
-createConnection(ormconfig)
+createConnection() 
+    // .then(async connection => {
+
+
+    //     await connection.manager.save(user); // manager는 connection 다음에 
+
+    // })
     .then(() => {
         console.log('ORM success DB connect!');            
         app.listen(port, () => {            
