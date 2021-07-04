@@ -7,50 +7,29 @@ import bcrypt from "bcrypt";
 @Entity()
 export class User {
 
-    @PrimaryGeneratedColumn('uuid') //auto-increment 기능포함
-    id!: string;
+    @PrimaryGeneratedColumn()
+    id!: number;
 
     @Column()
-    name!: string;
+    title!: string;
 
     @Column()
-    email!: string;
+    projectId!: number;
 
     @Column()
-    role!: string;
-
-    @Column()
-    nickname!: string;
-
-    @Column()
-    password!: string;
-
-    @Column("mediumblob", { // ()
-        nullable: true
-    })
-    image!: string;
-
-    @Column({ nullable: true, default: null })
-    refresh_token?: string;
+    colomn_index!: number;
 
     @Column()
     created_at!: Date;
 
     @Column()
-    updated_at!: Date; 
+    updated_at!: Date;
+
 
     @OneToMany(() => FollowTable, followTable => followTable.userId)
     followTable!: FollowTable[];
 
     @OneToMany(() => UserProject, userProject => userProject.user)
     userProject!: UserProject[];
-
-    hashPass() {
-        this.password = bcrypt.hashSync(this.password, 8)
-    }
-
-    checkPass(password: string) {
-        return bcrypt.compareSync(password, this.password)
-    }
 
 }

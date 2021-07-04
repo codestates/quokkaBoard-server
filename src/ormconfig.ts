@@ -9,7 +9,7 @@ const ormconfig: ConnectionOptions = {
    "username": process.env.DB_USER!,
    "password": process.env.DB_PASS!,
    "database": "quokkaBoard",
-   "synchronize": true,
+   "synchronize": false,
    "logging": false,
    "entities": [ "src/db/entity/**/*.ts" ],
    "migrations": [ "src/db/migration/**/*.ts" ],
