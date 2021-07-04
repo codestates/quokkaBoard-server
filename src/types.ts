@@ -1,15 +1,9 @@
 import { Request } from 'express';
 
-export interface UserInfo {
-    email: string;
-    id?: string;
-    name?: string;
-    role?: string;
-    nickname?: string;
-    password?: string;
-    image?: Blob;
+export interface strProps {
+    [key: string]: string;
 }
 
-export interface UserReq<T> extends Request {
+export interface typeReq<T> extends Request {
     body: T
 }

@@ -4,12 +4,13 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
 import { createConnection } from 'typeorm';
-import ormconfig from '@ormconfig'
+import ormconfig from '@ormconfig';
 import 'reflect-metadata';
 import 'dotenv/config';
 
 /* Routers */
-import userRouter from '@routes/user'
+import userRouter from '@routes/user';
+import projectRouter from '@routes/project';
 
 /* Express setting */
 const app = express();
@@ -26,10 +27,23 @@ app.use(cors({
 }));
 
 /* API routing */
-app.use('/user', userRouter);
+app.use('/', userRouter);
+app.use('/', projectRouter);
 app.get('/', (req, res) => {
-    console.log('Welcom quokkaBoard')
+    res.send('Welcom quokkaBoard')
 });
+
+/* DB & Server connect */
+createConnection(ormconfig)
+    .then(() => {
+        console.log('ORM success DB connect!');            
+        app.listen(port, () => {            
+            console.log(`server listening ${port}`);
+        });        
+    })
+    .catch(err => console.log(err)
+);
+
 
 ///////////////////////* local https test *///////////////////////////////
 //                                                                      //
@@ -42,13 +56,3 @@ app.get('/', (req, res) => {
 //                                                                      //
 //////////////////////////////////////////////////////////////////////////
 
-/* DB & Server connect */
-createConnection(ormconfig)
-    .then(() => {
-        console.log('ORM success DB connect!');            
-        app.listen(port, () => {            
-            console.log(`server listening ${port}`);
-        });        
-    })
-    .catch(err => console.log(err)
-);

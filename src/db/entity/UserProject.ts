@@ -12,8 +12,8 @@ export class UserProject {
     @Column("uuid")
     userId!: string;
 
-    @Column()
-    projectId!: number;
+    @Column("uuid")
+    projectId!: string;
 
     @Column()
     authority!: string;

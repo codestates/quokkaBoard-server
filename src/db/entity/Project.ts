@@ -5,20 +5,17 @@ import { UserProject } from "./UserProject";
 @Entity()
 export class Project {
 
-    @PrimaryGeneratedColumn() //auto-increment 기능포함
-    id!: number;
+    @PrimaryGeneratedColumn('uuid') //auto-increment 기능포함
+    id!: string;
 
     @Column()
     title!: string;
 
     @Column()
-    created_at!: Date;
+    start_date!: string;
 
     @Column()
-    updated_at!: Date;
-
-    @Column()
-    end_date!: Date;
+    end_date!: string;
 
     @OneToMany(() => UserProject, userProject => userProject.project)
     userProject!: UserProject[];
