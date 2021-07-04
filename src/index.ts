@@ -4,12 +4,13 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
 import { createConnection } from 'typeorm';
-import ormconfig from '@ormconfig'
+import ormconfig from '@ormconfig';
 import 'reflect-metadata';
 import 'dotenv/config';
 
 /* Routers */
-import userRouter from '@routes/user'
+import userRouter from '@routes/user';
+import projectRouter from '@routes/project';
 
 /* Express setting */
 const app = express();
@@ -27,6 +28,7 @@ app.use(cors({
 
 /* API routing */
 app.use('/', userRouter);
+app.use('/', projectRouter);
 app.get('/', (req, res) => {
     res.send('Welcom quokkaBoard')
 });
