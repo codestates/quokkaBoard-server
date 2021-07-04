@@ -1,11 +1,11 @@
-import { EntityRepository, IsNull, Repository } from 'typeorm';
+import { EntityRepository, Repository } from 'typeorm';
 import { User } from '@entity/User';
 
 @EntityRepository()
 export class UserRepo extends Repository <User> {
     findId(id: string) {
         return this.createQueryBuilder("user")
-        .where("user.email = :email", { id })
+        .where("user.id = :id", { id })
         .getOne();
     }
     
@@ -21,6 +21,20 @@ export class UserRepo extends Repository <User> {
         .getOne();
     }
 
+    modifyNickName(id: string, nickname: string) {
+        return this.createQueryBuilder("user")
+        .update(User)
+        .set({ nickname: nickname })
+        .where("user.id = :id", { id })
+    }
+
+    modifyPassword(id: string, password: string) {
+        return this.createQueryBuilder("user")
+        .update(User)
+        .set({ password: password })
+        .where("user.id = :id", { id })
+    }
+
     saveRefToken(id: string, refToken: string) {
         return this.createQueryBuilder("user")
         .update(User)
@@ -34,4 +48,5 @@ export class UserRepo extends Repository <User> {
         .set({ refresh_token: null! })
         .where("user.id = :id", { id })
     }
+
 }
