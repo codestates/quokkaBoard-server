@@ -2,7 +2,8 @@
 import { Router } from 'express';
 
 /* Import endpoint */
-import user from '@controllers/user'
+import user from '@controllers/user';
+import modify from '@controllers/modify'; 
 
 /* Endpoint routing */
 const userRouter = Router();
@@ -14,5 +15,10 @@ userRouter.post('/social-info', user.socialInfo);
 userRouter.post('/exist-email', user.existEmail);
 userRouter.post('/exist-nickname', user.existNickName);
 userRouter.post('/user-info', user.userInfo);
+
+userRouter.patch('/modify-nickname', modify.nickname);
+userRouter.patch('/modify-password', modify.password);
+userRouter.patch('/modify-image', modify.image);
+userRouter.delete('/delete-user', modify.deleteUser);
 
 export default userRouter;
