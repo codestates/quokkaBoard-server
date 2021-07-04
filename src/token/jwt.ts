@@ -1,27 +1,24 @@
 import { sign, verify, Secret, JwtPayload } from "jsonwebtoken";
-import { UserInfo } from "@types";
 import "dotenv/config";
 
 
 const jwtToken = {
     
-    mintAccessToken: (payload: UserInfo) => {
+    mintAccessToken: (id: string) => {
         return sign(
-            payload, process.env.ACCESS_SALT as Secret, 
+            id, process.env.ACCESS_SALT as Secret, 
             { expiresIn: '1h' }
         );
     },
       
-    mintRefreshToken: (payload: UserInfo) => {
+    mintRefreshToken: (id: string) => {
         return sign(
-            payload, process.env.REFRESH_SALT as Secret, 
-            { expiresIn: '7d' }
+            id, process.env.REFRESH_SALT as Secret, 
+            { expiresIn: '2d' }
         );
     },
     
-    checkAccToken: (auth: string) => {
-
-        const token = auth.split(' ')[1];
+    checkAccToken: (token: string) => {
         try {
             return <JwtPayload> verify(token, 
                 process.env.ACCESS_SALT as Secret
@@ -31,8 +28,14 @@ const jwtToken = {
         }
     },
 
+    checkExpToken: (token: string) => {
+        return <JwtPayload> verify(token, 
+            process.env.ACCESS_SALT as Secret,
+            { ignoreExpiration: true }
+        );
+    },
+
     checkRefToken: (refreshToken: string) => {
-        
         try {
             return <JwtPayload> verify(refreshToken, 
                 process.env.REFRESH_SALT as Secret
