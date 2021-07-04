@@ -18,7 +18,7 @@ export class UserProject {
     @Column()
     authority!: string;
     
-    @ManyToOne(() => User, user => user.userProject, {nullable: false, onDelete:'CASCADE'})
+    @ManyToOne(() => User, user => user.userProject, {nullable: false, onDelete:'CASCADE'}) // 데이터 삭제 시, 외래키로 인해 삭제가 되지 않는 에러 해결을 위헤 ondelete 설정.
     user!: User;
     
     @ManyToOne(() => Project, project => project.userProject, {nullable: false, onDelete:'CASCADE'})

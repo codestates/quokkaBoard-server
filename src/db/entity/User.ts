@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne, OneToMany, ManyToMany, ManyToOne } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne, OneToMany, ManyToMany, ManyToOne, CreateDateColumn, UpdateDateColumn } from "typeorm";
 import { FollowTable } from "./FollowTable";
 import { UserProject } from "./UserProject";
 import bcrypt from "bcrypt";
@@ -16,10 +16,10 @@ export class User {
     @Column()
     email!: string;
 
-    @Column()
+    @Column({ nullable: true})
     role!: string;
 
-    @Column()
+    @Column({ nullable: true})
     nickname!: string;
 
     @Column()
@@ -33,11 +33,11 @@ export class User {
     @Column({ nullable: true, default: null })
     refresh_token?: string;
 
-    @Column()
+    @CreateDateColumn({ name: 'created_at'})
     created_at!: Date;
 
-    @Column()
-    updated_at!: Date; 
+    @UpdateDateColumn({ name: 'updated_at'})
+    updated_at!: Date;
 
     @OneToMany(() => FollowTable, followTable => followTable.userId)
     followTable!: FollowTable[];
