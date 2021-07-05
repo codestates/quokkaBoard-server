@@ -12,18 +12,15 @@ const modify = {
         
         const customUserRepo = getCustomRepository(UserRepo)
         const { userId, nickname } = req.body;
-
         try {
             customUserRepo.modifyNickName(userId, nickname)
-            res.status(200).send({ success: true });
-            
+            res.status(200).send({ success: true }); 
         } catch (e) {
             res.status(204).send({ 
                 success: false, message: '잘못된 유저 정보 입니다' 
             });
         }
         
-
     },
 
     password: async (req: typeReq<strProps>, res: Response) => {
@@ -54,14 +51,12 @@ const modify = {
     deleteUser: async (req: typeReq<strProps>, res: Response) => {
 
         const userRepo = getRepository(User);
-       
         try {
             userRepo.delete({ id: req.body.userId }); // 동기처리 전에 response가 이뤄짐.
             res.status(200).clearCookie('accessToken').send({ success: true });
         } catch (e) {
             res.status(202).send({ success: false, message: e });// 클라이언트 쪽에서 핸들링이 되면 400으로 변경
         }
-        
 
     },
 }
