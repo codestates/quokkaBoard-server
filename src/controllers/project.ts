@@ -1,7 +1,9 @@
 import { Response } from 'express';
-import { getRepository } from 'typeorm';
+import { getRepository, getCustomRepository } from 'typeorm';
 import { Project } from '@entity/Project';
 import { UserProject } from '@entity/UserProject';
+import { ProjectRepo } from '@repo/projectDm';
+import { UserProjectRepo } from '@repo/userProjectDm';
 import { typeReq, strProps } from '@types';
 
 
@@ -34,16 +36,23 @@ const project = {
 
     removeProject: async (req: typeReq<strProps>, res: Response) => {
 
+        const { userId, projectId } = req.body;
+        const projectRepo = getRepository(Project);
+        const customUserProjectRepo = getCustomRepository(UserProjectRepo);
+        const findAuth = await customUserProjectRepo.findAuthProject(userId, projectId);
         
+        if(findAuth.authority === 'ADMIN') {
+            projectRepo.delete({ id: findAuth.projectId });
+            res.status(200).send({ success: true });
+        } else {
+            res.status(202).send({ success: false });
+        }
 
     },
 
     modifyAuthority: async (req: typeReq<strProps>, res: Response) => {
         
-        // const customUserRepo = getCustomRepository(UserRepo)
-        // const findUser = await customUserRepo.findNickName(req.body.nickname);
-        // if(findUser === undefined) res.status(200).send({ success: true });
-        // res.status(202).send({ success: false });
+        
 
     },
 

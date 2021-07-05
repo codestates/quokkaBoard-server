@@ -63,7 +63,6 @@ const user = {
         // const accToken = jwtToken.mintAccessToken(findUser.id);
         // const refToken = jwtToken.mintRefreshToken(findUser.id);
         // customUserRepo.saveRefToken(findUser.id, refToken);
-        
         // res.cookie('accessToken', accToken, { httpOnly: true, sameSite: 'none', secure: true });
         res.status(200).send({ success: true, userId: findUser.id });
 
@@ -89,8 +88,8 @@ const user = {
         try {
             const findUser = await customUserRepo.findId(req.body.userId);
             if(!findUser) return res.status(202).send({ success: false, data: null });
-
             const { id, email, nickname, image, created_at, updated_at } = findUser;
+
             res.status(200).send({ success: true, data: {
                 id, email, nickname, image, created_at, updated_at
             }});
