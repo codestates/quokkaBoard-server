@@ -2,7 +2,7 @@ import { Response } from 'express';
 import { getRepository, getCustomRepository } from 'typeorm';
 import { Project } from '@entity/Project';
 import { UserProject } from '@entity/UserProject';
-import { ProjectRepo } from '@repo/projectDm';
+import { UserRepo } from '@repo/userDm';
 import { UserProjectRepo } from '@repo/userProjectDm';
 import { typeReq, strProps } from '@types';
 
@@ -27,7 +27,7 @@ const project = {
             newUserProject.projectId = findProject.id;
             userProjectRepo.save(newUserProject);
 
-            res.status(200).send({ success: true });
+            res.status(200).send({ success: true, projectId: findProject.id });
         } catch (e) {
             res.status(202).send({ success: false });
         }
@@ -52,24 +52,24 @@ const project = {
 
     modifyAuthority: async (req: typeReq<strProps>, res: Response) => {
         
-        
+        const { projectId, email, authority } = req.body;
+        const customUserRepo = getCustomRepository(UserRepo)
+        const customUserProjectRepo = getCustomRepository(UserProjectRepo);
+        try {
+            const findUser = (await customUserRepo.findUserAuth(email)).filter(el =>
+                el.users_projectId === projectId && el.users_authority !== authority
+            );
+            customUserProjectRepo.changeUserAuth(findUser[0].users_id, authority);
+            res.status(200).send({ success: true }); 
+        } catch (e) {
+            res.status(202).send({ success: false });
+        }
 
     },
 
     dashBoardInfo: async (req: typeReq<strProps>, res: Response) => {
 
-        // const customUserRepo = getCustomRepository(UserRepo)
-        // const { email, password } = req.body;
-        // const findUser = await customUserRepo.findEmail(email);
-        
-        // if(findUser === undefined) return res.status(202).send({ 
-        //     success: false, message: '존재하지 않는 이메일입니다' 
-        // });
-        // else if(!findUser.checkPass(password)) res.status(202).send({ 
-        //     success: false, message: '비밀번호가 일치하지 않습니다' 
-        // });
-        
-        // res.status(200).send({ success: true, userId: findUser.id });
+
 
     },
 
