@@ -13,13 +13,21 @@ export class UserRepo extends Repository <User> {
     findEmail(email: string) {
         return this.createQueryBuilder("user")
         .where("user.email = :email", { email })
-        .getOne();
+        .getOneOrFail();
     }
     
     findNickName(nickname: string) {
         return this.createQueryBuilder("user")
         .where("user.nickname = :nickname", { nickname })
         .getOne();
+    }
+
+    findUserAuth(email: string) {
+        return this.createQueryBuilder("user")
+        .leftJoinAndSelect("user.user_project", "users")
+        // .select(['user_id'])
+        .where({email: email})
+        .getRawMany();
     }
 
     modifyNickName(id: string, nickname: string) {
@@ -51,6 +59,6 @@ export class UserRepo extends Repository <User> {
         .set({ refresh_token: null! })
         .where("user.id = :id", { id })
         .execute();
-    }
+    }    
 
 }
