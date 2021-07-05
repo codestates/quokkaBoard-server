@@ -28,7 +28,6 @@ app.use(cors({
     methods: ["GET", "POST", "DELETE", "PATCH", "PUT"]
 }));
 
-
 /* API routing */
 app.use('/user', userRouter);
 app.use('/project', projectRouter);
@@ -46,7 +45,6 @@ createConnection(ormconfig)
     })
     .catch(err => console.log(err)
 );
-
 
 /////////////////////* local https test */////////////////////////////////
 //                                                                      //

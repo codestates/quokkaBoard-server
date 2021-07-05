@@ -18,7 +18,7 @@ export class Project {
     @Column({ nullable: true})
     end_date!: string;
 
-    @OneToMany(() => UserProject, userProject => userProject.project)
-    userProject!: UserProject[];
+    @OneToMany(() => UserProject, user_project => user_project.project)
+    user_project!: UserProject[];
 
 }

@@ -18,10 +18,10 @@ export class UserProject {
     @Column("uuid")
     projectId!: string;
    
-    @ManyToOne(() => User, user => user.userProject, {primary: true, onDelete:'CASCADE'})
+    @ManyToOne(() => User, user => user.user_project, {primary: true, onDelete:'CASCADE'})
     user!: User;
     
-    @ManyToOne(() => Project, project => project.userProject, {primary: true, onDelete:'CASCADE'})
+    @ManyToOne(() => Project, project => project.user_project, {primary: true, onDelete:'CASCADE'})
     project!: Project;
 
 }
