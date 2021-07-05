@@ -10,7 +10,6 @@ import 'dotenv/config';
 // import fs from 'fs';
 // import https from 'https'
 
-
 /* Routers */
 import userRouter from '@routes/user';
 import projectRouter from '@routes/project';
