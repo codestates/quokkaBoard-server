@@ -9,19 +9,19 @@ export class UserProject {
     @PrimaryGeneratedColumn()
     id!: number;
 
+    @Column({ nullable: true })
+    authority!: string;
+
     @Column("uuid")
     userId!: string;
 
     @Column("uuid")
     projectId!: string;
-
-    @Column()
-    authority!: string;
-    
-    @ManyToOne(() => User, user => user.userProject, {nullable: false, onDelete:'CASCADE'}) // 데이터 삭제 시, 외래키로 인해 삭제가 되지 않는 에러 해결을 위헤 ondelete 설정.
+   
+    @ManyToOne(() => User, user => user.userProject, {primary: true, onDelete:'CASCADE'})
     user!: User;
     
-    @ManyToOne(() => Project, project => project.userProject, {nullable: false, onDelete:'CASCADE'})
+    @ManyToOne(() => Project, project => project.userProject, {primary: true, onDelete:'CASCADE'})
     project!: Project;
 
 }

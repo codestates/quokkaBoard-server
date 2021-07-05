@@ -4,6 +4,7 @@ import { FollowTable } from "./FollowTable";
 import { UserProject } from "./UserProject";
 import bcrypt from "bcrypt";
 
+
 @Entity()
 export class User {
 
@@ -16,10 +17,10 @@ export class User {
     @Column()
     email!: string;
 
-    @Column({ nullable: true})
+    @Column({ nullable: true })
     role!: string;
 
-    @Column({ nullable: true})
+    @Column({ nullable: true })
     nickname!: string;
 
     @Column()

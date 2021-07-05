@@ -13,7 +13,7 @@ import 'dotenv/config';
 
 /* Routers */
 import userRouter from '@routes/user';
-// import projectRouter from '@routes/project';
+import projectRouter from '@routes/project';
 
 /* Express setting */
 const app = express();
@@ -32,7 +32,7 @@ app.use(cors({
 
 /* API routing */
 app.use('/user', userRouter);
-// app.use('/', projectRouter);
+app.use('/project', projectRouter);
 app.get('/', (req, res) => {
     res.send('Welcom quokkaBoard')
 });
@@ -49,14 +49,14 @@ createConnection(ormconfig)
 );
 
 
-/////////////////////* local https test *///////////////////////////////
-                                                                     //
+/////////////////////* local https test */////////////////////////////////
+//                                                                      //
 // const certKey = fs.readFileSync(__dirname + "/cert.pem", "utf-8");   //
 // const privKey = fs.readFileSync(__dirname + "/key.pem", "utf-8");    //
 // const asymmetricKey = { key: privKey, cert: certKey };               //
 //                                                                      //
 // let server = https.createServer(asymmetricKey, app)                  //
 // .listen(port, () => console.log(`server listening on ${port}`))      //
-                                                                     //
-////////////////////////////////////////////////////////////////////////
+//                                                                      //
+//////////////////////////////////////////////////////////////////////////
 
