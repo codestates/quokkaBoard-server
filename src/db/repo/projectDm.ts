@@ -1,22 +1,15 @@
-import { EntityRepository, Repository, JoinTable, JoinColumn } from 'typeorm';
-import { UserProject } from '@entity/UserProject';
+import { EntityRepository, Repository } from 'typeorm';
+import { Project } from '@entity/Project';
 
 
-@EntityRepository(UserProject)
-export class UserProjectRepo extends Repository <UserProject> {
+@EntityRepository(Project)
+export class ProjectRepo extends Repository <Project> {
 
-    // joinUser(id: number, userId: string, projectId: string) {
-    //     return this.createQueryBuilder()
-    //     .relation("user", "project")
-    //     .of(id)
-    //     .set(userId, projectId)
-    // }
-    
-    joinProject(id: number, projectId: string) {
-        return this.createQueryBuilder()
-        .relation(UserProject, "project")
-        .of(id)
-        .set(projectId)
+    findUsers(projectId: string) {
+        return this.createQueryBuilder("project")
+        .leftJoinAndSelect("project.user_project", "users")
+        .where({id: projectId})
+        .getRawMany();
     }
 
 }
