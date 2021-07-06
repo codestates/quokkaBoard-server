@@ -2,8 +2,8 @@ import { Response } from 'express';
 import { getRepository, getCustomRepository } from 'typeorm';
 import { Project } from '@entity/Project';
 import { UserProject } from '@entity/UserProject';
-import { UserRepo } from '@repo/userDm';
-import { UserProjectRepo } from '@repo/userProjectDm';
+import { UserRepo } from '@repo/userQ';
+import { UserProjectRepo } from '@repo/userProjectQ';
 import { typeReq, strProps } from '@types';
 
 

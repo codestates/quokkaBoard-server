@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { getCustomRepository, getRepository } from 'typeorm';
-import { UserRepo } from '@repo/userDm';
+import { UserRepo } from '@repo/userQ';
 import { User } from '@entity/User';
 import { typeReq, strProps } from '@types';
 import jwtToken from '@token/jwt';
