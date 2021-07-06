@@ -1,5 +1,6 @@
 import "reflect-metadata";
-import {Entity, PrimaryGeneratedColumn, Column, OneToOne, OneToMany, ManyToMany, ManyToOne} from "typeorm";
+import {Entity, PrimaryGeneratedColumn, Column, OneToOne, OneToMany, ManyToMany, ManyToOne, JoinTable} from "typeorm";
+import { User } from "./User";
 import { UserProject } from "./UserProject";
 
 @Entity()
@@ -11,12 +12,13 @@ export class Project {
     @Column()
     title!: string;
 
-    @Column()
+    @Column({ nullable: true})
     start_date!: string;
 
-    @Column()
+    @Column({ nullable: true})
     end_date!: string;
 
-    @OneToMany(() => UserProject, userProject => userProject.project)
-    userProject!: UserProject[];
+    @OneToMany(() => UserProject, user_project => user_project.project)
+    user_project!: UserProject[];
+
 }

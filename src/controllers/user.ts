@@ -10,7 +10,6 @@ const user = {
 
     register: async (req: typeReq<strProps>, res: Response) => {
         
-        // console.log("request body: ", req.body)
         const userRepo = getRepository(User)
         const { email, name, password } = req.body;
         const newUser = new User();
@@ -19,7 +18,6 @@ const user = {
         newUser.password = password;
         newUser.hashPass();
 
-        // console.log("newUser: ", newUser)
         try {
             userRepo.save(newUser);
             res.status(200).send({ success: true });
@@ -65,7 +63,6 @@ const user = {
         // const accToken = jwtToken.mintAccessToken(findUser.id);
         // const refToken = jwtToken.mintRefreshToken(findUser.id);
         // customUserRepo.saveRefToken(findUser.id, refToken);
-        
         // res.cookie('accessToken', accToken, { httpOnly: true, sameSite: 'none', secure: true });
         res.status(200).send({ success: true, userId: findUser.id });
 
@@ -79,25 +76,26 @@ const user = {
             res.status(200).clearCookie('accessToken').send({ 
                 success: true, message: '로그아웃 되었습니다' 
             });
-        } catch (e) { res.status(500).send('error') };
+        } catch (e) { 
+            res.status(500).send('error') 
+        };
         
     },
 
     userInfo: async (req: typeReq<strProps>, res: Response) => {
                           
         const customUserRepo = getCustomRepository(UserRepo);
-        
-
         try {
             const findUser = await customUserRepo.findId(req.body.userId);
-
             if(!findUser) return res.status(202).send({ success: false, data: null });
-
             const { id, email, nickname, image, created_at, updated_at } = findUser;
+
             res.status(200).send({ success: true, data: {
                 id, email, nickname, image, created_at, updated_at
             }});
-        } catch (e) { res.status(500).send('error') };
+        } catch (e) { 
+            res.status(500).send('error') 
+        };
 
     },
 
