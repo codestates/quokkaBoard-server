@@ -1,5 +1,6 @@
 import "reflect-metadata";
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne, OneToMany, ManyToMany, ManyToOne } from "typeorm";
+import {Entity, PrimaryGeneratedColumn, Column, OneToOne, OneToMany, ManyToMany, ManyToOne, JoinTable} from "typeorm";
+import { User } from "./User";
 import { UserProject } from "./UserProject";
 import { Board } from "./Board";
 

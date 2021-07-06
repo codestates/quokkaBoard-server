@@ -4,6 +4,7 @@ import { FollowTable } from "./FollowTable";
 import { UserProject } from "./UserProject";
 import bcrypt from "bcrypt";
 
+
 @Entity()
 export class User {
 
@@ -16,10 +17,10 @@ export class User {
     @Column()
     email!: string;
 
-    @Column({ nullable: true})
+    @Column({ nullable: true })
     role!: string;
 
-    @Column({ nullable: true})
+    @Column({ nullable: true })
     nickname!: string;
 
     @Column()
@@ -42,8 +43,8 @@ export class User {
     @OneToMany(() => FollowTable, followTable => followTable.userId)
     followTable!: FollowTable[];
 
-    @OneToMany(() => UserProject, userProject => userProject.user)
-    userProject!: UserProject[];
+    @OneToMany(() => UserProject, user_project => user_project.user)
+    user_project!: UserProject[];
 
     hashPass() {
         this.password = bcrypt.hashSync(this.password, 8)

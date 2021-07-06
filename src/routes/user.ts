@@ -16,7 +16,6 @@ userRouter.post('/logout', user.logout);
 userRouter.post('/social-login', user.socialLogin);
 userRouter.post('/social-info', user.socialInfo);
 userRouter.post('/exist-email', user.existEmail);
-console.log("existNickName: ", user.existNickName)
 userRouter.post('/exist-nickname', user.existNickName);
 userRouter.post('/user-info', user.userInfo);
 
