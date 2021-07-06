@@ -30,7 +30,7 @@ const modify = {
 
         const userRepo = getRepository(User)
         const { userId, password, newpassword } = req.body;
-        const findUser = await userRepo.findOne({where: {id: userId}})
+        const findUser = await userRepo.findOne({where: {id: userId}}) // id가 일치하는 정보를 담은 인스턴스를 뱉어냄.
         
         if(!findUser) return res.status(204).send({ 
             success: false, message: '잘못된 유저 정보 입니다'
@@ -41,7 +41,7 @@ const modify = {
 
         findUser.password = newpassword;
         findUser.hashPass();
-        userRepo.save(findUser)
+        userRepo.save(findUser) // instance를 생성하고 나서는 useRepo에 저장해주자.
         res.status(200).send({success: true})
 
     },

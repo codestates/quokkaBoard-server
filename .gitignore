@@ -6,6 +6,8 @@ node_modules
 
 # dotenv environment variables file
 .env
+cert.pem
+key.pem
 
 # Compiled diretories
 dist
