@@ -5,8 +5,6 @@ import express from 'express';
 import user from '@controllers/user';
 import modify from '@controllers/modify'; 
 
-console.log("checked")
-
 /* Endpoint routing */
 const userRouter = express.Router();
 
@@ -25,5 +23,3 @@ userRouter.patch('/modify-image', modify.image);
 userRouter.delete('/delete-user', modify.deleteUser);
 
 export default userRouter;
-
-

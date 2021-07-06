@@ -7,7 +7,7 @@ export class UserRepo extends Repository <User> {
     findId(id: string) {
         return this.createQueryBuilder("user")
         .where("user.id = :id", { id })
-        .getOne();
+        .getOneOrFail();
     }
     
     findEmail(email: string) {
@@ -19,7 +19,7 @@ export class UserRepo extends Repository <User> {
     findNickName(nickname: string) {
         return this.createQueryBuilder("user")
         .where("user.nickname = :nickname", { nickname })
-        .getOne();
+        .getOneOrFail();
     }
 
     findUserAuth(email: string) {

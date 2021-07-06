@@ -12,16 +12,13 @@ export class User {
     id!: string;
 
     @Column()
-    name!: string;
+    nickname!: string;
 
     @Column()
     email!: string;
 
     @Column({ nullable: true })
     role!: string;
-
-    @Column({ nullable: true })
-    nickname!: string;
 
     @Column()
     password!: string;

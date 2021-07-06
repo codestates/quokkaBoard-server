@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { getCustomRepository, getRepository } from 'typeorm';
 import { UserRepo } from '@repo/userQ';
 import { User } from '@entity/User';
@@ -10,10 +10,10 @@ const modify = {
 
     nickname: (req: typeReq<strProps>, res: Response) => {
         
-        const customUserRepo = getCustomRepository(UserRepo)
+        const userRepo = getCustomRepository(UserRepo)
         const { userId, nickname } = req.body;
         try {
-            customUserRepo.modifyNickName(userId, nickname)
+            userRepo.modifyNickName(userId, nickname)
             res.status(200).send({ success: true }); 
         } catch (e) {
             res.status(204).send({ 
@@ -32,7 +32,7 @@ const modify = {
         if(!findUser) return res.status(204).send({ 
             success: false, message: '잘못된 유저 정보 입니다'
         });
-        else if(!findUser.checkPass(password)) return res.status(202).send({ 
+        else if(!findUser.checkPass(password)) res.status(202).send({ 
             success: false, message: '비밀번호가 일치하지 않습니다' 
         });
 
@@ -40,7 +40,7 @@ const modify = {
         findUser.hashPass();
         userRepo.save(findUser)
         res.status(200).send({success: true})
-
+        // 토큰 무효화 하고 refresh 로직 추가
     },
 
     image: async (req: typeReq<strProps>, res: Response) => {
@@ -52,12 +52,12 @@ const modify = {
 
         const userRepo = getRepository(User);
         try {
-            userRepo.delete({ id: req.body.userId }); // 동기처리 전에 response가 이뤄짐.
+            userRepo.delete({ id: req.body.userId });
             res.status(200).clearCookie('accessToken').send({ success: true });
         } catch (e) {
-            res.status(202).send({ success: false, message: e });// 클라이언트 쪽에서 핸들링이 되면 400으로 변경
+            res.status(202).send({ success: false, message: e });
         }
-
+        // 프로젝트 마스터 권한일 경우 권한이양 로직 추가
     },
 }
 
