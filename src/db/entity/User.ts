@@ -43,8 +43,8 @@ export class User {
     @OneToMany(() => FollowTable, followTable => followTable.userId)
     followTable!: FollowTable[];
 
-    @OneToMany(() => UserProject, user_project => user_project.user)
-    user_project!: UserProject[];
+    @OneToMany(() => UserProject, userProject => userProject.userId)
+    userProject!: UserProject[];
 
     hashPass() {
         this.password = bcrypt.hashSync(this.password, 8)
