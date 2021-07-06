@@ -2,23 +2,26 @@ import "reflect-metadata";
 import {Entity, PrimaryGeneratedColumn, Column, OneToOne, OneToMany, ManyToMany, ManyToOne, JoinTable} from "typeorm";
 import { User } from "./User";
 import { UserProject } from "./UserProject";
+import { Board } from "./Board";
 
 @Entity()
 export class Project {
 
-    @PrimaryGeneratedColumn('uuid') //auto-increment 기능포함
+    @PrimaryGeneratedColumn('uuid')
     id!: string;
 
     @Column()
     title!: string;
 
-    @Column({ nullable: true})
-    start_date!: string;
+    @Column()
+    start_date!: Date;
 
-    @Column({ nullable: true})
-    end_date!: string;
+    @Column()
+    end_date!: Date;
 
-    @OneToMany(() => UserProject, user_project => user_project.project)
-    user_project!: UserProject[];
-
+    @OneToMany(() => UserProject, userProject => userProject.project)
+    userProject!: UserProject[];
+    
+    @OneToMany(() => Board, board => board.project)
+    board!: Board[];
 }

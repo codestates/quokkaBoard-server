@@ -14,6 +14,8 @@ const ormconfig: ConnectionOptions = {
    "entities": [ "src/db/entity/**/*.ts" ],
    "migrations": [ "src/db/migration/**/*.ts" ],
    "subscribers": [ "src/db/subscriber/**/*.ts" ],
+   // "seeds": [ "src/db/seed/**/*.ts" ],
+   // "factories": [ "src/db/factory/**/*.ts" ],
    "cli": {
       "entitiesDir": "src/db/entity",
       "migrationsDir": "src/db/migration",

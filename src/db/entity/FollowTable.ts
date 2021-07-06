@@ -12,6 +12,6 @@ export class FollowTable {
     followerId!: string; 
 
     @ManyToOne(() => User, user => user.id)
-    user!: User;    
+    user!: User; // followTable => user
 }
 

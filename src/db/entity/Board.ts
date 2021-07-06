@@ -1,11 +1,11 @@
 import "reflect-metadata";
 import { Entity, PrimaryGeneratedColumn, Column, OneToOne, OneToMany, ManyToMany, ManyToOne } from "typeorm";
-import { FollowTable } from "./FollowTable";
-import { UserProject } from "./UserProject";
+import { Project } from "./Project";
+// import { Task } from "./Task.txt"
 import bcrypt from "bcrypt";
 
 @Entity()
-export class User {
+export class Board {
 
     @PrimaryGeneratedColumn()
     id!: number;
@@ -25,11 +25,10 @@ export class User {
     @Column()
     updated_at!: Date;
 
+    @ManyToOne(() => Project, project => project.id)
+    project!: Project[]; // project -> board
 
-    @OneToMany(() => FollowTable, followTable => followTable.userId)
-    followTable!: FollowTable[];
-
-    @OneToMany(() => UserProject, userProject => userProject.user)
-    userProject!: UserProject[];
+    // @OneToMany(() => Task, task => task.boardId)
+    // task!: Task[]; // board -> task 
 
 }
