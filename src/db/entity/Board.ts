@@ -26,7 +26,7 @@ export class Board {
     updated_at!: Date;
 
     @ManyToOne(() => Project, project => project.id)
-    project!: Project[]; // project -> board
+    project!: Project; // project -> board
 
     // @OneToMany(() => Task, task => task.boardId)
     // task!: Task[]; // board -> task 
