@@ -1,6 +1,5 @@
 import "reflect-metadata";
 import { Entity, PrimaryGeneratedColumn, Column, OneToOne, OneToMany, ManyToMany, ManyToOne } from "typeorm";
-import { FollowTable } from "./FollowTable";
 import { UserProject } from "./UserProject";
 
 
@@ -39,10 +38,6 @@ export class User {
 
     @Column()
     temp_id!: number;
-
-
-    // @OneToMany(() => FollowTable, followTable => followTable.userId)
-    // followTable!: FollowTable[];
 
     // @OneToMany(() => UserProject, userProject => userProject.user)
     // userProject!: UserProject[];
