@@ -1,27 +1,27 @@
-// import "reflect-metadata";
-// import {Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne} from "typeorm";
-// import {User} from "./User"
-// import {Project} from "./Project"
+import "reflect-metadata";
+import {Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne} from "typeorm";
+import {User} from "./User"
+import {Project} from "./Project"
 
-// @Entity()
-// export class UserProject {
+@Entity()
+export class UserProject {
 
-//     @PrimaryGeneratedColumn()
-//     id!: number;
+    @PrimaryGeneratedColumn()
+    id!: number;
 
-//     @Column({ nullable: true })
-//     authority!: string;
+    @Column({ nullable: true })
+    authority!: string;
 
-//     @Column("uuid")
-//     userId!: string;
+    @Column("uuid")
+    userId!: string;
 
-//     @Column("uuid")
-//     projectId!: string;
+    @Column("uuid")
+    projectId!: string;
    
-//     @ManyToOne(() => User, user => user.user_project, {primary: true, onDelete:'CASCADE'})
-//     user!: User;
+    @ManyToOne(() => User, user => user.user_project, {primary: true, onDelete:'CASCADE'})
+    user!: User;
     
-//     @ManyToOne(() => Project, project => project.user_project, {primary: true, onDelete:'CASCADE'})
-//     project!: Project;
+    @ManyToOne(() => Project, project => project.user_project, {primary: true, onDelete:'CASCADE'})
+    project!: Project;
 
-// }
+}
