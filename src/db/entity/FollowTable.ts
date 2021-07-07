@@ -1,17 +1,17 @@
-import "reflect-metadata";
-import {Entity, PrimaryGeneratedColumn, Column, OneToOne, OneToMany, ManyToMany, ManyToOne} from "typeorm";
-import { User } from "./User";
+// import "reflect-metadata";
+// import {Entity, PrimaryGeneratedColumn, Column, OneToOne, OneToMany, ManyToMany, ManyToOne} from "typeorm";
+// import { User } from "./User";
 
-@Entity()
-export class FollowTable {
+// @Entity()
+// export class FollowTable {
 
-    @PrimaryGeneratedColumn("uuid")
-    userId!: string;
+//     @PrimaryGeneratedColumn("uuid")
+//     userId!: string;
 
-    @Column("uuid")
-    followerId!: string; 
+//     @Column("uuid")
+//     followerId!: string; 
 
-    @ManyToOne(() => User, user => user.id)
-    user!: User;    
-}
+//     @ManyToOne(() => User, user => user.id)
+//     user!: User;    
+// }
 
