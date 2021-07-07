@@ -37,11 +37,11 @@ export class User {
     @UpdateDateColumn({ name: 'updated_at'})
     updated_at!: Date;
 
-    @OneToMany(() => FollowTable, followTable => followTable.userId)
-    followTable!: FollowTable[];
+//     @OneToMany(() => FollowTable, followTable => followTable.userId)
+//     followTable!: FollowTable[];
 
-//     @OneToMany(() => UserProject, user_project => user_project.user)
-//     user_project!: UserProject[];
+    @OneToMany(() => UserProject, user_project => user_project.user)
+    user_project!: UserProject[];
 
     hashPass() {
         this.password = bcrypt.hashSync(this.password, 8)
