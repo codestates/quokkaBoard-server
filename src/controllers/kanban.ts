@@ -1,13 +1,13 @@
 import { Response } from 'express';
 import { getRepository, getCustomRepository } from 'typeorm';
 import { Board } from '@entity/Board';
-import { typeReq, strProps, boardProps } from '@types';
+import { TypeReq, StrProps, BoardProps } from '@types';
 import { BoardRepo } from '@repo/boardQ';
 
 
 const kanban = {
 
-    createBoard: async (req: typeReq<strProps>, res: Response) => {
+    createBoard: async (req: TypeReq<StrProps>, res: Response) => {
         
         const { projectId, boardTitle } = req.body;
         const boardRepo = getRepository(Board);
@@ -24,7 +24,7 @@ const kanban = {
         
     },
 
-    removeBoard: async (req: typeReq<boardProps>, res: Response) => {
+    removeBoard: async (req: TypeReq<StrProps>, res: Response) => {
 
         const boardRepo = getCustomRepository(BoardRepo);
         try {
@@ -44,7 +44,7 @@ const kanban = {
 
     },
 
-    updateBoard: async (req: typeReq<boardProps>, res: Response) => {
+    updateBoard: async (req: TypeReq<BoardProps>, res: Response) => {
         
         const { boardId, boardTitle } = req.body;
         const boardRepo = getCustomRepository(BoardRepo);
@@ -60,7 +60,7 @@ const kanban = {
 
     },
 
-    shiftBoard: async (req: typeReq<boardProps>, res: Response) => {
+    shiftBoard: async (req: TypeReq<StrProps>, res: Response) => {
     
     
     }

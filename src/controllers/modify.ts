@@ -2,13 +2,13 @@ import { Response } from 'express';
 import { getCustomRepository, getRepository } from 'typeorm';
 import { UserRepo } from '@repo/userQ';
 import { User } from '@entity/User';
-import { typeReq, strProps } from '@types';
+import { TypeReq, StrProps } from '@types';
 import jwtToken from '@token/jwt';
 
 
 const modify = {
 
-    nickname: (req: typeReq<strProps>, res: Response) => {
+    nickname: (req: TypeReq<StrProps>, res: Response) => {
         
         const userRepo = getCustomRepository(UserRepo)
         const { userId, nickname } = req.body;
@@ -23,7 +23,7 @@ const modify = {
         
     },
 
-    password: async (req: typeReq<strProps>, res: Response) => {
+    password: async (req: TypeReq<StrProps>, res: Response) => {
 
         const userRepo = getRepository(User)
         const { userId, password, newpassword } = req.body;
@@ -43,12 +43,12 @@ const modify = {
         // 토큰 무효화 하고 refresh 로직 추가
     },
 
-    image: async (req: typeReq<strProps>, res: Response) => {
+    image: async (req: TypeReq<StrProps>, res: Response) => {
         
 
     },
 
-    deleteUser: async (req: typeReq<strProps>, res: Response) => {
+    deleteUser: async (req: TypeReq<StrProps>, res: Response) => {
 
         const userRepo = getRepository(User);
         try {
