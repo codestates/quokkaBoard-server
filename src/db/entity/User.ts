@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn, UpdateDateColumn } from "typeorm";
-import { FollowTable } from "./FollowTable";
-// import { UserProject } from "./UserProject";
+// import { FollowTable } from "./FollowTable";
+import { UserProject } from "./UserProject";
 import bcrypt from "bcrypt";
 
 
