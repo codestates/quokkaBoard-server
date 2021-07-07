@@ -8,20 +8,22 @@ import { BoardRepo } from '@repo/boardQ';
 const kanban = {
 
     createBoard: async (req: TypeReq<StrProps>, res: Response) => {
-        
-        const { projectId, boardTitle } = req.body;
-        const boardRepo = getRepository(Board);
         try {
+            const { projectId, boardTitle } = req.body;
+            const boardRepo = getRepository(Board);
+        
             const newBoard = new Board();
             newBoard.title = boardTitle;
             newBoard.projectId = projectId;
             const findBoard = await boardRepo.save(newBoard);
 
-            res.status(200).send({ success: true, columnIndex: findBoard.column_index });
+            res.status(200).send({ 
+                success: true, 
+                columnIndex: findBoard.column_index 
+            });
         } catch (e) {
             res.status(202).send({ success: false });
         }
-        
     },
 
     removeBoard: async (req: TypeReq<StrProps>, res: Response) => {

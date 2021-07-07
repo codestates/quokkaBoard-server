@@ -10,11 +10,7 @@ const user = {
 
     register: (req: TypeReq<StrProps>, res: Response) => {
         try {
-            const { 
-                email, 
-                nickname, 
-                password 
-            } = req.body;
+            const { email, nickname, password } = req.body;
             if(!password) throw new Error();
             
             const userRepo = getRepository(User);
@@ -71,10 +67,7 @@ const user = {
     login: async (req: TypeReq<StrProps>, res: Response) => {
         try {
             let userId: string;
-            const { 
-                email, 
-                password 
-            } = req.body;
+            const { email, password } = req.body;
             const userRepo = getCustomRepository(UserRepo);
             const findUser = await userRepo.findEmail(email);
             
@@ -128,26 +121,22 @@ const user = {
             const findUser = await userRepo.findId(req.body.userId);
             const { 
                 id, email, 
-                nickname, 
-                image, 
-                created_at, 
-                updated_at 
+                nickname, image, 
+                created_at, updated_at 
             } = findUser;
 
             res.status(200).send({ 
                 success: true, 
                 data: {
                     id, email, 
-                    nickname, 
-                    image, 
-                    created_at, 
-                    updated_at
+                    nickname, image, 
+                    created_at, updated_at
                 }
             });
         } catch (e) { 
             res.status(202).send({ 
                 success: false, 
-                message: '인증된 사용자가 아닙니다'
+                message: '잘못된 유저 정보입니다'
             });
         }
     },
