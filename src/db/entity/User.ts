@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn, UpdateDateColumn } from "typeorm";
 import { FollowTable } from "./FollowTable";
-import { UserProject } from "./UserProject";
+// import { UserProject } from "./UserProject";
 import bcrypt from "bcrypt";
 
 
@@ -40,8 +40,8 @@ export class User {
     @OneToMany(() => FollowTable, followTable => followTable.userId)
     followTable!: FollowTable[];
 
-    @OneToMany(() => UserProject, user_project => user_project.user)
-    user_project!: UserProject[];
+//     @OneToMany(() => UserProject, user_project => user_project.user)
+//     user_project!: UserProject[];
 
     hashPass() {
         this.password = bcrypt.hashSync(this.password, 8)
