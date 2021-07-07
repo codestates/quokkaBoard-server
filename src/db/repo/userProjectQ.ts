@@ -18,5 +18,13 @@ export class UserProjectRepo extends Repository <UserProject> {
         .where({id: id})
         .execute();
     }
+
+    addProjectMember(userData: object) {
+        return this.createQueryBuilder("user_project")
+        .insert()
+        .into(UserProject)
+        .values(userData)
+        .execute();
+    }
    
 }

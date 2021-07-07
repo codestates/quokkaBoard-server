@@ -1,20 +1,20 @@
 import { Request, Response } from 'express';
 import { getCustomRepository, getRepository } from 'typeorm';
-import { UserRepo } from '@repo/userDm';
+import { UserRepo } from '@repo/userQ';
 import { User } from '@entity/User';
-import { typeReq, strProps } from '@types';
+import { TypeReq, StrProps } from '@types';
 import jwtToken from '@token/jwt';
 
 
 const user = {
 
-    register: async (req: typeReq<strProps>, res: Response) => {
+    register: (req: TypeReq<StrProps>, res: Response) => {
         
         const userRepo = getRepository(User)
-        const { email, name, password } = req.body;
+        const { email, nickname, password } = req.body;
         const newUser = new User();
         newUser.email = email;
-        newUser.name = name;
+        newUser.nickname = nickname;
         newUser.password = password;
         newUser.hashPass();
 
@@ -27,33 +27,37 @@ const user = {
 
     },
 
-    existEmail: async (req: typeReq<strProps>, res: Response) => {
+    existEmail: (req: TypeReq<StrProps>, res: Response) => {
         
-        console.log("req: ", req.body)
-        const customUserRepo = getCustomRepository(UserRepo)
-        const findUser = await customUserRepo.findEmail(req.body.email);
-        if(!findUser) return res.status(200).send({ success: true });
-        res.status(202).send({ success: false });
+        const userRepo = getCustomRepository(UserRepo)
+        try{
+            userRepo.findEmail(req.body.email);
+            res.status(202).send({ success: false });
+        } catch (e) {
+            res.status(200).send({ success: true });
+        }
 
     },
 
-    existNickName: async (req: typeReq<strProps>, res: Response) => {
+    existNickName: (req: TypeReq<StrProps>, res: Response) => {
         
-        console.log("req: ", req.body)
-        const customUserRepo = getCustomRepository(UserRepo)
-        const findUser = await customUserRepo.findNickName(req.body.nickname);
-        if(!findUser) return res.status(200).send({ success: true });
-        res.status(202).send({ success: false });
+        const userRepo = getCustomRepository(UserRepo)
+        try {
+            userRepo.findNickName(req.body.nickname);
+            res.status(202).send({ success: false });
+        } catch (e) {
+            res.status(200).send({ success: true });
+        }
 
     },
 
-    login: async (req: typeReq<strProps>, res: Response) => {
+    login: async (req: TypeReq<StrProps>, res: Response) => {
 
-        const customUserRepo = getCustomRepository(UserRepo)
+        const userRepo = getCustomRepository(UserRepo)
         const { email, password } = req.body;
-        const findUser = await customUserRepo.findEmail(email);
+        const findUser = await userRepo.findEmail(email);
         
-        if(findUser === undefined) return res.status(202).send({ 
+        if(!findUser) return res.status(202).send({ 
             success: false, message: '존재하지 않는 이메일입니다' 
         });
         else if(!findUser.checkPass(password)) res.status(202).send({ 
@@ -68,11 +72,11 @@ const user = {
 
     },
 
-    logout: (req: typeReq<strProps>, res: Response) => {
+    logout: (req: TypeReq<StrProps>, res: Response) => {
         
-        const customUserRepo = getCustomRepository(UserRepo)
+        const userRepo = getCustomRepository(UserRepo)
         try {
-            customUserRepo.removeRefToken(req.body.userId)
+            userRepo.removeRefToken(req.body.userId)
             res.status(200).clearCookie('accessToken').send({ 
                 success: true, message: '로그아웃 되었습니다' 
             });
@@ -82,19 +86,18 @@ const user = {
         
     },
 
-    userInfo: async (req: typeReq<strProps>, res: Response) => {
+    userInfo: async (req: TypeReq<StrProps>, res: Response) => {
                           
-        const customUserRepo = getCustomRepository(UserRepo);
+        const userRepo = getCustomRepository(UserRepo);
         try {
-            const findUser = await customUserRepo.findId(req.body.userId);
-            if(!findUser) return res.status(202).send({ success: false, data: null });
+            const findUser = await userRepo.findId(req.body.userId);
             const { id, email, nickname, image, created_at, updated_at } = findUser;
 
             res.status(200).send({ success: true, data: {
                 id, email, nickname, image, created_at, updated_at
             }});
         } catch (e) { 
-            res.status(500).send('error') 
+            res.status(202).send({ success: false, data: null });
         };
 
     },

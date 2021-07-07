@@ -7,7 +7,7 @@ export class UserRepo extends Repository <User> {
     findId(id: string) {
         return this.createQueryBuilder("user")
         .where("user.id = :id", { id })
-        .getOne();
+        .getOneOrFail();
     }
     
     findEmail(email: string) {
@@ -15,11 +15,17 @@ export class UserRepo extends Repository <User> {
         .where("user.email = :email", { email })
         .getOneOrFail();
     }
+
+    findNickNames(nickname: string[] | string) {
+        return this.createQueryBuilder("user")
+        .where("nickname IN (:nickname)", { nickname })
+        .getMany();
+    }
     
     findNickName(nickname: string) {
         return this.createQueryBuilder("user")
         .where("user.nickname = :nickname", { nickname })
-        .getOne();
+        .getOneOrFail();
     }
 
     findUserAuth(email: string) {

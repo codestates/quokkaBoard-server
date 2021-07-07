@@ -2,14 +2,14 @@ import { Response } from 'express';
 import { getRepository, getCustomRepository } from 'typeorm';
 import { Project } from '@entity/Project';
 import { UserProject } from '@entity/UserProject';
-import { UserRepo } from '@repo/userDm';
-import { UserProjectRepo } from '@repo/userProjectDm';
-import { typeReq, strProps } from '@types';
+import { UserRepo } from '@repo/userQ';
+import { UserProjectRepo } from '@repo/userProjectQ';
+import { TypeReq, StrProps, InviteUser } from '@types';
 
 
 const project = {
 
-    createProject: async (req: typeReq<strProps>, res: Response) => {
+    createProject: async (req: TypeReq<StrProps>, res: Response) => {
         
         const { userId, title, startDate, endDate } = req.body;
         const projectRepo = getRepository(Project);
@@ -22,7 +22,7 @@ const project = {
             const findProject = await projectRepo.save(newProject);
             
             const newUserProject = new UserProject();
-            newUserProject.authority = 'ADMIN';
+            newUserProject.authority = 'MASTER';
             newUserProject.userId = userId;
             newUserProject.projectId = findProject.id;
             userProjectRepo.save(newUserProject);
@@ -34,14 +34,14 @@ const project = {
         
     },
 
-    removeProject: async (req: typeReq<strProps>, res: Response) => {
+    removeProject: async (req: TypeReq<StrProps>, res: Response) => {
 
         const { userId, projectId } = req.body;
         const projectRepo = getRepository(Project);
-        const customUserProjectRepo = getCustomRepository(UserProjectRepo);
-        const findAuth = await customUserProjectRepo.findAuthProject(userId, projectId);
+        const userProjectRepo = getCustomRepository(UserProjectRepo);
+        const findAuth = await userProjectRepo.findAuthProject(userId, projectId);
         
-        if(findAuth.authority === 'ADMIN') {
+        if(findAuth.authority === 'MASTER') {
             projectRepo.delete({ id: findAuth.projectId });
             res.status(200).send({ success: true });
         } else {
@@ -50,16 +50,16 @@ const project = {
 
     },
 
-    modifyAuthority: async (req: typeReq<strProps>, res: Response) => {
+    modifyAuthority: async (req: TypeReq<StrProps>, res: Response) => {
         
         const { projectId, email, authority } = req.body;
-        const customUserRepo = getCustomRepository(UserRepo)
-        const customUserProjectRepo = getCustomRepository(UserProjectRepo);
+        const userRepo = getCustomRepository(UserRepo);
+        const userProjectRepo = getCustomRepository(UserProjectRepo);
         try {
-            const findUser = (await customUserRepo.findUserAuth(email)).filter(el =>
+            const findUser = (await userRepo.findUserAuth(email)).filter(el =>
                 el.users_projectId === projectId && el.users_authority !== authority
             );
-            customUserProjectRepo.changeUserAuth(findUser[0].users_id, authority);
+            userProjectRepo.changeUserAuth(findUser[0].users_id, authority);
             res.status(200).send({ success: true }); 
         } catch (e) {
             res.status(202).send({ success: false });
@@ -67,7 +67,29 @@ const project = {
 
     },
 
-    dashBoardInfo: async (req: typeReq<strProps>, res: Response) => {
+    inviteMember: async (req: TypeReq<InviteUser>, res: Response) => {
+
+        const { nickname, projectId } = req.body;
+        const userRepo = getCustomRepository(UserRepo)
+        const userProjectRepo = getCustomRepository(UserProjectRepo);
+        try{
+            const userData: object[] = [];
+            const resData: object[] = [];
+            const findUser = await userRepo.findNickNames(nickname)
+            findUser.forEach(el => {
+                userData.push({ authority: 'Read', userId: el.id , projectId: projectId })
+                resData.push({ userId: el.id, nickname: el.nickname })
+            });
+            userProjectRepo.addProjectMember(userData);
+            
+            res.status(200).send({ success: true, data: resData });
+        } catch (e) {
+            res.status(202).send({ succes: false })
+        }
+    
+    },
+
+    dashBoardInfo: async (req: TypeReq<StrProps>, res: Response) => {
 
 
 
