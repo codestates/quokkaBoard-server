@@ -75,7 +75,7 @@ const project = {
         try{
             const userData: object[] = [];
             const resData: object[] = [];
-            const findUser = await userRepo.findNickNames(nickname)
+            const findUser = await userRepo.findNickName(nickname)
             findUser.forEach(el => {
                 userData.push({ authority: 'Read', userId: el.id , projectId: projectId })
                 resData.push({ userId: el.id, nickname: el.nickname })
