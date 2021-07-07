@@ -9,6 +9,7 @@ const projectRouter = express.Router();
 projectRouter.post('/create-project', project.createProject);
 projectRouter.delete('/remove-project', project.removeProject);
 projectRouter.patch('/modify-authority', project.modifyAuthority);
+projectRouter.post('/invite-member', project.inviteMember);
 projectRouter.post('/dashboard-info', project.dashBoardInfo);
 
 export default projectRouter;

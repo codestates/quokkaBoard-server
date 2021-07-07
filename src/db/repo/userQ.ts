@@ -15,6 +15,12 @@ export class UserRepo extends Repository <User> {
         .where("user.email = :email", { email })
         .getOneOrFail();
     }
+
+    findNickNames(nickname: string[] | string) {
+        return this.createQueryBuilder("user")
+        .where("nickname IN (:nickname)", { nickname })
+        .getMany();
+    }
     
     findNickName(nickname: string) {
         return this.createQueryBuilder("user")

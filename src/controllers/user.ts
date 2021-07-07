@@ -2,13 +2,13 @@ import { Request, Response } from 'express';
 import { getCustomRepository, getRepository } from 'typeorm';
 import { UserRepo } from '@repo/userQ';
 import { User } from '@entity/User';
-import { typeReq, strProps } from '@types';
+import { TypeReq, StrProps } from '@types';
 import jwtToken from '@token/jwt';
 
 
 const user = {
 
-    register: (req: typeReq<strProps>, res: Response) => {
+    register: (req: TypeReq<StrProps>, res: Response) => {
         
         const userRepo = getRepository(User)
         const { email, nickname, password } = req.body;
@@ -27,7 +27,7 @@ const user = {
 
     },
 
-    existEmail: (req: typeReq<strProps>, res: Response) => {
+    existEmail: (req: TypeReq<StrProps>, res: Response) => {
         
         const userRepo = getCustomRepository(UserRepo)
         try{
@@ -39,7 +39,7 @@ const user = {
 
     },
 
-    existNickName: (req: typeReq<strProps>, res: Response) => {
+    existNickName: (req: TypeReq<StrProps>, res: Response) => {
         
         const userRepo = getCustomRepository(UserRepo)
         try {
@@ -51,7 +51,7 @@ const user = {
 
     },
 
-    login: async (req: typeReq<strProps>, res: Response) => {
+    login: async (req: TypeReq<StrProps>, res: Response) => {
 
         const userRepo = getCustomRepository(UserRepo)
         const { email, password } = req.body;
@@ -72,7 +72,7 @@ const user = {
 
     },
 
-    logout: (req: typeReq<strProps>, res: Response) => {
+    logout: (req: TypeReq<StrProps>, res: Response) => {
         
         const userRepo = getCustomRepository(UserRepo)
         try {
@@ -86,7 +86,7 @@ const user = {
         
     },
 
-    userInfo: async (req: typeReq<strProps>, res: Response) => {
+    userInfo: async (req: TypeReq<StrProps>, res: Response) => {
                           
         const userRepo = getCustomRepository(UserRepo);
         try {
