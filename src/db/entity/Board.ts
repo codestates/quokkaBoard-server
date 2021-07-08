@@ -27,7 +27,4 @@ export class Board {
     @ManyToOne(() => Project, project => project.board, {primary: true, onDelete:'CASCADE'})
     project!: Project;
 
-    // @OneToMany(() => UserProject, userProject => userProject.user)
-    // userProject!: UserProject[];
-
 }

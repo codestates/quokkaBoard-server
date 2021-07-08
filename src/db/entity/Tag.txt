@@ -1,0 +1,21 @@
+// import "reflect-metadata";
+// import { Entity, PrimaryGeneratedColumn, Column, OneToOne, OneToMany, ManyToMany, ManyToOne } from "typeorm";
+// import { TaskTag } from "./TaskTag.txt"
+
+// // 기능 구현 확인 후, @ManyToMany로 변경  
+// @Entity()
+// export class Tag {
+
+//     @Column()
+//     id!: number;
+
+//     @Column()
+//     content!: string;
+
+//     @Column()
+//     hex!: string; 
+    
+//     @OneToMany(() => TaskTag, tagTask => tagTask.tagId)
+//     taskTag!: TaskTag[]; // tag -> taskTag
+    
+// }

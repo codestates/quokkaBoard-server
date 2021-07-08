@@ -1,0 +1,21 @@
+// import "reflect-metadata";
+// import { Entity, PrimaryGeneratedColumn, Column, OneToOne, OneToMany, ManyToMany, ManyToOne } from "typeorm";
+// import { UserProject } from "./UserProject"
+// import { Task } from "./Task"
+
+// @Entity()
+// export class UserTask {
+
+//     @Column()
+//     user_projectID!: number; // userComment table의 첫번째 column과 동일
+
+//     @Column()
+//     taskId!: number;
+    
+//     @ManyToOne(() => UserProject, userProject => userProject.id) // {nullable: false, onDelete:'CASCADE'} 데이터 삭제 시, 외래키로 인해 삭제가 되지 않는 에러 해결을 위헤 ondelete 설정.
+//     userProject!: UserProject; // usertask -> userProject
+    
+//     @ManyToOne(() => Task, task => task.id) // {nullable: false, onDelete:'CASCADE'})
+//     task!: Task;
+
+// }
