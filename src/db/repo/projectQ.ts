@@ -1,15 +1,27 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { Project } from '@entity/Project';
+import { StrProps } from '@types';
 
 
 @EntityRepository(Project)
 export class ProjectRepo extends Repository <Project> {
-
-    findUsers(projectId: string) {
+    
+    findProject(id: string) {
         return this.createQueryBuilder("project")
-        .leftJoinAndSelect("project.user_project", "users")
-        .where({id: projectId})
-        .getRawMany();
+        .where("project.id = :id", { id })
+        .getOne();
+    }
+
+    editProject(id: string, data: StrProps) {
+        return this.createQueryBuilder("project")
+        .update(Project)
+        .set({
+            title: data.title, 
+            start_date: data.startDate, 
+            end_date: data.endDate
+        })
+        .where("project.id = :id", { id })
+        .execute();
     }
 
 }

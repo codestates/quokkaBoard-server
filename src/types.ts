@@ -8,11 +8,11 @@ export interface StrProps {
     [key: string]: string;
 }
 
-export interface BoardProps {
-    [key: string]: string | number;
-}
-
 export interface InviteUser {
     nickname: string[];
     projectId: string;
+}
+
+export interface BoardProps {
+    [key: string]: string | number;
 }

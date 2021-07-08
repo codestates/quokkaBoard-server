@@ -8,7 +8,7 @@ export class UserProjectRepo extends Repository <UserProject> {
     findAuthProject(userId: string, projectId: string) {
         return this.createQueryBuilder("user_project")
         .where({userId: userId, projectId: projectId})
-        .getOneOrFail();
+        .getOne();
     }
 
     changeUserAuth(id: number, authority: string) {
