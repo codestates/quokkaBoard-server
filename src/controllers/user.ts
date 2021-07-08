@@ -11,7 +11,7 @@ const user = {
     register: (req: TypeReq<StrProps>, res: Response) => {
         try {
             const { email, nickname, password } = req.body;
-            if(!password) throw new Error();
+            if(!password) throw Error;
             
             const userRepo = getRepository(User);
             const newUser = new User();
@@ -33,7 +33,7 @@ const user = {
         try{
             const userRepo = getCustomRepository(UserRepo)
             const findUser = await userRepo.findEmail(req.body.email);
-            if(!findUser) throw new Error();
+            if(!findUser) throw Error;
 
             res.status(200).send({ 
                 success: true,
@@ -50,7 +50,7 @@ const user = {
         try{
             const userRepo = getCustomRepository(UserRepo)
             const findUser = await userRepo.findNickName(req.body.nickname);
-            if(!findUser) throw new Error();
+            if(!findUser) throw Error;
             
             res.status(200).send({ 
                 success: true,

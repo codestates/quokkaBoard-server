@@ -56,7 +56,7 @@ const modify = {
         try {
             const userRepo = getRepository(User);
             const findUser = await userRepo.findOne({where: {id: req.body.userId}});
-            if(!findUser) throw new Error();
+            if(!findUser) throw Error;
             // 프로젝트 마스터 권한일 경우 권한이양 로직 추가
             userRepo.delete({ id: req.body.userId });
             res.status(200).clearCookie('accessToken').send({ success: true });

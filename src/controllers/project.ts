@@ -50,7 +50,7 @@ const project = {
             const findAuth = await userProjectRepo.findAuthProject(userId, projectId);
 
             if(!findAuth) throw new Error('id');
-            if(findAuth.authority !== 'MASTER') throw new Error();
+            if(findAuth.authority !== 'MASTER') throw Error;
             else {
                 projectRepo.delete({ id: findAuth.projectId });
                 res.status(200).send({ success: true });
@@ -77,7 +77,7 @@ const project = {
         
             const findUser = (await userRepo.findUserAuth(email))
             .filter(el => el.users_projectId === projectId);
-            if(findUser.length === 0) throw new Error();
+            if(findUser.length === 0) throw Error;
 
             userProjectRepo.changeUserAuth(findUser[0].users_id, authority);
             res.status(200).send({ 
@@ -107,7 +107,7 @@ const project = {
             
             if(!findProject) throw new Error('id');
             if(!findUser) throw new Error('user');
-            if(findUser.authority !== 'MASTER') throw new Error();
+            if(findUser.authority !== 'MASTER') throw Error;
             
             let title = req.body.title || findProject.title;
             projectRepo.editProject(findUser.projectId, {title, startDate, endDate});
@@ -138,7 +138,7 @@ const project = {
             const findProject = await projectRepo.findOne(projectId);
             
             if(findUser.length === 0) throw new Error('user');
-            if(!findProject) throw new Error();
+            if(!findProject) throw Error;
             else {
                 const userData: object[] = [];
                 const resData: object[] = [];
