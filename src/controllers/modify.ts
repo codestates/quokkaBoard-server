@@ -8,57 +8,69 @@ import jwtToken from '@token/jwt';
 
 const modify = {
 
-    nickname: (req: TypeReq<StrProps>, res: Response) => {
-        
-        const userRepo = getCustomRepository(UserRepo)
-        const { userId, nickname } = req.body;
+    nickname: async (req: TypeReq<StrProps>, res: Response) => {
         try {
-            userRepo.modifyNickName(userId, nickname)
+            const { userId, nickname } = req.body;
+            const userRepo = getCustomRepository(UserRepo);
+            const findUser = await userRepo.findId(userId);
+            
+            userRepo.modifyNickName(findUser.id, nickname);
             res.status(200).send({ success: true }); 
         } catch (e) {
-            res.status(204).send({ 
-                success: false, message: '잘못된 유저 정보 입니다' 
+            res.status(202).send({ 
+                success: false, 
+                message: '잘못된 유저 정보입니다' 
             });
         }
-        
     },
 
     password: async (req: TypeReq<StrProps>, res: Response) => {
+        try {
+            const { userId, password, newpassword } = req.body;
+            const userRepo = getRepository(User);
+            const findUser = await userRepo.findOne({where: {id: userId}})
 
-        const userRepo = getRepository(User)
-        const { userId, password, newpassword } = req.body;
-        const findUser = await userRepo.findOne({where: {id: userId}}) // id가 일치하는 정보를 담은 인스턴스를 뱉어냄.
-        
-        if(!findUser) return res.status(204).send({ 
-            success: false, message: '잘못된 유저 정보 입니다'
-        });
-        else if(!findUser.checkPass(password)) res.status(202).send({ 
-            success: false, message: '비밀번호가 일치하지 않습니다' 
-        });
+            if(!findUser) throw new Error('id');
+            if(!findUser.checkPass(password)) throw new Error('password');
+            else {
+                findUser.password = newpassword;
+                findUser.hashPass();
+                userRepo.save(findUser);
+                // 토큰 무효화 하고 refresh 로직 추가
+                res.status(200).send({success: true})
+            }
+        } catch (e) {
+            if(e.message === 'id') res.status(202).send({
+                success: false, 
+                message: '잘못된 유저 정보입니다'
+            });
+            if (e.message === 'password') res.status(202).send({
+                success: false, 
+                message: '비밀번호가 일치하지 않습니다'
+            });
+            else res.status(500).send('server error');
+        }
+    },
 
-        findUser.password = newpassword;
-        findUser.hashPass();
-        userRepo.save(findUser) // instance를 생성하고 나서는 useRepo에 저장해주자.
-        res.status(200).send({success: true})
-        // 토큰 무효화 하고 refresh 로직 추가
+    deleteUser: async (req: TypeReq<StrProps>, res: Response) => {
+        try {
+            const userRepo = getRepository(User);
+            const findUser = await userRepo.findOne({where: {id: req.body.userId}});
+            if(!findUser) throw new Error();
+            // 프로젝트 마스터 권한일 경우 권한이양 로직 추가
+            userRepo.delete({ id: req.body.userId });
+            res.status(200).clearCookie('accessToken').send({ success: true });
+        } catch (e) {
+            res.status(202).send({ 
+                success: false, 
+                message: '잘못된 유저 정보입니다'
+            });
+        }
     },
 
     image: async (req: TypeReq<StrProps>, res: Response) => {
         
-
-    },
-
-    deleteUser: async (req: TypeReq<StrProps>, res: Response) => {
-
-        const userRepo = getRepository(User);
-        try {
-            userRepo.delete({ id: req.body.userId });
-            res.status(200).clearCookie('accessToken').send({ success: true });
-        } catch (e) {
-            res.status(202).send({ success: false, message: e });
-        }
-        // 프로젝트 마스터 권한일 경우 권한이양 로직 추가
-    },
+    }
 }
 
 export default modify;
