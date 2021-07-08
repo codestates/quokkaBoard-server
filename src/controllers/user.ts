@@ -50,7 +50,7 @@ const user = {
         try{
             const userRepo = getCustomRepository(UserRepo)
             const findUser = await userRepo.findNickName(req.body.nickname);
-            if(!findUser) throw Error;
+            if(findUser.length === 0) throw Error;
             
             res.status(200).send({ 
                 success: true,

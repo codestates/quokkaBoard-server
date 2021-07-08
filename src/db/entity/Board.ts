@@ -15,8 +15,8 @@ export class Board {
     @Column('uuid')
     projectId!: string;
 
-    // @Column({enumName})
-    // column_index!: number;
+    @Column({default: 0})
+    column_index!: number;
 
     @CreateDateColumn({ name: 'created_at'})
     created_at!: Date;
