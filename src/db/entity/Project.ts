@@ -6,7 +6,7 @@ import { UserProject } from "./UserProject";
 @Entity()
 export class Project {
 
-    @PrimaryGeneratedColumn('uuid') //auto-increment 기능포함
+    @PrimaryGeneratedColumn('uuid')
     id!: string;
 
     @Column()
