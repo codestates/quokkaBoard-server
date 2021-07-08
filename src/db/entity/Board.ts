@@ -6,8 +6,8 @@ import { Project } from "./Project";
 @Entity()
 export class Board {
 
-    @PrimaryGeneratedColumn()
-    id!: number;
+    @PrimaryGeneratedColumn('uuid')
+    id!: string;
 
     @Column()
     title!: string;
@@ -15,8 +15,8 @@ export class Board {
     @Column('uuid')
     projectId!: string;
 
-    @Generated('increment')
-    column_index!: number;
+    // @Column({enumName})
+    // column_index!: number;
 
     @CreateDateColumn({ name: 'created_at'})
     created_at!: Date;
