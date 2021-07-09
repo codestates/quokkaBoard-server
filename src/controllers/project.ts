@@ -5,7 +5,7 @@ import { UserProject } from '@entity/UserProject';
 import { UserRepo } from '@repo/userQ';
 import { ProjectRepo } from '@repo/projectQ';
 import { UserProjectRepo } from '@repo/userProjectQ';
-import { TypeReq, StrProps, InviteUser } from '@types';
+import { TypeReq, StrProps, InviteUser, StrProps2 } from '@types';
 
 
 const project = {
@@ -13,12 +13,13 @@ const project = {
     createProject: async (req: TypeReq<StrProps>, res: Response) => {
         try {
             const { 
-                userId, title, description, startDate, endDate 
+                title, description, startDate, endDate 
             } = req.body;
             const projectRepo = getRepository(Project);
             const userRepo = getCustomRepository(UserRepo);
             const userProjectRepo = getRepository(UserProject);
-            const findUser = await userRepo.findId(userId);
+            const findUser = await userRepo.findUser(req.body);
+            if(findUser.length === 0) throw Error;
         
             const newProject = new Project();
             newProject.title = title;
@@ -29,7 +30,7 @@ const project = {
             
             const newUserProject = new UserProject();
             newUserProject.authority = 'MASTER';
-            newUserProject.userId = findUser.id;
+            newUserProject.userId = findUser[0].id;
             newUserProject.projectId = findProject.id;
             userProjectRepo.save(newUserProject);
 
@@ -133,14 +134,14 @@ const project = {
         }
     },
 
-    inviteMember: async (req: TypeReq<InviteUser>, res: Response) => {
+    inviteMember: async (req: TypeReq<StrProps2>, res: Response) => {
         try {
-            const { nickname, projectId } = req.body;
+            const { projectId } = req.body;
             const projectRepo = getRepository(Project);
             const userRepo = getCustomRepository(UserRepo);
             const userProjectRepo = getCustomRepository(UserProjectRepo);
-            const findUser = await userRepo.findNickName(nickname);
-            const findProject = await projectRepo.findOne(projectId);
+            const findUser = await userRepo.findUser(req.body);
+            const findProject = await projectRepo.findOne(projectId as string);
             
             if(findUser.length === 0) throw new Error('user');
             if(!findProject) throw Error;

@@ -8,7 +8,7 @@ export class ProjectRepo extends Repository <Project> {
     
     findProject(id: string) {
         return this.createQueryBuilder("project")
-        .where("project.id = :id", { id })
+        .where({id: id})
         .getOne();
     }
 
@@ -21,7 +21,7 @@ export class ProjectRepo extends Repository <Project> {
             start_date: data.startDate, 
             end_date: data.endDate
         })
-        .where("project.id = :id", { id })
+        .where({id: id})
         .execute();
     }
 

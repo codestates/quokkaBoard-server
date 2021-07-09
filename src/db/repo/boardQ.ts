@@ -7,15 +7,15 @@ export class BoardRepo extends Repository <Board> {
 
     findBoard(boardId: string | number) {
         return this.createQueryBuilder("board")
-        .where({ id: boardId })
+        .where({id: boardId})
         .getOneOrFail();
     }
 
     updateTilte(boardId: number, title: string) {
         return this.createQueryBuilder("board")
         .update(Board)
-        .set({ title: title })
-        .where({ id: boardId })
+        .set({title: title})
+        .where({id: boardId})
         .execute();
     }
 

@@ -33,7 +33,7 @@ const kanban = {
         try {
             const boardRepo = getCustomRepository(BoardRepo);
             const findBoard = await boardRepo.findBoard(req.body.boardId);
-            boardRepo.delete({ id: findBoard.id });
+            boardRepo.delete({id: findBoard.id});
             
             res.status(200).send({ 
                 success: true, 

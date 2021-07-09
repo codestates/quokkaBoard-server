@@ -8,6 +8,10 @@ export interface StrProps {
     [key: string]: string;
 }
 
+export interface StrProps2 {
+    [key: string]: string | string[];
+}
+
 export interface InviteUser {
     nickname: string[];
     projectId: string;

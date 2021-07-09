@@ -14,7 +14,7 @@ export class UserProjectRepo extends Repository <UserProject> {
     changeUserAuth(id: number, authority: string) {
         return this.createQueryBuilder("user_project")
         .update(UserProject)
-        .set({ authority: authority })
+        .set({authority: authority})
         .where({id: id})
         .execute();
     }

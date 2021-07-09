@@ -2,19 +2,22 @@ import { Response } from 'express';
 import { getCustomRepository, getRepository } from 'typeorm';
 import { UserRepo } from '@repo/userQ';
 import { User } from '@entity/User';
-import { TypeReq, StrProps } from '@types';
+import { TypeReq, StrProps, StrProps2 } from '@types';
 import jwtToken from '@token/jwt';
 
 
 const modify = {
 
-    nickname: async (req: TypeReq<StrProps>, res: Response) => {
+    nickname: async (req: TypeReq<StrProps2>, res: Response) => {
         try {
-            const { userId, nickname } = req.body;
+            const { nickname } = req.body
+            delete req.body.nickname;
             const userRepo = getCustomRepository(UserRepo);
-            const findUser = await userRepo.findId(userId);
             
-            userRepo.modifyNickName(findUser.id, nickname);
+            const findUser = await userRepo.findUser(req.body);
+            if(findUser.length === 0) throw Error;
+            userRepo.modifyNickName(findUser[0].id, nickname as string);
+
             res.status(200).send({ success: true }); 
         } catch (e) {
             res.status(202).send({ 
