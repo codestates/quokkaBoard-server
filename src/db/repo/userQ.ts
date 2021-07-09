@@ -1,6 +1,6 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { User } from '../entity/User';
-import { StrProps2 } from '@types';
+import { StrProps, StrProps2 } from '@types';
 
 
 @EntityRepository(User) // 이용하는 entity class를 인자로 넣어주자. => 여러개의 인자를 가질 수 있는지 test 요망.
@@ -8,18 +8,24 @@ export class UserRepo extends Repository <User> {
     
     findUser(data: StrProps2) {
         return this.createQueryBuilder("user")
-        // .select(['id', 'email', 'nickname', 'image'])// 작동이 안되는 이유?
         .where("id IN (:id)", {id: data.userId})
         .orWhere("email IN (:email)", {email: data.email})
         .orWhere("nickname IN (:nickname)", {nickname: data.nickname})
         .getMany();
     }
 
-    // findId(id: string) {
-    //     return this.createQueryBuilder("user")
-    //     .where("user.id = :id", { id })
-    //     .getOneOrFail();
-    // }
+    searchUser(data: StrProps) {
+        return this.createQueryBuilder("user")
+        .select([
+            'user.id', 
+            'user.email', 
+            'user.nickname', 
+            'user.image'
+        ])
+        .where("user.email like :email", {email: `%${data.email}%`})
+        .orWhere("user.nickname like :nickname", {nickname: `%${data.nickname}%`})
+        .getMany();
+    }
     
     // findEmail(email: string) {
     //     return this.createQueryBuilder("user")

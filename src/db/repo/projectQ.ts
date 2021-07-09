@@ -12,7 +12,7 @@ export class ProjectRepo extends Repository <Project> {
         .getOne();
     }
 
-    editProject(id: string, data: StrProps) {
+    editProject(data: StrProps) {
         return this.createQueryBuilder("project")
         .update(Project)
         .set({
@@ -21,7 +21,7 @@ export class ProjectRepo extends Repository <Project> {
             start_date: data.startDate, 
             end_date: data.endDate
         })
-        .where({id: id})
+        .where({id: data.projectId})
         .execute();
     }
 
