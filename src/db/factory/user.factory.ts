@@ -9,7 +9,7 @@ define(User, (faker: typeof Faker) => {
     const lastName = faker.name.lastName(gender)
   
     const user = new User()
-    user.name = `${firstName} ${lastName}`
+    user.nickname = `${firstName} ${lastName}`
     user.email = faker.internet.email()
     user.role = faker.company.bsNoun()
     user.nickname = faker.random.word()

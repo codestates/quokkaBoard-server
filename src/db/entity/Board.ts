@@ -6,17 +6,14 @@ import { Project } from "./Project";
 @Entity()
 export class Board {
 
-    @PrimaryGeneratedColumn('uuid')
-    id!: string;
+    @PrimaryGeneratedColumn()
+    id!: number;
 
     @Column()
     title!: string;
 
     @Column('uuid')
     projectId!: string;
-
-    @Column({default: 0})
-    column_index!: number;
 
     @CreateDateColumn({ name: 'created_at'})
     created_at!: Date;

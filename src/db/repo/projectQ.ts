@@ -16,7 +16,8 @@ export class ProjectRepo extends Repository <Project> {
         return this.createQueryBuilder("project")
         .update(Project)
         .set({
-            title: data.title, 
+            title: data.title,
+            description: data.description,
             start_date: data.startDate, 
             end_date: data.endDate
         })

@@ -74,10 +74,10 @@ const user = {
             if(!findUser) throw new Error('id');
             if(!findUser.checkPass(password)) throw new Error('password');
             else {
-                userId = findUser.id;
-                const accToken = jwtToken.mintAccessToken(userId);
-                const refToken = jwtToken.mintRefreshToken(userId);
-                userRepo.saveRefToken(userId, refToken);
+                const { id, nickname, email, image } = findUser
+                const accToken = jwtToken.mintAccessToken(id);
+                const refToken = jwtToken.mintRefreshToken(id);
+                userRepo.saveRefToken(id, refToken);
                 // res.cookie('accessToken', accToken, { 
                 //     httpOnly: true, 
                 //     sameSite: 'none', 
@@ -85,7 +85,7 @@ const user = {
                 // });
                 res.status(200).send({ 
                     success: true, 
-                    userId: userId
+                    data: { id, nickname, email, image }
                 });
             }
         } catch (e) {
@@ -127,10 +127,9 @@ const user = {
 
             res.status(200).send({ 
                 success: true, 
-                data: {
-                    id, email, 
-                    nickname, image, 
-                    created_at, updated_at
+                data: { 
+                    id, email, nickname, image, 
+                    created_at, updated_at 
                 }
             });
         } catch (e) { 

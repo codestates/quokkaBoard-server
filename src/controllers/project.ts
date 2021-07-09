@@ -12,7 +12,9 @@ const project = {
 
     createProject: async (req: TypeReq<StrProps>, res: Response) => {
         try {
-            const { userId, title, startDate, endDate } = req.body;
+            const { 
+                userId, title, description, startDate, endDate 
+            } = req.body;
             const projectRepo = getRepository(Project);
             const userRepo = getCustomRepository(UserRepo);
             const userProjectRepo = getRepository(UserProject);
@@ -20,6 +22,7 @@ const project = {
         
             const newProject = new Project();
             newProject.title = title;
+            newProject.description = description;
             newProject.start_date = startDate;
             newProject.end_date = endDate;
             const findProject = await projectRepo.save(newProject);
@@ -99,8 +102,10 @@ const project = {
 
     modifyProject: async (req: TypeReq<StrProps>, res: Response) => {
         try {
-            const { userId, projectId, startDate, endDate } = req.body
-            const projectRepo = getCustomRepository(ProjectRepo)
+            const { 
+                userId, projectId, description, startDate, endDate 
+            } = req.body;
+            const projectRepo = getCustomRepository(ProjectRepo);
             const userProjectRepo = getCustomRepository(UserProjectRepo);
             const findProject = await projectRepo.findProject(projectId);
             const findUser = await userProjectRepo.findAuthProject(userId, projectId);
@@ -109,8 +114,8 @@ const project = {
             if(!findUser) throw new Error('user');
             if(findUser.authority !== 'MASTER') throw Error;
             
-            let title = req.body.title || findProject.title;
-            projectRepo.editProject(findUser.projectId, {title, startDate, endDate});
+            const title = req.body.title || findProject.title;
+            projectRepo.editProject(findUser.projectId, {title, description, startDate, endDate});
             res.status(200).send({ success: true });
         } catch (e) {
             if(e.message === 'id') res.status(202).send({
