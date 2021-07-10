@@ -7,7 +7,6 @@ import { User } from '@entity/User';
 import { FollowRepo } from '@repo/followQ';
 
 
-
 const member = {
 
     searchFollower: async (req: TypeReq<StrProps>, res: Response) => {
@@ -44,18 +43,18 @@ const member = {
             if(!followingUser || !followerUser) throw new Error('user');
             
             const follow = await customFollowRepo.checkFollow(followingUser);         
-            const check = follow.filter(el => el.id === followerId)
-            console.log(check)
+            const check = follow.filter(el => el.userId === followerId)
             if(check) throw Error;
             
-            // const newFollowRepo = followRepo.create({
-            //     following: followingUser, follower: followerUser
-            // });
-            // followRepo.save(newFollowRepo);
+            const newFollowRepo = followRepo.create({
+                following: followingUser, 
+                follower: followerUser
+            });
+            followRepo.save(newFollowRepo);
             
             res.status(200).send({
                 success: true,
-                data: followerUser
+                data: check
             });
         } catch (e) {
             e.message === 'user'
@@ -70,19 +69,59 @@ const member = {
         }
     },
 
-    deleteFollower: async (req: TypeReq<StrProps2>, res: Response) => {
+    deleteFollower: async (req: TypeReq<StrProps>, res: Response) => {
         try {
+            const { userId, followerId } = req.body
+            const userRepo = getRepository(User);
+            const followRepo = getRepository(Follow);
+            const customFollowRepo = getCustomRepository(FollowRepo);
             
+            const followingUser = await userRepo.findOne({where: {id: userId}});
+            const followerUser = await userRepo.findOne({where: {id: followerId}});
+            if(!followingUser || !followerUser) throw new Error('user');
+            
+            const follow = await customFollowRepo.checkFollow(followingUser);         
+            const check = follow.filter(el => el.userId === followerId)
+            if(!check) throw Error;
+            followRepo.delete({id: check[0].id})
+            
+            res.status(200).send({
+                success: true,
+                data: check
+            });
         } catch (e) {
-            
+            e.message === 'user'
+            ? res.status(202).send({
+                success: false,
+                message: "존재하지 않는 사용자입니다"
+            })
+            : res.status(202).send({
+                success: false,
+                message: "이미 삭제된 사용자입니다"
+            });
         }
     },
 
-    getFollower: async (req: TypeReq<StrProps2>, res: Response) => {
+    getFollower: async (req: TypeReq<StrProps>, res: Response) => {
         try {
+            const userRepo = getRepository(User);
+            const followRepo = getCustomRepository(FollowRepo);
+            const followingUser = await userRepo.findOne({
+                where: {id: req.body.userId}
+            });
+
+            if(!followingUser) throw new Error;
+            const follow = await followRepo.checkFollow(followingUser);
             
+            res.status(200).send({
+                success: true,
+                data: follow
+            });
         } catch (e) {
-            
+            res.status(202).send({
+                success: false,
+                message: "존재하지 않는 사용자입니다"
+            });
         }
     }
 }

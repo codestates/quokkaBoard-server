@@ -8,28 +8,30 @@ export class FollowRepo extends Repository <Follow> {
 
     async checkFollow(data: User) {
         const followers = await this.find({
-            select: ['follower', 'registed'],
+            select: ['id', 'follower', 'registed'],
             where: {following: data.id},
             relations: ['follower']
         });
         const result1 = followers.map(el => {
             return {
+                id: el.id,
                 registed: el.registed,
-                id: el.follower.id,
+                userId: el.follower.id,
                 nickname: el.follower.nickname,
                 email: el.follower.email,
                 image: el.follower.image
             }
         });
         const followings = await this.find({
-            select: ['following', 'registed'],
+            select: ['id', 'following', 'registed'],
             where: {follower: data.id},
             relations: ['following'],
         });
         const result2 = followings.map(el => {
             return {
+                id: el.id,
                 registed: el.registed,
-                id: el.following.id,
+                userId: el.following.id,
                 nickname: el.following.nickname,
                 email: el.following.email,
                 image: el.following.image
@@ -38,7 +40,4 @@ export class FollowRepo extends Repository <Follow> {
         return [...result1, ...result2];
     }
 
-    addFollow(data: StrProps) {
-        
-    }
 }
