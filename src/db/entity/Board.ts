@@ -2,12 +2,14 @@ import "reflect-metadata";
 import { 
     Entity, 
     PrimaryGeneratedColumn, 
-    Column, 
-    ManyToOne, 
+    Column,
+    ManyToOne,
+    OneToMany, 
     CreateDateColumn, 
     UpdateDateColumn
 } from "typeorm";
 import { Project } from "./Project";
+import { Task } from "./Task";
 
 
 @Entity()
@@ -30,5 +32,8 @@ export class Board {
 
     @ManyToOne(() => Project, project => project.board, {primary: true, onDelete:'CASCADE'})
     project!: Project;
+
+    @OneToMany(() => Task, task => task.board)
+    task!: Task[];
 
 }

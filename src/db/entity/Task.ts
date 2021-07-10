@@ -21,23 +21,14 @@ export class Task {
     @Column()
     title!: string;
 
-    @Column()
+    @Column({nullable: true})
     description!: string;
 
-    @Column()
-    boardId!: number;
+    @Column({unique: true})
+    index!: number;
 
-    @Column()
-    row_index!: number;
-
-    @Column()
-    due_date!: Date;
-
-    @Column()
-    comment_id!: number;
-
-    @Column() 
-    label_id!: number;
+    @Column({nullable: true})
+    due_date!: string;
 
     @Column()
     created_at!: Date;
@@ -46,9 +37,18 @@ export class Task {
     updated_at!: Date;
 
     @Column()
-    temp_id!: number;
+    boardId!: number;
 
-    @ManyToOne(() => Board, board => board.id)
+    @Column({unique: true})
+    comment_id!: number;
+
+    @Column({unique: true}) 
+    label_id!: number;
+
+    // @Column()
+    // temp_id!: number;
+
+    @ManyToOne(() => Board, board => board.task, {primary: true, onDelete: 'CASCADE'})
     board!: Board;
 
     // @ManyToOne(() => TempBoard, tempBoard => tempBoard.id)
