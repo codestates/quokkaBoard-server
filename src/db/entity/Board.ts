@@ -1,5 +1,12 @@
 import "reflect-metadata";
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne, CreateDateColumn, UpdateDateColumn, Generated } from "typeorm";
+import { 
+    Entity, 
+    PrimaryGeneratedColumn, 
+    Column, 
+    ManyToOne, 
+    CreateDateColumn, 
+    UpdateDateColumn
+} from "typeorm";
 import { Project } from "./Project";
 
 
