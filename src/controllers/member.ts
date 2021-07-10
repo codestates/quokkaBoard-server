@@ -2,7 +2,7 @@ import { Response } from 'express';
 import { getCustomRepository, getRepository } from 'typeorm';
 import { Follow } from '@entity/Follow';
 import { UserRepo } from '@repo/userQ';
-import { TypeReq, StrProps, StrProps2 } from '@types';
+import { TypeReq, StrProps } from '@types';
 import { User } from '@entity/User';
 import { FollowRepo } from '@repo/followQ';
 

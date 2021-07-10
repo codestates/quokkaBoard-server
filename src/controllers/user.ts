@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { getCustomRepository, getRepository } from 'typeorm';
 import { User } from '@entity/User';
 import { UserRepo } from '@repo/userQ';
-import { TypeReq, StrProps, StrProps2 } from '@types';
+import { TypeReq, StrProps, StrArrProps } from '@types';
 import jwtToken from '@token/jwt';
 
 
@@ -29,7 +29,7 @@ const user = {
         } 
     },
 
-    existEmail: async (req: TypeReq<StrProps2>, res: Response) => {
+    existEmail: async (req: TypeReq<StrArrProps>, res: Response) => {
         try{
             const userRepo = getCustomRepository(UserRepo)
             const findUser = await userRepo.findUser(req.body);
@@ -46,7 +46,7 @@ const user = {
         }
     },
 
-    existNickName: async (req: TypeReq<StrProps2>, res: Response) => {
+    existNickName: async (req: TypeReq<StrArrProps>, res: Response) => {
         try{
             const userRepo = getCustomRepository(UserRepo)
             const findUser = await userRepo.findUser(req.body);
@@ -64,7 +64,7 @@ const user = {
         }
     },
 
-    login: async (req: TypeReq<StrProps2>, res: Response) => {
+    login: async (req: TypeReq<StrArrProps>, res: Response) => {
         try {
             const userRepo = getCustomRepository(UserRepo);
             const findUser = await userRepo.findUser(req.body);
@@ -114,7 +114,7 @@ const user = {
         }
     },
 
-    userInfo: async (req: TypeReq<StrProps2>, res: Response) => {
+    userInfo: async (req: TypeReq<StrArrProps>, res: Response) => {
         try {           
             const userRepo = getCustomRepository(UserRepo);
             const findUser = await userRepo.findUser(req.body);

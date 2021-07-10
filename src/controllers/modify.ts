@@ -2,13 +2,13 @@ import { Response } from 'express';
 import { getCustomRepository, getRepository } from 'typeorm';
 import { UserRepo } from '@repo/userQ';
 import { User } from '@entity/User';
-import { TypeReq, StrProps, StrProps2 } from '@types';
+import { TypeReq, StrProps, StrArrProps } from '@types';
 import jwtToken from '@token/jwt';
 
 
 const modify = {
 
-    nickname: async (req: TypeReq<StrProps2>, res: Response) => {
+    nickname: async (req: TypeReq<StrArrProps>, res: Response) => {
         try {
             const { nickname } = req.body
             delete req.body.nickname;

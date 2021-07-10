@@ -1,7 +1,7 @@
 import { Response } from 'express';
 import { getRepository, getCustomRepository } from 'typeorm';
 import { Board } from '@entity/Board';
-import { TypeReq, StrProps, BoardProps } from '@types';
+import { TypeReq, StrProps, StrNumProps } from '@types';
 import { BoardRepo } from '@repo/boardQ';
 
 
@@ -29,7 +29,7 @@ const kanban = {
         }
     },
 
-    removeBoard: async (req: TypeReq<BoardProps>, res: Response) => {
+    removeBoard: async (req: TypeReq<StrNumProps>, res: Response) => {
         try {
             const boardRepo = getCustomRepository(BoardRepo);
             const findBoard = await boardRepo.findBoard(req.body.boardId);
@@ -52,7 +52,7 @@ const kanban = {
         // 그리고 삭제 후 200 응답
     },
 
-    updateBoard: async (req: TypeReq<BoardProps>, res: Response) => {
+    updateBoard: async (req: TypeReq<StrNumProps>, res: Response) => {
         try {
             const { boardId, boardTitle } = req.body;
             const boardRepo = getCustomRepository(BoardRepo);

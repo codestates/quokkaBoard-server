@@ -5,7 +5,7 @@ import { UserProject } from '@entity/UserProject';
 import { UserRepo } from '@repo/userQ';
 import { ProjectRepo } from '@repo/projectQ';
 import { UserProjectRepo } from '@repo/userProjectQ';
-import { TypeReq, StrProps, InviteUser, StrProps2 } from '@types';
+import { TypeReq, StrProps, InviteUser, StrArrProps } from '@types';
 
 
 const project = {
@@ -48,10 +48,9 @@ const project = {
 
     removeProject: async (req: TypeReq<StrProps>, res: Response) => {
         try { 
-            const { userId, projectId } = req.body;
             const projectRepo = getRepository(Project);
             const userProjectRepo = getCustomRepository(UserProjectRepo);
-            const findAuth = await userProjectRepo.findAuthProject(userId, projectId);
+            const findAuth = await userProjectRepo.findAuthProject(req.body);
 
             if(!findAuth) throw new Error('id');
             if(findAuth.authority !== 'MASTER') throw Error;
@@ -110,7 +109,7 @@ const project = {
             const projectRepo = getCustomRepository(ProjectRepo);
             const userProjectRepo = getCustomRepository(UserProjectRepo);
             const findProject = await projectRepo.findProject(projectId);
-            const findUser = await userProjectRepo.findAuthProject(userId, projectId);
+            const findUser = await userProjectRepo.findAuthProject(req.body);
             
             if(!findProject) throw new Error('id');
             if(!findUser) throw new Error('user');
@@ -135,7 +134,7 @@ const project = {
         }
     },
 
-    inviteMember: async (req: TypeReq<StrProps2>, res: Response) => {
+    inviteMember: async (req: TypeReq<StrArrProps>, res: Response) => {
         try {
             const { projectId } = req.body;
             const projectRepo = getRepository(Project);
