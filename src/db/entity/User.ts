@@ -1,6 +1,7 @@
 import "reflect-metadata";
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn, UpdateDateColumn, ManyToMany, JoinTable } from "typeorm";
 import { UserProject } from "./UserProject";
+import { Follow } from "./Follow";
 import bcrypt from "bcrypt";
 
 
@@ -39,12 +40,22 @@ export class User {
     @OneToMany(() => UserProject, user_project => user_project.user)
     user_project!: UserProject[];
 
-    @ManyToMany(() => User, user => user.following, {cascade: ['insert', 'recover', 'remove', 'update']})
-    @JoinTable()
-    follow!: User[];
+    @OneToMany(() => Follow, follow => follow.following)
+    following!: Follow[];
 
-    @ManyToMany(() => User, user => user.follow, {cascade: ['insert', 'recover', 'update']})
-    following!: User[];
+    @OneToMany(() => Follow, follow => follow.follower)
+    follower!: Follow[];
+
+    // @ManyToMany(() => User, user => user.following, {
+    //     cascade: ['insert', 'recover', 'remove', 'update']
+    // })
+    // @JoinTable()
+    // follow!: User[];
+
+    // @ManyToMany(() => User, user => user.follow, {
+    //     cascade: ['insert', 'recover', 'update']
+    // })
+    // following!: User[];
 
     hashPass() {
         this.password = bcrypt.hashSync(this.password, 8)

@@ -22,22 +22,11 @@ export class UserRepo extends Repository <User> {
             'user.nickname', 
             'user.image'
         ])
-        .where("user.email like :email", {email: `%${data.email}%`})
+        .where("user.id = :id", {id: data.followerId})
+        .orWhere("user.email like :email", {email: `%${data.email}%`})
         .orWhere("user.nickname like :nickname", {nickname: `%${data.nickname}%`})
         .getMany();
     }
-    
-    // findEmail(email: string) {
-    //     return this.createQueryBuilder("user")
-    //     .where("user.email = :email", { email })
-    //     .getOne();
-    // }
-
-    // findNickName(nickname: string[] | string) {
-    //     return this.createQueryBuilder("user")
-    //     .where("nickname IN (:nickname)", { nickname })
-    //     .getMany();
-    // }
 
     findUserAuth(email: string) {
         return this.createQueryBuilder("user")
