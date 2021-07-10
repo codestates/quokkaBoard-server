@@ -1,12 +1,12 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { User } from '../entity/User';
-import { StrProps, StrProps2 } from '@types';
+import { StrProps, StrArrProps } from '@types';
 
 
 @EntityRepository(User) // 이용하는 entity class를 인자로 넣어주자. => 여러개의 인자를 가질 수 있는지 test 요망.
 export class UserRepo extends Repository <User> {
     
-    findUser(data: StrProps2) {
+    findUser(data: StrArrProps) {
         return this.createQueryBuilder("user")
         .where("id IN (:id)", {id: data.userId})
         .orWhere("email IN (:email)", {email: data.email})

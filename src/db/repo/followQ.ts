@@ -1,7 +1,7 @@
-import { Brackets, EntityRepository, Repository } from 'typeorm';
+import { EntityRepository, Repository } from 'typeorm';
 import { User } from '@entity/User';
 import { Follow } from '@entity/Follow';
-import { StrProps, StrProps2 } from '@types';
+
 
 @EntityRepository(Follow)
 export class FollowRepo extends Repository <Follow> {
