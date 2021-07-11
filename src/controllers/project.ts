@@ -102,7 +102,7 @@ const project = {
 
     modifyProject: async (req: TypeReq<StrProps>, res: Response) => {
         try {
-            const { userId, projectId, startDate, endDate } = req.body;
+            const { projectId, startDate, endDate } = req.body;
             if(!startDate) delete req.body.startDate;
             if(!endDate) delete req.body.endDate;
             

@@ -1,97 +1,108 @@
 import { Response } from 'express';
 import { getRepository, getCustomRepository } from 'typeorm';
-import { Task } from '@entity/Task';
 import { Tag } from '@entity/Tag'
 import { TaskRepo } from '@repo/taskQ';
+import { TagRepo } from '@repo/etcQ'
 import { TypeReq, StrProps, StrNumProps, TaskProps } from '@types';
 
 
 const tag = {
 
-    createTag: async (req: TypeReq<StrNumProps>, res: Response) => {
+    createTag: async (req: TypeReq<TaskProps>, res: Response) => {
         try {
-            const { title, boardId } = req.body;
-            const taskRepo = getRepository(Task);
-            const customTaskRepo = getCustomRepository(TaskRepo);
-            const uniqNum = await customTaskRepo.getMaxIdx();
-            
-            const newTask = new Task();
-            newTask.title = title as string;
-            newTask.index = uniqNum + 1;
-            newTask.boardId = boardId as number;
-            newTask.comment_id = uniqNum + 1;
-            newTask.label_id = uniqNum + 1;
-            const findTask = await taskRepo.save(newTask);
+            const { tagContent, tagColor } = req.body;
+            const tagRepo = getRepository(Tag);
+            const taskRepo = getCustomRepository(TaskRepo);
+            const findTask = await taskRepo.findTask(req.body);
+            const findJoinId = await taskRepo.findProjectInTask(req.body);
+            if(!findTask) throw new Error('task');
+
+            const newTag = new Tag();
+            newTag.content = tagContent as string;
+            newTag.hex = tagColor as string;
+            newTag.projectId = findJoinId.project_id;
+            const findTag = await tagRepo.save(newTag);
+
+            findTask.tags = [findTag];
+            taskRepo.save(findTask);
 
             res.status(200).send({ 
                 success: true, 
-                title: findTask.title,
-                taskIndex: findTask.index
+                data: findTag
             });
         } catch (e) {
-            res.status(202).send({ 
+            e.message = 'task'
+            ? res.status(202).send({ 
+                success: false,
+                message: '존재하지 않는 태스크입니다' 
+            })
+            : res.status(202).send({ 
                 success: false,
                 message: '생성에 실패하였습니다' 
             });
         }
     },
 
-    updateTag: async (req: TypeReq<TaskProps>, res: Response) => {
+    updateTag: async (req: TypeReq<StrNumProps>, res: Response) => {
         try {
-            const taskRepo = getCustomRepository(TaskRepo);
-            const findTask = await taskRepo.findTask(req.body);
-            if(!findTask) throw Error;
-            
-            taskRepo.delete({id: findTask.id});
+            const { tagContent, tagColor } = req.body;
+            if(!tagContent) delete req.body.tagContent;
+            if(!tagColor) delete req.body.tagColor;
+
+            const tagRepo = getCustomRepository(TagRepo);
+            const findTag = await tagRepo.findTag(req.body);
+            if(!findTag) throw new Error('tag');
+
+            tagRepo.updateTag(req.body)
             res.status(200).send({success: true});
         } catch (e) {
-            res.status(202).send({ 
+            e.message = 'tag'
+            ? res.status(202).send({ 
                 success: false,
-                message: '존재하지 않는 요청입니다'
+                message: '존재하지 않는 태그입니다' 
+            })
+            : res.status(202).send({ 
+                success: false,
+                message: '생성에 실패하였습니다' 
             });
         }    
     },
 
-    readTag: async (req: TypeReq<TaskProps>, res: Response) => {
+    readTag: async (req: TypeReq<StrProps>, res: Response) => {
         try {
-            const taskRepo = getCustomRepository(TaskRepo);
-            const findTask = await taskRepo.findTask(req.body);
-            if(!findTask) throw Error;
+            const tagRepo = getRepository(Tag);
+            const findAllTag = await tagRepo.find({
+                where: {projectId: req.body.projectId}
+            });
+            if(findAllTag.length === 0) throw Error;
             
-            req.body.title = req.body.title || findTask.title;
-            req.body.description = req.body.description || findTask.description;
-            req.body.dueDate = req.body.dueDate || findTask.due_date;
-            taskRepo.updateTask(req.body);
-
-            res.status(200).send({success: true});
+            res.status(200).send({
+                success: true,
+                data: findAllTag
+            });
         } catch (e) {
             res.status(202).send({
                 success: false,
-                message: '존재하지 않는 요청입니다' 
+                message: '태그가 존재하지 않습니다' 
             });
         }
     },
 
-    deleteTag: async (req: TypeReq<TaskProps>, res: Response) => {
+    deleteTag: async (req: TypeReq<StrNumProps>, res: Response) => {
         try{
-            const taskRepo = getCustomRepository(TaskRepo);
-            const findTask = await taskRepo.findTask(req.body);
-            if(!findTask) throw Error;
+            const tagRepo = getCustomRepository(TagRepo);
+            const findTag = await tagRepo.findTag(req.body);
+            if(!findTag) throw Error;
         
-            req.body.title = req.body.title || findTask.title;
-            req.body.description = req.body.description || findTask.description;
-            req.body.dueDate = req.body.dueDate || findTask.due_date;
-            taskRepo.updateTask(req.body);
-
+            tagRepo.delete({id: findTag.id});
             res.status(200).send({success: true});
         } catch (e) {
             res.status(202).send({
                 success: false,
-                message: '존재하지 않는 요청입니다' 
+                message: '존재하지 않는 태그입니다' 
             });
         }
     }
-
 }
 
 export default tag;
