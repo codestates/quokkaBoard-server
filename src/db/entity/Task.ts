@@ -8,9 +8,9 @@ import {
     ManyToOne 
 } from "typeorm";
 import { Board } from "./Board";
-import { Tag } from "./Tag"
+// import { Tag } from "./Tag"
 // import { TempBoard } from "./TempBoard";
-// import { UserTask } from "./UserTask";
+import { UserTask } from "./UserTask";
 // import { Comment } from "./Comment";
 
 @Entity()
@@ -52,14 +52,14 @@ export class Task {
     @ManyToOne(() => Board, board => board.task, {primary: true, onDelete: 'CASCADE'})
     board!: Board;
 
-    @ManyToMany(() => Tag, tag => tag.tasks)
-    tags!: Tag[];
+    // @ManyToMany(() => Tag, tag => tag.tasks)
+    // tags!: Tag[];
 
     // @ManyToOne(() => TempBoard, tempBoard => tempBoard.id)
     // tempBoard!: TempBoard; // task -> tempBoard
     
-    // @OneToMany(() => UserTask, userTask => userTask.taskId)
-    // userTask!: UserTask[]; // task -> userTask
+    @OneToMany(() => UserTask, user_task => user_task.task)
+    user_task!: UserTask[]; // task -> userTask
 
     // @OneToMany(() => Comment, comment => comment.commentId)
     // comment!: Comment[]; // task -> comment
