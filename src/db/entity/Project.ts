@@ -1,6 +1,7 @@
 import "reflect-metadata";
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
 import { Board } from "./Board";
+import { Tag } from "./Tag";
 import { UserProject } from "./UserProject";
 
 @Entity()
@@ -26,5 +27,8 @@ export class Project {
 
     @OneToMany(() => Board, board => board.project)
     board!: Board[];
+
+    @OneToMany(() => Tag, tag => tag.project)
+    tags!: Tag[];
 
 }

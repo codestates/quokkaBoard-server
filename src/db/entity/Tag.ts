@@ -3,10 +3,12 @@ import {
     Entity, 
     PrimaryGeneratedColumn, 
     Column, 
-    ManyToMany, 
+    ManyToMany,
+    ManyToOne,
     JoinTable 
 } from "typeorm";
 import { Task } from '@entity/Task';
+import { Project } from "./Project";
 
 
 @Entity()
@@ -15,11 +17,17 @@ export class Tag {
     @PrimaryGeneratedColumn()
     id!: number;
 
-    @Column()
+    @Column({nullable: true})
     content!: string;
 
-    @Column()
-    hex!: string; 
+    @Column({nullable: true})
+    hex!: string;
+
+    @Column("uuid")
+    projectId!: string;
+
+    @ManyToOne(() => Project, project => project.tags, {onDelete: "CASCADE"})
+    project!: Project
     
     @ManyToMany(() => Task, task => task.tags)
     @JoinTable({
