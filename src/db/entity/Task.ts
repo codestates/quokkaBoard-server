@@ -5,12 +5,13 @@ import {
     Column, 
     OneToMany, 
     ManyToMany, 
-    ManyToOne 
+    ManyToOne,
+    CreateDateColumn,
+    UpdateDateColumn
 } from "typeorm";
 import { Board } from "./Board";
 import { Tag } from "./Tag"
 // import { TempBoard } from "./TempBoard";
-// import { UserTask } from "./UserTask";
 // import { Comment } from "./Comment";
 
 @Entity()
@@ -25,16 +26,16 @@ export class Task {
     @Column({nullable: true})
     description!: string;
 
-    @Column({unique: true})
+    @Column()
     index!: number;
 
     @Column({nullable: true})
     due_date!: string;
 
-    @Column()
+    @CreateDateColumn()
     created_at!: Date;
 
-    @Column()
+    @UpdateDateColumn()
     updated_at!: Date;
 
     @Column()

@@ -7,10 +7,11 @@ import { TaskProps } from '@types';
 export class TaskRepo extends Repository <Task> {
 
     async getMaxIdx() {
-        const allIdx: any[] = await this.createQueryBuilder('task')
-        .select(['task.index'])
-        .getMany();
-        return Math.max(...allIdx)
+        let idx = await this.createQueryBuilder('task')
+        .select("MAX(task.index)","max")
+        .getRawOne();
+        if(!idx.max) idx.max = 0;
+        return idx.max;
     }
     
     findTask(data: TaskProps) {
@@ -19,11 +20,15 @@ export class TaskRepo extends Repository <Task> {
         .getOne();
     }
 
-    updateTask(id: number, data: object) {
+    updateTask(data: TaskProps) {
         return this.createQueryBuilder("task")
         .update(Task)
-        .set(data)
-        .where({id: id})
+        .set({
+            title: data.title as string,
+            description: data.description as string,
+            due_date: data.dueDate as string,
+        })
+        .where({id: data.taskId})
         .execute();
     }
 
