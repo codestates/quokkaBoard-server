@@ -12,7 +12,7 @@ userRouter.post('/register', user.register);
 userRouter.post('/login', user.login);
 userRouter.post('/logout', user.logout);
 userRouter.post('/social-login', user.socialLogin);
-userRouter.post('/social-info', user.socialInfo);
+userRouter.post('/social-info', user.checkAuth);
 userRouter.post('/exist-email', user.existEmail);
 userRouter.post('/exist-nickname', user.existNickName);
 userRouter.post('/user-info', user.userInfo);

@@ -4,6 +4,7 @@ import { User } from '@entity/User';
 import { UserRepo } from '@repo/userQ';
 import { TypeReq, StrProps, StrArrProps } from '@types';
 import jwtToken from '@token/jwt';
+import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 
 
 const user = {
@@ -139,14 +140,67 @@ const user = {
         }
     },
 
-    socialLogin: async (req: Request, res: Response) => {
-        
+    
+
+    socialLogin: async (req: TypeReq<StrArrProps>, res: Response) => {
+            
+        const clientID = process.env.GOOGLE_CLIENT_ID;
+        const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
+        const userRepo = getCustomRepository(UserRepo)
+        // const findUser = userRepo.findUser(req.body)
+
+        axios.post("https://oauth2.googleapis.com/token", {
+            client_id: clientID,
+            client_secret: clientSecret,
+            code: req.body.authorizationCode,
+            grant_type: 'authorization_code',
+            redirect_uri: 'http://localhost:4000/user/oauth-callBack' // 데이터를 받아오는 API 신설
+        })
+        .then((response: AxiosResponse) => { 
+            const accessToken = response.data.access_token;
+            const refreshToken = response.data.refresh_token; 
+
+            // 구글 api에 정보 찾아오는 axios를 날려주자.
+
+            res.cookie('accessToken', accessToken, { 
+                httpOnly: true, 
+                sameSite: 'none', 
+                secure: true 
+            });    
+    
+        })
+        .catch((err: AxiosError) => {
+            res.status(202).send({ error: err})
+        })
+    
     },
 
-    socialInfo: async (req: Request, res: Response) => {
-        
-    },
 
+    // CheckAuth -> access token을 header.authorization에 날려주자
+    checkAuth: async (req: TypeReq<StrArrProps>, res: Response) => {
+        
+        // const accessToken = req.data.=access_token;
+
+        // axios({
+        //     method:'get',
+        //     url: 'https://www.googleapis.com/oauth2/v2/userinfo',
+        //     headers: {Authorization: "Bearer " + accessToken} 
+        // })
+        // .then(userData: any => {
+        //     res.status(200).send({
+        //         success: true, 
+        //         data: {
+        //             "email": userData.email,
+        //             "picture": userData.picture,
+        //             "nickname":userData.name, // 닉네임 가능여부 체크
+        //             "id": userData.id
+        //         }
+        //     })
+        //     .catch((err: AxiosError) => {
+        //         res.status(202).send({ error: err})
+        //     })
+        // })
+    },
 }
 
 export default user;

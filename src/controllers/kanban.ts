@@ -59,7 +59,7 @@ const kanban = {
         
             const title = boardTitle as string;
             const findBoard = await boardRepo.findBoard(boardId);
-            boardRepo.updateTilte(findBoard.id, title);
+            boardRepo.updateTitle(findBoard.id, title);
             
             res.status(200).send({
                 success: true,
