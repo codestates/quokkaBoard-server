@@ -5,12 +5,13 @@ import {
     Column, 
     OneToMany, 
     ManyToMany, 
-    ManyToOne } from "typeorm";
+    ManyToOne 
+} from "typeorm";
 import { Board } from "./Board";
+import { Tag } from "./Tag"
 // import { TempBoard } from "./TempBoard";
 // import { UserTask } from "./UserTask";
 // import { Comment } from "./Comment";
-// import { TaskTag } from "./TaskTag";
 
 @Entity()
 export class Task {
@@ -51,6 +52,9 @@ export class Task {
     @ManyToOne(() => Board, board => board.task, {primary: true, onDelete: 'CASCADE'})
     board!: Board;
 
+    @ManyToMany(() => Tag, tag => tag.tasks)
+    tags!: Tag[];
+
     // @ManyToOne(() => TempBoard, tempBoard => tempBoard.id)
     // tempBoard!: TempBoard; // task -> tempBoard
     
@@ -59,8 +63,5 @@ export class Task {
 
     // @OneToMany(() => Comment, comment => comment.commentId)
     // comment!: Comment[]; // task -> comment
-
-    // @OneToMany(() => TaskTag, taskTag => taskTag.labelId)
-    // taskTag!: TaskTag[]; // task -> taskTags
 
 }
