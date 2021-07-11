@@ -7,7 +7,8 @@ import { StrProps, StrArrProps } from '@types';
 export class UserRepo extends Repository <User> {
     
     findUser(data: StrArrProps) {
-        return this.createQueryBuilder("user")
+        return this
+        .createQueryBuilder("user")
         .where("id IN (:id)", {id: data.userId})
         .orWhere("email IN (:email)", {email: data.email})
         .orWhere("nickname IN (:nickname)", {nickname: data.nickname})
@@ -15,7 +16,8 @@ export class UserRepo extends Repository <User> {
     }
 
     searchUser(data: StrProps) {
-        return this.createQueryBuilder("user")
+        return this
+        .createQueryBuilder("user")
         .select([
             'user.id', 
             'user.email', 
@@ -29,15 +31,16 @@ export class UserRepo extends Repository <User> {
     }
 
     findUserAuth(email: string) {
-        return this.createQueryBuilder("user")
+        return this
+        .createQueryBuilder("user")
         .leftJoinAndSelect("user.user_project", "users")
-        // .select(['user_id'])
         .where({email: email})
         .getRawMany();
     }
 
     modifyNickName(id: string, nickname: string) {
-        return this.createQueryBuilder("user")
+        return this
+        .createQueryBuilder("user")
         .update(User)
         .set({nickname: nickname})
         .where({id: id})
@@ -45,7 +48,8 @@ export class UserRepo extends Repository <User> {
     }
 
     modifyPassword(id: string, password: string) {
-        return this.createQueryBuilder("user")
+        return this
+        .createQueryBuilder("user")
         .update(User)
         .set({password: password})
         .where({id: id})
@@ -53,7 +57,8 @@ export class UserRepo extends Repository <User> {
     }
 
     saveRefToken(id: string, refToken: string | null) {
-        return this.createQueryBuilder("user")
+        return this
+        .createQueryBuilder("user")
         .update(User)
         .set({refresh_token: refToken!})
         .where({id: id})

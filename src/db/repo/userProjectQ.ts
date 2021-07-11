@@ -7,13 +7,15 @@ import { StrProps } from '@types';
 export class UserProjectRepo extends Repository <UserProject> {
 
     findAuthProject(data: StrProps) {
-        return this.createQueryBuilder("user_project")
+        return this
+        .createQueryBuilder("user_project")
         .where({userId: data.userId, projectId: data.projectId})
         .getOne();
     }
 
     changeUserAuth(id: number, authority: string) {
-        return this.createQueryBuilder("user_project")
+        return this
+        .createQueryBuilder("user_project")
         .update(UserProject)
         .set({authority: authority})
         .where({id: id})
@@ -21,7 +23,8 @@ export class UserProjectRepo extends Repository <UserProject> {
     }
 
     addProjectMember(userData: object) {
-        return this.createQueryBuilder("user_project")
+        return this
+        .createQueryBuilder("user_project")
         .insert()
         .into(UserProject)
         .values(userData)
