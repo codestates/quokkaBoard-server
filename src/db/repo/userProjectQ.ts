@@ -1,20 +1,21 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { UserProject } from '@entity/UserProject';
+import { StrProps } from '@types';
 
 
 @EntityRepository(UserProject)
 export class UserProjectRepo extends Repository <UserProject> {
 
-    findAuthProject(userId: string, projectId: string) {
+    findAuthProject(data: StrProps) {
         return this.createQueryBuilder("user_project")
-        .where({userId: userId, projectId: projectId})
+        .where({userId: data.userId, projectId: data.projectId})
         .getOne();
     }
 
     changeUserAuth(id: number, authority: string) {
         return this.createQueryBuilder("user_project")
         .update(UserProject)
-        .set({ authority: authority })
+        .set({authority: authority})
         .where({id: id})
         .execute();
     }

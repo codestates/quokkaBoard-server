@@ -8,11 +8,20 @@ export interface StrProps {
     [key: string]: string;
 }
 
+export interface StrArrProps {
+    [key: string]: string | string[];
+}
+
 export interface InviteUser {
     nickname: string[];
     projectId: string;
 }
 
-export interface BoardProps {
+export interface StrNumProps {
+    [key: string]: string | number;
+}
+
+export interface TaskProps {
+    taskId: number;
     [key: string]: string | number;
 }

@@ -5,28 +5,32 @@ import { UserProject } from '@entity/UserProject';
 import { UserRepo } from '@repo/userQ';
 import { ProjectRepo } from '@repo/projectQ';
 import { UserProjectRepo } from '@repo/userProjectQ';
-import { TypeReq, StrProps, InviteUser } from '@types';
+import { TypeReq, StrProps, InviteUser, StrArrProps } from '@types';
 
 
 const project = {
 
     createProject: async (req: TypeReq<StrProps>, res: Response) => {
         try {
-            const { userId, title, startDate, endDate } = req.body;
+            const { 
+                title, description, startDate, endDate 
+            } = req.body;
             const projectRepo = getRepository(Project);
             const userRepo = getCustomRepository(UserRepo);
             const userProjectRepo = getRepository(UserProject);
-            const findUser = await userRepo.findId(userId);
+            const findUser = await userRepo.findUser(req.body);
+            if(findUser.length === 0) throw Error;
         
             const newProject = new Project();
             newProject.title = title;
+            newProject.description = description;
             newProject.start_date = startDate;
             newProject.end_date = endDate;
             const findProject = await projectRepo.save(newProject);
             
             const newUserProject = new UserProject();
             newUserProject.authority = 'MASTER';
-            newUserProject.userId = findUser.id;
+            newUserProject.userId = findUser[0].id;
             newUserProject.projectId = findProject.id;
             userProjectRepo.save(newUserProject);
 
@@ -44,13 +48,12 @@ const project = {
 
     removeProject: async (req: TypeReq<StrProps>, res: Response) => {
         try { 
-            const { userId, projectId } = req.body;
             const projectRepo = getRepository(Project);
             const userProjectRepo = getCustomRepository(UserProjectRepo);
-            const findAuth = await userProjectRepo.findAuthProject(userId, projectId);
+            const findAuth = await userProjectRepo.findAuthProject(req.body);
 
             if(!findAuth) throw new Error('id');
-            if(findAuth.authority !== 'MASTER') throw new Error();
+            if(findAuth.authority !== 'MASTER') throw Error;
             else {
                 projectRepo.delete({ id: findAuth.projectId });
                 res.status(200).send({ success: true });
@@ -77,7 +80,7 @@ const project = {
         
             const findUser = (await userRepo.findUserAuth(email))
             .filter(el => el.users_projectId === projectId);
-            if(findUser.length === 0) throw new Error();
+            if(findUser.length === 0) throw Error;
 
             userProjectRepo.changeUserAuth(findUser[0].users_id, authority);
             res.status(200).send({ 
@@ -99,18 +102,21 @@ const project = {
 
     modifyProject: async (req: TypeReq<StrProps>, res: Response) => {
         try {
-            const { userId, projectId, startDate, endDate } = req.body
-            const projectRepo = getCustomRepository(ProjectRepo)
+            const { userId, projectId, startDate, endDate } = req.body;
+            if(!startDate) delete req.body.startDate;
+            if(!endDate) delete req.body.endDate;
+            
+            const projectRepo = getCustomRepository(ProjectRepo);
             const userProjectRepo = getCustomRepository(UserProjectRepo);
             const findProject = await projectRepo.findProject(projectId);
-            const findUser = await userProjectRepo.findAuthProject(userId, projectId);
+            const findUser = await userProjectRepo.findAuthProject(req.body);
             
             if(!findProject) throw new Error('id');
             if(!findUser) throw new Error('user');
-            if(findUser.authority !== 'MASTER') throw new Error();
+            if(findUser.authority !== 'MASTER') throw Error;
             
-            let title = req.body.title || findProject.title;
-            projectRepo.editProject(findUser.projectId, {title, startDate, endDate});
+            req.body.title = req.body.title || findProject.title;
+            projectRepo.editProject(req.body);
             res.status(200).send({ success: true });
         } catch (e) {
             if(e.message === 'id') res.status(202).send({
@@ -128,17 +134,17 @@ const project = {
         }
     },
 
-    inviteMember: async (req: TypeReq<InviteUser>, res: Response) => {
+    inviteMember: async (req: TypeReq<StrArrProps>, res: Response) => {
         try {
-            const { nickname, projectId } = req.body;
+            const { projectId } = req.body;
             const projectRepo = getRepository(Project);
             const userRepo = getCustomRepository(UserRepo);
             const userProjectRepo = getCustomRepository(UserProjectRepo);
-            const findUser = await userRepo.findNickName(nickname);
-            const findProject = await projectRepo.findOne(projectId);
+            const findUser = await userRepo.findUser(req.body);
+            const findProject = await projectRepo.findOne(projectId as string);
             
             if(findUser.length === 0) throw new Error('user');
-            if(!findProject) throw new Error();
+            if(!findProject) throw Error;
             else {
                 const userData: object[] = [];
                 const resData: object[] = [];

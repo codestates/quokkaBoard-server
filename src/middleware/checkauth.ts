@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { getCustomRepository } from 'typeorm';
-import { UserRepo } from '@repo/userDm';
+import { UserRepo } from '@repo/userQ';
 import jwtToken from '@token/jwt';
 import 'dotenv/config';
 

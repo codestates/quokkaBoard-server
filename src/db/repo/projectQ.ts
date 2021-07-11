@@ -8,19 +8,20 @@ export class ProjectRepo extends Repository <Project> {
     
     findProject(id: string) {
         return this.createQueryBuilder("project")
-        .where("project.id = :id", { id })
+        .where({id: id})
         .getOne();
     }
 
-    editProject(id: string, data: StrProps) {
+    editProject(data: StrProps) {
         return this.createQueryBuilder("project")
         .update(Project)
         .set({
-            title: data.title, 
+            title: data.title,
+            description: data.description,
             start_date: data.startDate, 
             end_date: data.endDate
         })
-        .where("project.id = :id", { id })
+        .where({id: data.projectId})
         .execute();
     }
 

@@ -14,6 +14,8 @@ import 'dotenv/config';
 import userRouter from '@routes/user';
 import projectRouter from '@routes/project';
 import kanbanRouter from '@routes/kanban';
+import memberRouter from '@routes/member';
+import taskRouter from '@routes/task';
 
 /* Express setting */
 const app = express();
@@ -33,6 +35,8 @@ app.use(cors({
 app.use('/user', userRouter);
 app.use('/project', projectRouter);
 app.use('/kanban', kanbanRouter);
+app.use('/member', memberRouter);
+app.use('/task', taskRouter);
 app.get('/', (req, res) => {
     res.send('Welcom quokkaBoard')
 });

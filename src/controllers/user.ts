@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { getCustomRepository, getRepository } from 'typeorm';
 import { User } from '@entity/User';
 import { UserRepo } from '@repo/userQ';
-import { TypeReq, StrProps } from '@types';
+import { TypeReq, StrProps, StrArrProps } from '@types';
 import jwtToken from '@token/jwt';
 
 
@@ -11,7 +11,7 @@ const user = {
     register: (req: TypeReq<StrProps>, res: Response) => {
         try {
             const { email, nickname, password } = req.body;
-            if(!password) throw new Error();
+            if(!password) throw Error;
             
             const userRepo = getRepository(User);
             const newUser = new User();
@@ -29,12 +29,12 @@ const user = {
         } 
     },
 
-    existEmail: async (req: TypeReq<StrProps>, res: Response) => {
+    existEmail: async (req: TypeReq<StrArrProps>, res: Response) => {
         try{
             const userRepo = getCustomRepository(UserRepo)
-            const findUser = await userRepo.findEmail(req.body.email);
-            if(!findUser) throw new Error();
-
+            const findUser = await userRepo.findUser(req.body);
+            if(findUser.length === 0) throw Error;
+            
             res.status(200).send({ 
                 success: true,
                 message: '존재하는 이메일입니다'
@@ -46,11 +46,11 @@ const user = {
         }
     },
 
-    existNickName: async (req: TypeReq<StrProps>, res: Response) => {
+    existNickName: async (req: TypeReq<StrArrProps>, res: Response) => {
         try{
             const userRepo = getCustomRepository(UserRepo)
-            const findUser = await userRepo.findNickName(req.body.nickname);
-            if(!findUser) throw new Error();
+            const findUser = await userRepo.findUser(req.body);
+            if(findUser.length === 0) throw Error;
             
             res.status(200).send({ 
                 success: true,
@@ -64,20 +64,19 @@ const user = {
         }
     },
 
-    login: async (req: TypeReq<StrProps>, res: Response) => {
+    login: async (req: TypeReq<StrArrProps>, res: Response) => {
         try {
-            let userId: string;
-            const { email, password } = req.body;
             const userRepo = getCustomRepository(UserRepo);
-            const findUser = await userRepo.findEmail(email);
+            const findUser = await userRepo.findUser(req.body);
             
-            if(!findUser) throw new Error('id');
-            if(!findUser.checkPass(password)) throw new Error('password');
+            if(findUser.length === 0) throw new Error('id');
+            if(!findUser[0].checkPass(req.body.password as string))
+            throw new Error('password');
             else {
-                userId = findUser.id;
-                const accToken = jwtToken.mintAccessToken(userId);
-                const refToken = jwtToken.mintRefreshToken(userId);
-                userRepo.saveRefToken(userId, refToken);
+                const { id, nickname, email, image } = findUser[0];
+                const accToken = jwtToken.mintAccessToken(id);
+                const refToken = jwtToken.mintRefreshToken(id);
+                userRepo.saveRefToken(id, refToken);
                 // res.cookie('accessToken', accToken, { 
                 //     httpOnly: true, 
                 //     sameSite: 'none', 
@@ -85,7 +84,7 @@ const user = {
                 // });
                 res.status(200).send({ 
                     success: true, 
-                    userId: userId
+                    data: { id, nickname, email, image }
                 });
             }
         } catch (e) {
@@ -115,22 +114,21 @@ const user = {
         }
     },
 
-    userInfo: async (req: TypeReq<StrProps>, res: Response) => {
+    userInfo: async (req: TypeReq<StrArrProps>, res: Response) => {
         try {           
             const userRepo = getCustomRepository(UserRepo);
-            const findUser = await userRepo.findId(req.body.userId);
+            const findUser = await userRepo.findUser(req.body);
+            if(findUser.length === 0) throw Error;
             const { 
-                id, email, 
-                nickname, image, 
+                id, email, nickname, image, 
                 created_at, updated_at 
-            } = findUser;
+            } = findUser[0];
 
             res.status(200).send({ 
                 success: true, 
-                data: {
-                    id, email, 
-                    nickname, image, 
-                    created_at, updated_at
+                data: { 
+                    id, email, nickname, image, 
+                    created_at, updated_at 
                 }
             });
         } catch (e) { 

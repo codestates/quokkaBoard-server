@@ -2,19 +2,22 @@ import { Response } from 'express';
 import { getCustomRepository, getRepository } from 'typeorm';
 import { UserRepo } from '@repo/userQ';
 import { User } from '@entity/User';
-import { TypeReq, StrProps } from '@types';
+import { TypeReq, StrProps, StrArrProps } from '@types';
 import jwtToken from '@token/jwt';
 
 
 const modify = {
 
-    nickname: async (req: TypeReq<StrProps>, res: Response) => {
+    nickname: async (req: TypeReq<StrArrProps>, res: Response) => {
         try {
-            const { userId, nickname } = req.body;
+            const { nickname } = req.body
+            delete req.body.nickname;
             const userRepo = getCustomRepository(UserRepo);
-            const findUser = await userRepo.findId(userId);
             
-            userRepo.modifyNickName(findUser.id, nickname);
+            const findUser = await userRepo.findUser(req.body);
+            if(findUser.length === 0) throw Error;
+            userRepo.modifyNickName(findUser[0].id, nickname as string);
+
             res.status(200).send({ success: true }); 
         } catch (e) {
             res.status(202).send({ 
@@ -56,7 +59,7 @@ const modify = {
         try {
             const userRepo = getRepository(User);
             const findUser = await userRepo.findOne({where: {id: req.body.userId}});
-            if(!findUser) throw new Error();
+            if(!findUser) throw Error;
             // 프로젝트 마스터 권한일 경우 권한이양 로직 추가
             userRepo.delete({ id: req.body.userId });
             res.status(200).clearCookie('accessToken').send({ success: true });
