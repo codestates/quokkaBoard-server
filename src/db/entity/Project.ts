@@ -13,7 +13,7 @@ export class Project {
     @Column()
     title!: string;
 
-    @Column({ nullable: true })
+    @Column({ nullable: true})
     description!: string;
 
     @Column({ nullable: true})

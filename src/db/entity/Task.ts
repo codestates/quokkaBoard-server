@@ -13,6 +13,7 @@ import { Board } from "./Board";
 import { Tag } from "./Tag"
 import { Comment } from "./Comment";
 
+
 @Entity()
 export class Task {
 
@@ -51,8 +52,8 @@ export class Task {
 
     @OneToMany(() => Comment, comment => comment.task)
     comments!: Comment[];
-
-    // @OneToMany(() => UserTask, userTask => userTask.taskId)
-    // userTask!: UserTask[]; // task -> userTask
+    
+    @OneToMany(() => UserTask, user_task => user_task.task)
+    user_task!: UserTask[];
 
 }

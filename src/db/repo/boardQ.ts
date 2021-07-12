@@ -16,8 +16,8 @@ export class BoardRepo extends Repository <Board> {
         return this
         .createQueryBuilder("board")
         .update(Board)
-        .set({title: title})
-        .where({id: boardId})
+        .set({ title: title })
+        .where({ id: boardId })
         .execute();
     }
 
