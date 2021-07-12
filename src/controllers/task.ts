@@ -20,7 +20,6 @@ const task = {
             newTask.title = title as string;
             newTask.index = uniqNum + 1;
             newTask.boardId = boardId as number;
-            newTask.comment_id = uniqNum + 1;
             newTask.label_id = uniqNum + 1;
             const findTask = await taskRepo.save(newTask);
 
