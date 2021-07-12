@@ -3,7 +3,7 @@ import { User } from '../entity/User';
 import { StrProps, StrArrProps } from '@types';
 
 
-@EntityRepository(User) // 이용하는 entity class를 인자로 넣어주자. => 여러개의 인자를 가질 수 있는지 test 요망.
+@EntityRepository(User)
 export class UserRepo extends Repository <User> {
     
     findUser(data: StrArrProps) {

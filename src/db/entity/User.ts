@@ -15,7 +15,7 @@ import bcrypt from "bcrypt";
 @Entity()
 export class User {
 
-    @PrimaryGeneratedColumn('uuid') //auto-increment 기능포함
+    @PrimaryGeneratedColumn('uuid')
     id!: string;
 
     @Column()
@@ -24,24 +24,22 @@ export class User {
     @Column()
     email!: string;
 
-    @Column({ nullable: true })
+    @Column({nullable: true})
     role!: string;
 
     @Column()
     password!: string;
 
-    @Column("mediumblob", { // ()
-        nullable: true
-    })
+    @Column("mediumblob", {nullable: true})
     image!: string;
 
-    @Column({ nullable: true })
+    @Column({nullable: true})
     refresh_token?: string;
 
-    @CreateDateColumn({ name: 'created_at'})
+    @CreateDateColumn({name: 'created_at'})
     created_at!: Date;
 
-    @UpdateDateColumn({ name: 'updated_at'})
+    @UpdateDateColumn({name: 'updated_at'})
     updated_at!: Date;
 
     @OneToMany(() => UserProject, user_project => user_project.user)

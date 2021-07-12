@@ -16,7 +16,7 @@ export class UserProject {
     @PrimaryGeneratedColumn()
     id!: number;
 
-    @Column({ nullable: true })
+    @Column({nullable: true})
     authority!: string;
 
     @Column("uuid")
@@ -25,10 +25,14 @@ export class UserProject {
     @Column("uuid")
     projectId!: string;
    
-    @ManyToOne(() => User, user => user.user_project, {primary: true, onDelete:'CASCADE'})
+    @ManyToOne(() => User, user => user.user_project, {
+        primary: true, onDelete:'CASCADE'
+    })
     user!: User;
     
-    @ManyToOne(() => Project, project => project.user_project, {primary: true, onDelete:'CASCADE'})
+    @ManyToOne(() => Project, project => project.user_project, {
+        primary: true, onDelete:'CASCADE'
+    })
     project!: Project;
 
     @ManyToMany(() => Comment, comment => comment.user_projects)

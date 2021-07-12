@@ -1,7 +1,6 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { Task } from '@entity/Task';
 import { TaskProps } from '@types';
-import { Board } from '@entity/Board';
 
 
 @EntityRepository(Task)
@@ -10,7 +9,7 @@ export class TaskRepo extends Repository <Task> {
     async getMaxIdx() {
         let idx = await this
         .createQueryBuilder('task')
-        .select("MAX(task.index)","max")
+        .select("MAX(task.cIdx)","max")
         .getRawOne();
         if(!idx.max) idx.max = 0;
         return idx.max;
@@ -26,9 +25,8 @@ export class TaskRepo extends Repository <Task> {
     findProjectInTask(data: TaskProps) {
         return this
         .createQueryBuilder('task')
-        .innerJoin('task.board', 'board')
-        .innerJoin('board.project', 'project')
-        .select(['task.id', 'board.id', 'project.id'])
+        .innerJoin('task.project', 'project')
+        .select(['task.id', 'project.id'])
         .where({id: data.taskId})
         .getRawOne();
     }
