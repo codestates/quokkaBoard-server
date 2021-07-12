@@ -5,13 +5,10 @@
 // @Entity()
 // export class Temp {
 
-//     @Column()
+//     @PrimaryGeneratedColumn()
 //     id!: number;
-
-//     @Column()
-//     description!: string;
     
-//     @OneToMany(() => Task, task => task.temp_id) 
-//     task!: Task; // userComment -> userProject  
+//     @OneToMany(() => Task, task => task.temp) 
+//     tasks!: Task[];
 
 // }

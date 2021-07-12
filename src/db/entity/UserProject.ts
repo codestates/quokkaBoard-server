@@ -1,7 +1,14 @@
 import "reflect-metadata";
-import {Entity, PrimaryGeneratedColumn, Column, ManyToOne} from "typeorm";
+import {
+    Entity, 
+    PrimaryGeneratedColumn, 
+    Column, 
+    ManyToOne, 
+    ManyToMany
+} from "typeorm";
 import {User} from "./User"
 import {Project} from "./Project"
+import { Comment } from "./Comment";
 
 @Entity()
 export class UserProject {
@@ -23,5 +30,8 @@ export class UserProject {
     
     @ManyToOne(() => Project, project => project.user_project, {primary: true, onDelete:'CASCADE'})
     project!: Project;
+
+    @ManyToMany(() => Comment, comment => comment.user_projects)
+    comments!: Comment[];
 
 }
