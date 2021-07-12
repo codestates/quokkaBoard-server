@@ -39,5 +39,4 @@ export class FollowRepo extends Repository <Follow> {
         });
         return [...result1, ...result2];
     }
-
 }

@@ -11,16 +11,15 @@ const task = {
 
     createTask: async (req: TypeReq<StrNumProps>, res: Response) => {
         try {
-            const { taskTitle, boardId } = req.body;
+            const { title, boardId } = req.body;
             const taskRepo = getRepository(Task);
             const customTaskRepo = getCustomRepository(TaskRepo);
-            const uniqNum = await customTaskRepo.getMaxIdx() || 0;
-
+            const uniqNum = await customTaskRepo.getMaxIdx();
+            
             const newTask = new Task();
-            newTask.title = taskTitle as string;
+            newTask.title = title as string;
             newTask.index = uniqNum + 1;
             newTask.boardId = boardId as number;
-            newTask.comment_id = uniqNum + 1;
             newTask.label_id = uniqNum + 1;
             const findTask = await taskRepo.save(newTask);
 
@@ -59,9 +58,11 @@ const task = {
             const findTask = await taskRepo.findTask(req.body);
             if(!findTask) throw Error;
             
-            const data = {due_date: req.body.dueDate as string};
-            taskRepo.updateTask(findTask.id, data);
-            
+            req.body.title = req.body.title || findTask.title;
+            req.body.description = req.body.description || findTask.description;
+            req.body.dueDate = req.body.dueDate || findTask.due_date;
+            taskRepo.updateTask(req.body);
+
             res.status(200).send({success: true});
         } catch (e) {
             res.status(202).send({
@@ -76,9 +77,11 @@ const task = {
             const taskRepo = getCustomRepository(TaskRepo);
             const findTask = await taskRepo.findTask(req.body);
             if(!findTask) throw Error;
-            
-            const data = {title: req.body.title as string};
-            taskRepo.updateTask(findTask.id, data);
+        
+            req.body.title = req.body.title || findTask.title;
+            req.body.description = req.body.description || findTask.description;
+            req.body.dueDate = req.body.dueDate || findTask.due_date;
+            taskRepo.updateTask(req.body);
 
             res.status(200).send({success: true});
         } catch (e) {
@@ -95,9 +98,11 @@ const task = {
             const findTask = await taskRepo.findTask(req.body);
             if(!findTask) throw Error;
             
-            const data = {description: req.body.description as string};
-            taskRepo.updateTask(findTask.id, data);
-
+            req.body.title = req.body.title || findTask.title;
+            req.body.description = req.body.description || findTask.description;
+            req.body.dueDate = req.body.dueDate || findTask.due_date;
+            taskRepo.updateTask(req.body);
+            
             res.status(200).send({success: true});
         } catch (e) {
             res.status(202).send({

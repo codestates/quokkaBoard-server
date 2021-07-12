@@ -16,6 +16,7 @@ import projectRouter from '@routes/project';
 import kanbanRouter from '@routes/kanban';
 import memberRouter from '@routes/member';
 import taskRouter from '@routes/task';
+import tagRouter from '@routes/tag';
 
 /* Express setting */
 const app = express();
@@ -37,6 +38,7 @@ app.use('/project', projectRouter);
 app.use('/kanban', kanbanRouter);
 app.use('/member', memberRouter);
 app.use('/task', taskRouter);
+app.use('/tag', tagRouter);
 app.get('/', (req, res) => {
     res.send('Welcom quokkaBoard')
 });

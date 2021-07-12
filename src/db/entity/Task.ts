@@ -5,13 +5,14 @@ import {
     Column, 
     OneToMany, 
     ManyToMany, 
-    ManyToOne 
+    ManyToOne,
+    CreateDateColumn,
+    UpdateDateColumn
 } from "typeorm";
 import { Board } from "./Board";
-// import { Tag } from "./Tag"
-// import { TempBoard } from "./TempBoard";
-import { UserTask } from "./UserTask";
-// import { Comment } from "./Comment";
+import { Tag } from "./Tag"
+import { Comment } from "./Comment";
+
 
 @Entity()
 export class Task {
@@ -25,43 +26,34 @@ export class Task {
     @Column({nullable: true})
     description!: string;
 
-    @Column({unique: true})
+    @Column()
     index!: number;
 
     @Column({nullable: true})
     due_date!: string;
 
-    @Column()
+    @CreateDateColumn()
     created_at!: Date;
 
-    @Column()
+    @UpdateDateColumn()
     updated_at!: Date;
 
     @Column()
     boardId!: number;
 
-    @Column({unique: true})
-    comment_id!: number;
-
     @Column({unique: true}) 
     label_id!: number;
 
-    // @Column()
-    // temp_id!: number;
-
-    @ManyToOne(() => Board, board => board.task, {primary: true, onDelete: 'CASCADE'})
+    @ManyToOne(() => Board, board => board.task, {primary: true, onDelete: "CASCADE"})
     board!: Board;
 
-    // @ManyToMany(() => Tag, tag => tag.tasks)
-    // tags!: Tag[];
+    @ManyToMany(() => Tag, tag => tag.tasks)
+    tags!: Tag[];
 
-    // @ManyToOne(() => TempBoard, tempBoard => tempBoard.id)
-    // tempBoard!: TempBoard; // task -> tempBoard
+    @OneToMany(() => Comment, comment => comment.task)
+    comments!: Comment[];
     
     @OneToMany(() => UserTask, user_task => user_task.task)
-    user_task!: UserTask[]; // task -> userTask
-
-    // @OneToMany(() => Comment, comment => comment.commentId)
-    // comment!: Comment[]; // task -> comment
+    user_task!: UserTask[];
 
 }

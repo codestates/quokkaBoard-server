@@ -7,13 +7,15 @@ import { StrProps } from '@types';
 export class ProjectRepo extends Repository <Project> {
     
     findProject(id: string) {
-        return this.createQueryBuilder("project")
+        return this
+        .createQueryBuilder("project")
         .where({id: id})
         .getOne();
     }
 
     editProject(data: StrProps) {
-        return this.createQueryBuilder("project")
+        return this
+        .createQueryBuilder("project")
         .update(Project)
         .set({
             title: data.title,
