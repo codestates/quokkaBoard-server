@@ -43,7 +43,7 @@ export class Task {
     @Column({unique: true}) 
     label_id!: number;
 
-    @ManyToOne(() => Board, board => board.task, {primary: true})
+    @ManyToOne(() => Board, board => board.task, {primary: true, onDelete: "CASCADE"})
     board!: Board;
 
     @ManyToMany(() => Tag, tag => tag.tasks)
