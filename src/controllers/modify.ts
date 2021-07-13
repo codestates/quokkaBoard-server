@@ -71,19 +71,19 @@ const modify = {
     },
 
     deleteUser: async (req: TypeReq<StrProps>, res: Response) => {
-        try {
-            const userRepo = getRepository(User);
-            const findUser = await userRepo.findOne({where: {id: req.body.userId}});
-            if(!findUser) throw Error;
-            // 프로젝트 마스터 권한일 경우 권한이양 로직 추가
-            userRepo.delete({ id: req.body.userId });
-            res.status(200).clearCookie('accessToken').send({ success: true });
-        } catch (e) {
-            res.status(202).send({ 
-                success: false, 
-                message: '잘못된 유저 정보입니다'
-            });
-        }
+        // try {
+        //     const userRepo = getRepository(User);
+        //     const findUser = await userRepo.findOne({where: {id: req.body.userId}});
+        //     if(!findUser) throw Error;
+        //     // 프로젝트 마스터 권한일 경우 권한이양 로직 추가
+        //     userRepo.delete({ id: req.body.userId });
+        //     res.status(200).clearCookie('accessToken').send({ success: true });
+        // } catch (e) {
+        //     res.status(202).send({ 
+        //         success: false, 
+        //         message: '잘못된 유저 정보입니다'
+        //     });
+        // }
     },
 
     image: async (req: TypeReq<StrProps>, res: Response) => {

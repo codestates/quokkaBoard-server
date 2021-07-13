@@ -121,12 +121,32 @@ const task = {
         }
     },
 
-    addAssignee: async (req: TypeReq<StrProps>, res: Response) => {
-    
+    addAssignee: async (req: TypeReq<TaskProps>, res: Response) => {
+        try{
+           const taskRepo = getCustomRepository(TaskRepo);
+           const findAssignee = await taskRepo.findAssignee(req.body);
+           if(!findAssignee) throw Error;
+
+            // req.body.userProjectId = req.body.userProjectId || findAssignee.userProjectId; // custom 에서 가져와야함.
+            taskRepo.updateTask(req.body);
+
+            res.status(200).send({success: true})
+        } catch (e) {
+            res.status(202).send ({success: false})
+        }
     },
 
-    deleteAssignee: async (req: TypeReq<StrProps>, res: Response) => {
-    
+    deleteAssignee: async (req: TypeReq<TaskProps>, res: Response) => {
+        // try{
+        //     const taskRepo = getCustomRepository(TaskRepo);
+        //     const findAssignee = await taskRepo.findAssignee(req.body);
+        //     if(!findAssignee) throw Error;
+
+        //     taskRepo.delete({id: req.body.taskId}) // taskId 수정
+        //     res.status(200).send({success: true});
+        // } catch (e) {
+        //     res.status(202).send({success: false})
+        // }
     },
 
     shiftBoard: async (req: TypeReq<StrProps>, res: Response) => {

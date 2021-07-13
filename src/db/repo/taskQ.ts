@@ -52,4 +52,11 @@ export class TaskRepo extends Repository <Task> {
         .add(tagId)
     }
 
+    findAssignee(data: TaskProps) {
+        return this
+        .createQueryBuilder('user_project')
+        .leftJoinAndSelect('user_project.tasks', 'task')
+        .getMany()
+    }
+
 }
