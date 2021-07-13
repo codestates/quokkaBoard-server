@@ -53,7 +53,7 @@ const project = {
             const findAuth = await userProjectRepo.findAuthProject(req.body);
 
             if(!findAuth) throw new Error('id');
-            if(findAuth.authority !== 'MASTER') throw Error;
+            if(findAuth.authority !== 'MASTER') throw Error;// 권한체크 미들웨어 작성시 삭제
             else {
                 projectRepo.delete({ id: findAuth.projectId });
                 res.status(200).send({ success: true });
@@ -136,12 +136,17 @@ const project = {
 
     inviteMember: async (req: TypeReq<StrArrProps>, res: Response) => {
         try {
-            const { projectId } = req.body;
+            const { projectId, nickname } = req.body;
             const projectRepo = getRepository(Project);
             const userRepo = getCustomRepository(UserRepo);
             const userProjectRepo = getCustomRepository(UserProjectRepo);
-            const findUser = await userRepo.findUser(req.body);
+
             const findProject = await projectRepo.findOne(projectId as string);
+            req.body.nickname = (await userRepo.findMemberInUser(req.body))
+                .map(el => el.user_nickname)
+                .concat(nickname)
+                .filter((el, i, arr) => arr.indexOf(el) === arr.lastIndexOf(el));
+            const findUser = await userRepo.findUser(req.body);
             
             if(findUser.length === 0) throw new Error('user');
             if(!findProject) throw Error;
@@ -162,7 +167,7 @@ const project = {
                 userProjectRepo.addProjectMember(userData);
             
                 res.status(200).send({ 
-                    success: true, 
+                    success: true,
                     data: resData 
                 });
             }

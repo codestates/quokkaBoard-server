@@ -15,8 +15,8 @@ export class BoardRepo extends Repository <Board> {
 
     async getMaxIdx() {
         let idx = await this
-        .createQueryBuilder('board')
-        .select("MAX(board.cIdx)","max")
+        .createQueryBuilder("board")
+        .select("MAX(board.bIdx)","max")
         .getRawOne();
         if(!idx.max) idx.max = 0;
         return idx.max;
@@ -25,9 +25,8 @@ export class BoardRepo extends Repository <Board> {
     findTaskInBoard(data: StrNumProps) {
         return this
         .createQueryBuilder("board")
-        .innerJoin('board.board_task', 'board_task')
-        .innerJoin('board_task.task', 'task')
-        .select(['board.id', 'board_task', 'task.id'])
+        .innerJoin("board.tasks", "task")
+        .select(['task'])
         .where({id: data.boardId})
         .getRawMany();
     }
@@ -39,6 +38,14 @@ export class BoardRepo extends Repository <Board> {
         .set({title: data.boardTitle as string})
         .where({id: data.boardId})
         .execute();
+    }
+
+    joinTaskToBoard(boardId: number, taskId: number) {
+        return this
+        .createQueryBuilder()
+        .relation(Board, "tasks")
+        .of(boardId)
+        .add(taskId)
     }
 
 }

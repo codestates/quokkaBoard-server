@@ -44,4 +44,12 @@ export class TaskRepo extends Repository <Task> {
         .execute();
     }
 
+    joinTagToTask(labelId: number, tagId: number) {
+        return this
+        .createQueryBuilder()
+        .relation(Task, "tags")
+        .of(labelId)
+        .add(tagId)
+    }
+
 }

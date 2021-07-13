@@ -13,7 +13,7 @@ const kanban = {
             const boardRepo = getRepository(Board);
             const customBoardRepo = getCustomRepository(BoardRepo);
             const uniqNum = await customBoardRepo.getMaxIdx();
-        
+            
             const newBoard = new Board();
             newBoard.title = boardTitle;
             newBoard.projectId = projectId;
@@ -22,7 +22,7 @@ const kanban = {
 
             res.status(200).send({ 
                 success: true, 
-                boardId: findBoard.id 
+                boardIndex: findBoard.bIdx
             });
         } catch (e) {
             res.status(202).send({ 
@@ -37,13 +37,13 @@ const kanban = {
             const boardRepo = getCustomRepository(BoardRepo);
             const findBoard = await boardRepo.findBoard(req.body);
             if(!findBoard) throw Error;
+
             const findTask = await boardRepo.findTaskInBoard(req.body);
-            console.log(findTask)
-            // boardRepo.delete({id: findBoard.id});
+            boardRepo.delete({id: findBoard.id});
             
             res.status(200).send({ 
                 success: true, 
-                leftTasksId: [] 
+                tasks: findTask 
             });
         } catch (e) {
             res.status(202).send({ 

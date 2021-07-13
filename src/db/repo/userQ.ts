@@ -1,6 +1,6 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { User } from '../entity/User';
-import { StrProps, StrArrProps } from '@types';
+import { StrProps, StrArrProps, InviteUser } from '@types';
 
 
 @EntityRepository(User)
@@ -24,7 +24,7 @@ export class UserRepo extends Repository <User> {
             'user.nickname', 
             'user.image'
         ])
-        .where("user.id = :id", {id: data.followerId})
+        .where("user.id = :id", {id: data.userId})
         .orWhere("user.email like :email", {email: `%${data.email}%`})
         .orWhere("user.nickname like :nickname", {nickname: `%${data.nickname}%`})
         .getMany();
@@ -35,6 +35,20 @@ export class UserRepo extends Repository <User> {
         .createQueryBuilder("user")
         .leftJoinAndSelect("user.user_project", "users")
         .where({email: email})
+        .getRawMany();
+    }
+
+    findMemberInUser(data: StrArrProps) {
+        return this
+        .createQueryBuilder("user")
+        .innerJoin("user.user_project", "usr")
+        .select(["user.nickname"])
+        .where("nickname IN (:nickname)", {
+            nickname: data.nickname
+        })
+        .andWhere("usr.projectId = :projectId", {
+            projectId: data.projectId
+        })
         .getRawMany();
     }
 

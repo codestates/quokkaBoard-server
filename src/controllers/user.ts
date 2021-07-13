@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { getCustomRepository, getRepository } from 'typeorm';
 import { User } from '@entity/User';
 import { UserRepo } from '@repo/userQ';
@@ -26,7 +26,8 @@ const user = {
         } catch (e) {
             res.status(202).send({ 
                 success: false, 
-                message: '잘못된 입력입니다' });
+                message: '잘못된 입력입니다' 
+            });
         } 
     },
 
@@ -43,7 +44,8 @@ const user = {
         } catch (e) {
             res.status(202).send({ 
                 success: false, 
-                message: '사용가능한 이메일입니다' });
+                message: '사용가능한 이메일입니다' 
+            });
         }
     },
 

@@ -10,7 +10,7 @@ const task = {
 
     createTask: async (req: TypeReq<StrNumProps>, res: Response) => {
         try {
-            const { title, dueDate, projectId, boardId } = req.body;
+            const { title, dueDate } = req.body;
             const taskRepo = getRepository(Task);
             const boardRepo = getCustomRepository(BoardRepo);
             const customTaskRepo = getCustomRepository(TaskRepo);
@@ -21,18 +21,16 @@ const task = {
             const newTask = new Task();
             newTask.title = title as string;
             newTask.due_date = dueDate as string;
-            newTask.projectId = projectId as string;
+            newTask.projectId = findBoard.projectId;
             newTask.cIdx = uniqNum + 1;
             newTask.label_id = uniqNum + 1;
             const findTask = await taskRepo.save(newTask);
 
-            findBoard.tasks = [findTask];
-            boardRepo.save(findBoard);
-
+            boardRepo.joinTaskToBoard(findBoard.id, findTask.id);
+            
             res.status(200).send({ 
                 success: true, 
-                title: findTask.title,
-                taskIndex: findTask.cIdx
+                data: findTask
             });
         } catch (e) {
             e.message = 'board'

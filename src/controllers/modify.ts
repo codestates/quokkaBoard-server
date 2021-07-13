@@ -10,19 +10,23 @@ const modify = {
 
     nickname: async (req: TypeReq<StrArrProps>, res: Response) => {
         try {
-            const { nickname } = req.body
-            delete req.body.nickname;
-            const userRepo = getCustomRepository(UserRepo);
+            let { nickname } = req.body;
+            const userRepo = getRepository(User);
+            const customUserRepo = getCustomRepository(UserRepo);
             
-            const findUser = await userRepo.findUser(req.body);
-            if(findUser.length === 0) throw Error;
-            userRepo.modifyNickName(findUser[0].id, nickname as string);
+            delete req.body.nickname;
+            const findUser = await customUserRepo.findUser(req.body);
+            const findNickName = await userRepo.findOne({where: {nickname: nickname}});
+            if(findUser.length === 0 || findNickName) throw Error;
+            
+            if(nickname.length === 0) nickname = findUser[0].nickname;
+            customUserRepo.modifyNickName(findUser[0].id, nickname as string);
 
-            res.status(200).send({ success: true }); 
+            res.status(200).send({ success: true });
         } catch (e) {
             res.status(202).send({ 
                 success: false, 
-                message: '잘못된 유저 정보입니다' 
+                message: '잘못된 요청입니다' 
             });
         }
     },
@@ -31,7 +35,8 @@ const modify = {
         try {
             const { userId, password, newpassword } = req.body;
             const userRepo = getRepository(User);
-            const findUser = await userRepo.findOne({where: {id: userId}})
+            const customUserRepo = getCustomRepository(UserRepo);
+            const findUser = await userRepo.findOne({where: {id: userId}});
 
             if(!findUser) throw new Error('id');
             if(!findUser.checkPass(password)) throw new Error('password');
@@ -39,7 +44,17 @@ const modify = {
                 findUser.password = newpassword;
                 findUser.hashPass();
                 userRepo.save(findUser);
-                // 토큰 무효화 하고 refresh 로직 추가
+
+                const accToken = jwtToken.mintAccessToken(userId);
+                const refToken = jwtToken.mintRefreshToken(userId);
+                customUserRepo.saveRefToken(userId, refToken);
+                
+                // res.clearCookie('accessToken');
+                // res.cookie('accessToken', accToken, { 
+                //     httpOnly: true, 
+                //     sameSite: 'none', 
+                //     secure: true 
+                // });
                 res.status(200).send({success: true})
             }
         } catch (e) {
