@@ -7,12 +7,13 @@ import {
     ManyToMany, 
     ManyToOne,
     CreateDateColumn,
-    UpdateDateColumn
+    UpdateDateColumn,
+    JoinTable
 } from "typeorm";
+import { Board } from "./Board";
 import { Tag } from "./Tag"
 import { Comment } from "./Comment";
-import { Project } from "./Project";
-import { Board } from "./Board";
+import { UserProject } from "./UserProject";;
 
 
 @Entity()
@@ -28,9 +29,9 @@ export class Task {
     description!: string;
 
     @Column()
-    cIdx!: number;
+    index!: number;
 
-    @Column({nullable: true})
+    @Column()
     due_date!: string;
 
     @CreateDateColumn()
@@ -39,26 +40,34 @@ export class Task {
     @UpdateDateColumn()
     updated_at!: Date;
 
+    @Column()
+    boardId!: number;
+
     @Column({unique: true}) 
     label_id!: number;
 
-    @Column('uuid')
-    projectId!: string;
-
-    @ManyToOne(() => Project, project => project.tasks, {
-        primary: true, onDelete: "CASCADE"
-    })
-    project!: Project;
-
-    @OneToMany(() => Comment, comment => comment.task)
-    comments!: Comment[];
-
-    @ManyToMany(() => Board, board => board.tasks, {
-        onDelete: "CASCADE"
-    })
-    board!: Board[];
+    @ManyToOne(() => Board, board => board.tasks, {primary: true, onDelete: "CASCADE"})
+    board!: Board;
 
     @ManyToMany(() => Tag, tag => tag.tasks)
     tags!: Tag[];
 
+    @OneToMany(() => Comment, comment => comment.task)
+    comments!: Comment[];
+    
+    @ManyToMany(() => UserProject, user_project => user_project.tasks, {onDelete: "CASCADE"})
+    @JoinTable({
+        name: 'user_project',
+        joinColumn: {
+            name: 'taskId',
+            referencedColumnName:'id'
+        },
+        inverseJoinColumn: { //userProject 설정
+            name:'user_projectId',
+            referencedColumnName:'id'
+        }
+    })
+    user_projects!: UserProject[];
+    projectId!: string;
+    cIdx: any;
 }
