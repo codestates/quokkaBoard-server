@@ -48,4 +48,13 @@ export class BoardRepo extends Repository <Board> {
         .add(taskId)
     }
 
+    findAllBoard(id: string) {
+        return this
+        .createQueryBuilder("board")
+        .leftJoinAndSelect("board.tasks", "task")
+        .select(['board', 'task', 'task.id'])
+        .where({projectId: id})
+        .orderBy("board.bIdx", "ASC")
+        .getMany();
+    }
 }

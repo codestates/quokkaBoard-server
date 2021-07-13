@@ -1,7 +1,7 @@
 import { Response } from 'express';
-import { getRepository, getCustomRepository } from 'typeorm';
+import { getRepository, getCustomRepository, Column } from 'typeorm';
 import { Board } from '@entity/Board';
-import { TypeReq, StrProps, StrNumProps } from '@types';
+import { TypeReq, StrProps, StrNumProps, NumProps } from '@types';
 import { BoardRepo } from '@repo/boardQ';
 
 
@@ -72,10 +72,53 @@ const kanban = {
         }
     },
 
-    shiftBoard: async (req: TypeReq<StrProps>, res: Response) => {
-        
-    }
+    shiftBoard: async (req: TypeReq<NumProps>, res: Response) => {
+        try {
+            const { bIdx, targetIdx } = req.body
+            const boardRepo = getRepository(Board);
+            const findBoard = await boardRepo.findOne({where: {bIdx: bIdx}});
+            if(!findBoard) throw Error;
 
+            const customBoardRepo = getCustomRepository(BoardRepo);
+            const results = await customBoardRepo.findAllBoard(findBoard.projectId);
+            
+            const index = results.findIndex(el => el.bIdx == bIdx);
+            results[index].bIdx = 0;
+            if(bIdx < targetIdx) results.map(el => {
+                if(bIdx < el.bIdx && el.bIdx <= targetIdx) el.bIdx--
+            });  
+            else results.map(el => {
+                if(bIdx > el.bIdx && el.bIdx >= targetIdx) el.bIdx++
+            });
+            results[index].bIdx = targetIdx;
+            boardRepo.save(results);
+
+            const columnOrder = results.map(el => el.id)
+            const init: { [key: string]: object[] } = {}
+            const tasks = results.reduce((a,c) => {
+                a[c.id] = {...c.tasks.map(el => el)};
+                return a;
+            }, init);
+
+            const columns: { [key: number]: any } = {}
+            for (let i=0; i < results.length; i++) {
+                const result = results[i];
+                columns[result.id] = result;
+            }      
+            const initialData = { tasks, columns, columnOrder };
+            
+            res.status(200).send({
+                success: true,
+                initialData
+            });
+        } catch (e) {
+            res.status(202).send({
+                success: false,
+                message: '보드가 존재하지 않습니다' 
+            });
+        }
+    }
 }
 
 export default kanban;
+

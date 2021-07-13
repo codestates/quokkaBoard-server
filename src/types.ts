@@ -8,6 +8,10 @@ export interface StrProps {
     [key: string]: string;
 }
 
+export interface NumProps {
+    [key: string]: number;
+}
+
 export interface StrArrProps {
     [key: string]: string | string[];
 }
