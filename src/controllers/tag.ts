@@ -15,6 +15,7 @@ const tag = {
             const taskRepo = getCustomRepository(TaskRepo);
             const findTask = await taskRepo.findTask(req.body);
             const findJoinId = await taskRepo.findProjectInTask(req.body);
+            
             if(!findTask) throw new Error('task');
 
             const newTag = new Tag();
@@ -23,8 +24,7 @@ const tag = {
             newTag.projectId = findJoinId.project_id;
             const findTag = await tagRepo.save(newTag);
 
-            findTask.tags = [findTag];
-            taskRepo.save(findTask);
+            taskRepo.joinTagToTask(findTask.label_id, findTag.id)
 
             res.status(200).send({ 
                 success: true, 

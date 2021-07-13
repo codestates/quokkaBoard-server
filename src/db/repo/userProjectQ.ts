@@ -1,6 +1,6 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { UserProject } from '@entity/UserProject';
-import { StrProps } from '@types';
+import { StrArrProps, StrProps } from '@types';
 
 
 @EntityRepository(UserProject)

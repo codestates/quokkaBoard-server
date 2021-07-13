@@ -7,8 +7,6 @@ import { createConnection } from 'typeorm';
 import ormconfig from '@ormconfig';
 import 'reflect-metadata';
 import 'dotenv/config';
-// import fs from 'fs';
-// import https from 'https'
 
 /* Routers */
 import userRouter from '@routes/user';

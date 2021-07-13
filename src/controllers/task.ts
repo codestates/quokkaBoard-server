@@ -1,35 +1,44 @@
 import { Response } from 'express';
 import { getRepository, getCustomRepository } from 'typeorm';
-import { Board } from '@entity/Board';
 import { Task } from '@entity/Task';
-import { BoardRepo } from '@repo/boardQ';
 import { TaskRepo } from '@repo/taskQ';
 import { TypeReq, StrProps, StrNumProps, TaskProps } from '@types';
+import { BoardRepo } from '@repo/boardQ';
 
 
 const task = {
 
     createTask: async (req: TypeReq<StrNumProps>, res: Response) => {
         try {
-            const { title, boardId } = req.body;
+            const { title, dueDate } = req.body;
             const taskRepo = getRepository(Task);
+            const boardRepo = getCustomRepository(BoardRepo);
             const customTaskRepo = getCustomRepository(TaskRepo);
             const uniqNum = await customTaskRepo.getMaxIdx();
+            const findBoard = await boardRepo.findBoard(req.body);
+            if(!findBoard) throw new Error('board');
             
             const newTask = new Task();
             newTask.title = title as string;
-            newTask.index = uniqNum + 1;
-            newTask.boardId = boardId as number;
+            newTask.due_date = dueDate as string;
+            newTask.projectId = findBoard.projectId;
+            newTask.cIdx = uniqNum + 1;
             newTask.label_id = uniqNum + 1;
             const findTask = await taskRepo.save(newTask);
 
+            boardRepo.joinTaskToBoard(findBoard.id, findTask.id);
+            
             res.status(200).send({ 
                 success: true, 
-                title: findTask.title,
-                taskIndex: findTask.index
+                data: findTask
             });
         } catch (e) {
-            res.status(202).send({ 
+            e.message = 'board'
+            ? res.status(202).send({ 
+                success: false,
+                message: '존재하지 않는 보드입니다' 
+            })
+            : res.status(202).send({ 
                 success: false,
                 message: '생성에 실패하였습니다' 
             });
@@ -47,7 +56,7 @@ const task = {
         } catch (e) {
             res.status(202).send({ 
                 success: false,
-                message: '존재하지 않는 요청입니다'
+                message: '존재하지 않는 태스크입니다'
             });
         }    
     },
@@ -67,7 +76,7 @@ const task = {
         } catch (e) {
             res.status(202).send({
                 success: false,
-                message: '존재하지 않는 요청입니다' 
+                message: '존재하지 않는 태스크입니다' 
             });
         }
     },
@@ -87,7 +96,7 @@ const task = {
         } catch (e) {
             res.status(202).send({
                 success: false,
-                message: '존재하지 않는 요청입니다' 
+                message: '존재하지 않는 태스크입니다' 
             });
         }
     },
@@ -107,7 +116,7 @@ const task = {
         } catch (e) {
             res.status(202).send({
                 success: false,
-                message: '존재하지 않는 요청입니다' 
+                message: '존재하지 않는 태스크입니다' 
             });
         }
     },

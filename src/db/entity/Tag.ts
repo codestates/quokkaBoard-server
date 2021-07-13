@@ -10,11 +10,11 @@ import {
 import { Task } from '@entity/Task';
 import { Project } from "./Project";
 
-// 기능 구현 확인 후, @ManyToMany로 변경  
+
 @Entity()
 export class Tag {
 
-    @PrimaryColumn() 
+    @PrimaryGeneratedColumn() 
     id!: number;
 
     @Column({nullable: true})

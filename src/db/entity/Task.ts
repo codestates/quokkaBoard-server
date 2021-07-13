@@ -9,9 +9,10 @@ import {
     CreateDateColumn,
     UpdateDateColumn
 } from "typeorm";
-import { Board } from "./Board";
 import { Tag } from "./Tag"
 import { Comment } from "./Comment";
+import { Project } from "./Project";
+import { Board } from "./Board";
 
 
 @Entity()
@@ -27,7 +28,7 @@ export class Task {
     description!: string;
 
     @Column()
-    index!: number;
+    cIdx!: number;
 
     @Column({nullable: true})
     due_date!: string;
@@ -38,22 +39,26 @@ export class Task {
     @UpdateDateColumn()
     updated_at!: Date;
 
-    @Column()
-    boardId!: number;
-
     @Column({unique: true}) 
     label_id!: number;
 
-    @ManyToOne(() => Board, board => board.task, {primary: true, onDelete: "CASCADE"})
-    board!: Board;
+    @Column('uuid')
+    projectId!: string;
 
-    @ManyToMany(() => Tag, tag => tag.tasks)
-    tags!: Tag[];
+    @ManyToOne(() => Project, project => project.tasks, {
+        primary: true, onDelete: "CASCADE"
+    })
+    project!: Project;
 
     @OneToMany(() => Comment, comment => comment.task)
     comments!: Comment[];
-    
-    @OneToMany(() => UserTask, user_task => user_task.task)
-    user_task!: UserTask[];
+
+    @ManyToMany(() => Board, board => board.tasks, {
+        onDelete: "CASCADE"
+    })
+    board!: Board[];
+
+    @ManyToMany(() => Tag, tag => tag.tasks)
+    tags!: Tag[];
 
 }

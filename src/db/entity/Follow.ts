@@ -3,9 +3,7 @@ import {
     Entity, 
     PrimaryGeneratedColumn, 
     Column, 
-    ManyToOne, 
-    CreateDateColumn, 
-    UpdateDateColumn 
+    ManyToOne 
 } from "typeorm";
 import { User } from "./User";
 
@@ -18,12 +16,6 @@ export class Follow {
 
     @Column('boolean' ,{default: false})
     registed!: boolean;
-
-    @CreateDateColumn({ name: 'created_at'})
-    created_at!: Date;
-
-    @UpdateDateColumn({ name: 'updated_at'})
-    updated_at!: Date;
 
     @ManyToOne(() => User, user => user.following, {
         primary: true, onDelete:'CASCADE'
