@@ -4,7 +4,6 @@ import { Task } from '@entity/Task';
 import { TaskRepo } from '@repo/taskQ';
 import { TypeReq, StrProps, StrNumProps, TaskProps, NumProps } from '@types';
 import { BoardRepo } from '@repo/boardQ';
-import { Board } from '@entity/Board';
 
 
 const task = {
@@ -125,8 +124,8 @@ const task = {
     addAssignee: async (req: TypeReq<TaskProps>, res: Response) => {
         try{
            const taskRepo = getCustomRepository(TaskRepo);
-           const findAssignee = await taskRepo.findAssignee(req.body);
-           if(!findAssignee) throw Error;
+        //    const findAssignee = await taskRepo.findAssignee(req.body);
+        //    if(!findAssignee) throw Error;
 
             // req.body.userProjectId = req.body.userProjectId || findAssignee.userProjectId; // custom 에서 가져와야함.
             taskRepo.updateTask(req.body);
