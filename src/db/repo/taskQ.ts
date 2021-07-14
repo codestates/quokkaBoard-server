@@ -54,6 +54,13 @@ export class TaskRepo extends Repository <Task> {
         .add(tagId)
     }
 
+    findAssignee(data: TaskProps) {
+        return this
+        .createQueryBuilder('user_project')
+        .leftJoinAndSelect('user_project.tasks', 'task')
+        .getMany()
+    }
+
     findTaskInBoard(id: number) {
         return this
         .createQueryBuilder("task")
@@ -77,6 +84,5 @@ export class TaskRepo extends Repository <Task> {
         .relation(Board, "tasks")
         .of(boardId)
         .add(taskId)
-    }
 
 }

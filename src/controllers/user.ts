@@ -181,7 +181,7 @@ const user = {
     // CheckAuth -> access token을 header.authorization에 날려주자
     checkAuth: async (req: TypeReq<StrArrProps>, res: Response) => {
         
-        // const accessToken = req.data.=access_token;
+        // const accessToken = req.data.access_token;
 
         // axios({
         //     method:'get',
