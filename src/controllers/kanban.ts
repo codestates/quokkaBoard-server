@@ -38,7 +38,7 @@ const kanban = {
             const findBoard = await boardRepo.findBoard(req.body);
             if(!findBoard) throw Error;
 
-            const findTask = await boardRepo.findTaskInBoard(req.body);
+            const findTask = await boardRepo.findTaskOnly(req.body);
             boardRepo.delete({id: findBoard.id});
             
             res.status(200).send({ 
@@ -93,7 +93,6 @@ const kanban = {
             results[index].bIdx = targetIdx;
             boardRepo.save(results);
 
-            const columnOrder = results.map(el => el.id)
             const init: { [key: string]: object[] } = {}
             const tasks = results.reduce((a,c) => {
                 a[c.id] = {...c.tasks.map(el => el)};
@@ -104,7 +103,8 @@ const kanban = {
             for (let i=0; i < results.length; i++) {
                 const result = results[i];
                 columns[result.id] = result;
-            }      
+            }
+            const columnOrder = results.map(el => el.id);
             const initialData = { tasks, columns, columnOrder };
             
             res.status(200).send({

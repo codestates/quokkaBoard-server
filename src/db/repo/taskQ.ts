@@ -1,6 +1,7 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { Task } from '@entity/Task';
-import { TaskProps } from '@types';
+import { NumProps, TaskProps } from '@types';
+import { Board } from '@entity/Board';
 
 
 @EntityRepository(Task)
@@ -19,6 +20,7 @@ export class TaskRepo extends Repository <Task> {
         return this
         .createQueryBuilder("task")
         .where({id: data.taskId})
+        .orWhere("task.cIdx = :cIdx", {cIdx: data.cIdx})
         .getOne();
     }
 
@@ -50,6 +52,31 @@ export class TaskRepo extends Repository <Task> {
         .relation(Task, "tags")
         .of(labelId)
         .add(tagId)
+    }
+
+    findTaskInBoard(id: number) {
+        return this
+        .createQueryBuilder("task")
+        .innerJoin("task.board", "board", "boardId")
+        .where("board.id = :id", {id: id})
+        .orderBy("task.cIdx", "ASC")
+        .getMany();
+    }
+
+    removeTaskToBoard(boardId: number, taskId: number) {
+        return this
+        .createQueryBuilder()
+        .relation(Board, "tasks")
+        .of(boardId)
+        .remove(taskId)
+    }
+
+    joinTaskToBoard(boardId: number, taskId: number) {
+        return this
+        .createQueryBuilder()
+        .relation(Board, "tasks")
+        .of(boardId)
+        .add(taskId)
     }
 
 }

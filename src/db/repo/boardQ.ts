@@ -22,12 +22,13 @@ export class BoardRepo extends Repository <Board> {
         return idx.max;
     }
 
-    findTaskInBoard(data: StrNumProps) {
+    findTaskOnly(data: StrNumProps) {
         return this
         .createQueryBuilder("board")
-        .innerJoin("board.tasks", "task")
-        .select(['task'])
+        .innerJoinAndSelect("board.tasks", "task")
+        .select(["task"])
         .where({id: data.boardId})
+        .orderBy("task.cIdx", "ASC")
         .getRawMany();
     }
 
