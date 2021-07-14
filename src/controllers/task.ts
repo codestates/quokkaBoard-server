@@ -138,7 +138,8 @@ const task = {
             const targetTask = await taskRepo.findTaskInBoard(targetId);
             const task = findTask.filter(el => el.cIdx === cIdx);
             const index = findTask.findIndex(el => el.cIdx === cIdx);
-            if(!index) throw Error;
+            if(task.length === 0) throw Error;
+
             findTask[index].cIdx = 0;
             
             if(boardId === targetId) {
@@ -149,13 +150,13 @@ const task = {
                     if(cIdx > el.cIdx && el.cIdx >= targetIdx) el.cIdx++
                 });
                 findTask[index].cIdx = targetIdx;
-                taskRepo.save(findTask);
+                taskRepo.save(findTask); 
             
             } else {
+                const lastIdx = Math.max(...targetTask.map(el => el.cIdx));
                 taskRepo.removeTaskToBoard(boardId, task[0].id);
                 taskRepo.joinTaskToBoard(targetId, task[0].id);
-                const lastIdx = Math.max(...targetTask.map(el => el.cIdx));
-
+            
                 if(lastIdx === targetIdx) {
                     findTask[index].cIdx = targetIdx + 1;
                 } else { 
@@ -165,6 +166,7 @@ const task = {
                     findTask[index].cIdx = targetIdx;
                 }
                 taskRepo.save(findTask);
+                taskRepo.save(targetTask);
             }
 
             const customBoardRepo = getCustomRepository(BoardRepo);
