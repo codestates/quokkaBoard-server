@@ -79,7 +79,7 @@ const project = {
             if(!authority) throw new Error('auth');
         
             const findUser = (await userRepo.findUserAuth(email))
-            .filter(el => el.users_projectId === projectId);
+                .filter(el => el.users_projectId === projectId);
             if(findUser.length === 0) throw Error;
 
             userProjectRepo.changeUserAuth(findUser[0].users_id, authority);

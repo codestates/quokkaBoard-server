@@ -22,12 +22,13 @@ export class BoardRepo extends Repository <Board> {
         return idx.max;
     }
 
-    findTaskInBoard(data: StrNumProps) {
+    findTaskOnly(data: StrNumProps) {
         return this
         .createQueryBuilder("board")
-        .innerJoin("board.tasks", "task")
-        .select(['task'])
+        .innerJoinAndSelect("board.tasks", "task")
+        .select(["task"])
         .where({id: data.boardId})
+        .orderBy("task.cIdx", "ASC")
         .getRawMany();
     }
 
@@ -48,4 +49,13 @@ export class BoardRepo extends Repository <Board> {
         .add(taskId)
     }
 
+    findAllBoard(id: string) {
+        return this
+        .createQueryBuilder("board")
+        .leftJoinAndSelect("board.tasks", "task")
+        .select(['board', 'task', 'task.id'])
+        .where({projectId: id})
+        .orderBy("board.bIdx", "ASC")
+        .getMany();
+    }
 }

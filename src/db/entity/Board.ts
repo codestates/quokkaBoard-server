@@ -6,8 +6,6 @@ import {
     ManyToOne,
     ManyToMany,
     JoinTable,
-    CreateDateColumn, 
-    UpdateDateColumn
 } from "typeorm";
 import { Project } from "./Project";
 import { Task } from "./Task"

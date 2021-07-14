@@ -23,7 +23,7 @@ const tag = {
             newTag.hex = tagColor as string;
             newTag.projectId = findJoinId.project_id;
             const findTag = await tagRepo.save(newTag);
-
+            
             taskRepo.joinTagToTask(findTask.label_id, findTag.id)
 
             res.status(200).send({ 
