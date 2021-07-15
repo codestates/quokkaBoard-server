@@ -13,7 +13,8 @@ import {
 import { Board } from "./Board";
 import { Tag } from "./Tag"
 import { Comment } from "./Comment";
-import { UserProject } from "./UserProject";;
+import { UserProject } from "./UserProject";
+import { Project } from "./Project"
 
 
 @Entity()
@@ -54,6 +55,11 @@ export class Task {
 
     @OneToMany(() => Comment, comment => comment.task)
     comments!: Comment[];
+
+    @ManyToOne(() => Project, project => project.tasks, {
+        primary: true, onDelete:'CASCADE'
+    })
+    project!: Project;
     
     @ManyToMany(() => UserProject, user_project => user_project.tasks, {onDelete: "CASCADE"})
     @JoinTable({
