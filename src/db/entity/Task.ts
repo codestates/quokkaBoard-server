@@ -32,7 +32,7 @@ export class Task {
     @Column()
     cIdx!: number;
 
-    @Column()
+    @Column({nullable: true})
     due_date!: string;
 
     @CreateDateColumn()
@@ -47,7 +47,7 @@ export class Task {
     @Column('uuid') 
     projectId!: string;
 
-    @ManyToMany(() => Board, board => board.tasks, {primary: true, onDelete: "CASCADE"})
+    @ManyToMany(() => Board, board => board.tasks)
     board!: Board[];
 
     @ManyToMany(() => Tag, tag => tag.tasks)

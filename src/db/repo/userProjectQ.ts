@@ -1,6 +1,6 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { UserProject } from '@entity/UserProject';
-import { StrProps } from '@types';
+import { StrArrProps, StrProps } from '@types';
 
 
 @EntityRepository(UserProject)
@@ -11,6 +11,16 @@ export class UserProjectRepo extends Repository <UserProject> {
         .createQueryBuilder("user_project")
         .where({userId: data.userId, projectId: data.projectId})
         .getOne();
+    }
+
+    findUserProjectId(userId: string | string[]) {
+        return this
+        .createQueryBuilder("user_project")
+        .select(["user_project.id"])
+        .where("userId IN (:userId)", {
+            userId: userId
+        })
+        .getMany();
     }
 
     changeUserAuth(id: number, authority: string) {

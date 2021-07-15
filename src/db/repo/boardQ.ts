@@ -1,15 +1,15 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { Board } from '@entity/Board';
-import { StrProps } from '@types';
+import { StrArrProps, StrProps } from '@types';
 
 
 @EntityRepository(Board)
 export class BoardRepo extends Repository <Board> {
 
-    findBoard(data: StrProps) {
+    findBoard(data: StrArrProps) {
         return this
         .createQueryBuilder("board")
-        .where({id: data.boardId})
+        .where({id: data.boardId as string})
         .getOne();
     }
 

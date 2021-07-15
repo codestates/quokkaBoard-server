@@ -2,31 +2,37 @@ import { Response } from 'express';
 import { getRepository, getCustomRepository } from 'typeorm';
 import { Task } from '@entity/Task';
 import { TaskRepo } from '@repo/taskQ';
-import { TypeReq, StrProps, StrNumProps, TaskProps, NumProps, ShiftProps } from '@types';
+import { TypeReq, TaskProps, ShiftProps, StrArrProps, StrProps } from '@types';
 import { BoardRepo } from '@repo/boardQ';
+import { UserProjectRepo } from '@repo/userProjectQ';
 
 
 const task = {
 
-    createTask: async (req: TypeReq<StrProps>, res: Response) => {
+    createTask: async (req: TypeReq<StrArrProps>, res: Response) => {
         try {
-            const { title, dueDate } = req.body;
+            const { title, dueDate, tagId, userId } = req.body;
             const taskRepo = getRepository(Task);
             const boardRepo = getCustomRepository(BoardRepo);
             const customTaskRepo = getCustomRepository(TaskRepo);
             const uniqNum = await customTaskRepo.getMaxIdx();
             const findBoard = await boardRepo.findBoard(req.body);
             if(!findBoard) throw new Error('board');
-            
+
             const newTask = new Task();
-            newTask.title = title
-            newTask.due_date = dueDate
+            newTask.title = title as string
+            newTask.due_date = dueDate as string
             newTask.projectId = findBoard.projectId;
             newTask.cIdx = uniqNum + 1;
             newTask.label_id = uniqNum + 1;
             const findTask = await taskRepo.save(newTask);
-
+            
+            const userProjectRepo = getCustomRepository(UserProjectRepo);
+            const userProjectId = await userProjectRepo.findUserProjectId(userId);
+            
             boardRepo.joinTaskToBoard(findBoard.id, findTask.id);
+            customTaskRepo.joinTagToTask(findTask.label_id, tagId);
+            customTaskRepo.taskAssignee(findTask.id, userProjectId);
             
             res.status(200).send({ 
                 success: true, 
@@ -123,30 +129,40 @@ const task = {
 
     addAssignee: async (req: TypeReq<TaskProps>, res: Response) => {
         try{
-           const taskRepo = getCustomRepository(TaskRepo);
-        //    const findAssignee = await taskRepo.findAssignee(req.body);
-        //    if(!findAssignee) throw Error;
+            const { taskId, userId } = req.body
+            const taskRepo = getCustomRepository(TaskRepo);
+            const userProjectRepo = getCustomRepository(UserProjectRepo);
+            
+            const userProjectId = await userProjectRepo.findUserProjectId(userId);
+            if(userProjectId.length === 0 ) throw Error;
 
-            // req.body.userProjectId = req.body.userProjectId || findAssignee.userProjectId; // custom 에서 가져와야함.
-            taskRepo.updateTask(req.body);
-
-            res.status(200).send({success: true})
+            taskRepo.taskAssignee(taskId, userProjectId);
+            res.status(200).send({success: true});
         } catch (e) {
-            res.status(202).send ({success: false})
+            res.status(202).send({
+                success: false,
+                message: '프로젝트 사용자가 아닙니다'
+            });
         }
     },
 
-    deleteAssignee: async (req: TypeReq<TaskProps>, res: Response) => {
-        // try{
-        //     const taskRepo = getCustomRepository(TaskRepo);
-        //     const findAssignee = await taskRepo.findAssignee(req.body);
-        //     if(!findAssignee) throw Error;
+    deleteAssignee: async (req: TypeReq<StrProps>, res: Response) => {
+        try{
+            const { taskId, userId } = req.body
+            const taskRepo = getCustomRepository(TaskRepo);
+            const userProjectRepo = getCustomRepository(UserProjectRepo);
+            
+            const userProjectId = await userProjectRepo.findUserProjectId(userId);
+            if(userProjectId.length === 0 ) throw Error;
 
-        //     taskRepo.delete({id: req.body.taskId}) // taskId 수정
-        //     res.status(200).send({success: true});
-        // } catch (e) {
-        //     res.status(202).send({success: false})
-        // }
+            taskRepo.removeAssignee(taskId, userProjectId);
+            res.status(200).send({success: true});
+        } catch (e) {
+            res.status(202).send({
+                success: false,
+                message: '프로젝트 사용자가 아닙니다'
+            });
+        }
     },
 
     shiftTask: async (req: TypeReq<ShiftProps>, res: Response) => {
