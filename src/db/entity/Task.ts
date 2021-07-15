@@ -48,7 +48,7 @@ export class Task {
     projectId!: string;
 
     @ManyToMany(() => Board, board => board.tasks, {primary: true, onDelete: "CASCADE"})
-    board!: Board;
+    board!: Board[];
 
     @ManyToMany(() => Tag, tag => tag.tasks)
     tags!: Tag[];
@@ -76,3 +76,4 @@ export class Task {
     user_projects!: UserProject[];
     
 }
+
