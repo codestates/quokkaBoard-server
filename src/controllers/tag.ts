@@ -3,36 +3,23 @@ import { getRepository, getCustomRepository } from 'typeorm';
 import { Tag } from '@entity/Tag'
 import { TaskRepo } from '@repo/taskQ';
 import { TagRepo } from '@repo/tagQ'
-import { TypeReq, StrProps, StrNumProps, ObjectProps } from '@types';
+import { TypeReq, StrProps, StrNumProps, TaskProps } from '@types';
 
 
 const tag = {
 
-    createTag: async (req: TypeReq<ObjectProps>, res: Response) => {
+    createTag: async (req: TypeReq<TaskProps>, res: Response) => {
         try {
             const tagRepo = getCustomRepository(TagRepo);
-            const findTag = await tagRepo.crateTag(req.body.labels)
-
-            // const { tagContent, tagColor } = req.body;
-            // const tagRepo = getRepository(Tag);
-            // const taskRepo = getCustomRepository(TaskRepo);
-            // const findTask = await taskRepo.findTask(req.body);
-            // const findJoinId = await taskRepo.findProjectInTask(req.body);
+            const taskRepo = getCustomRepository(TaskRepo);
+            const findTask = await taskRepo.findTask(req.body);
+            if(!findTask) throw new Error('task');
             
-            // if(!findTask) throw new Error('task');
+            const labels: [{[key: string]: string}] = req.body.labels;
+            labels.forEach(el => el['projectId'] = findTask.projectId);
+            tagRepo.crateTag(req.body.labels);
 
-            // const newTag = new Tag();
-            // newTag.content = tagContent as string;
-            // newTag.hex = tagColor as string;
-            // newTag.projectId = findJoinId.project_id;
-            // const findTag = await tagRepo.save(newTag);
-            
-            // taskRepo.joinTagToTask(findTask.label_id, findTag.id)
-
-            res.status(200).send({ 
-                success: true, 
-                data: findTag
-            });
+            res.status(200).send({success: true})
         } catch (e) {
             e.message = 'task'
             ? res.status(202).send({ 
@@ -48,9 +35,9 @@ const tag = {
 
     updateTag: async (req: TypeReq<StrNumProps>, res: Response) => {
         try {
-            const { tagContent, tagColor } = req.body;
-            if(!tagContent) delete req.body.tagContent;
-            if(!tagColor) delete req.body.tagColor;
+            const { content, hex } = req.body;
+            if(!content) delete req.body.content;
+            if(!hex) delete req.body.hex;
 
             const tagRepo = getCustomRepository(TagRepo);
             const findTag = await tagRepo.findTag(req.body);

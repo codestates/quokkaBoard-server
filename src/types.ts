@@ -20,10 +20,6 @@ export interface StrNumProps {
     [key: string]: string | number;
 }
 
-export interface ObjectProps {
-    [key: string]: object[]
-}
-
 export interface InviteUser {
     nickname: string[];
     projectId: string;
@@ -31,7 +27,9 @@ export interface InviteUser {
 
 export interface TaskProps {
     taskId: string;
-    [key: string]: string | number;
+    projectId?: string;
+    tagId?: number;
+    [key: string]: any;
 }
 
 export interface ShiftProps {

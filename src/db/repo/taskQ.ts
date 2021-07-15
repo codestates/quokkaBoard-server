@@ -2,6 +2,7 @@ import { EntityRepository, Repository } from 'typeorm';
 import { Task } from '@entity/Task';
 import { TaskProps } from '@types';
 import { Board } from '@entity/Board';
+import { UserProject } from '@entity/UserProject';
 
 
 @EntityRepository(Task)
@@ -46,7 +47,7 @@ export class TaskRepo extends Repository <Task> {
         .execute();
     }
 
-    joinTagToTask(labelId: number, tagId: number) {
+    joinTagToTask(labelId: number, tagId: string | string[]) {
         return this
         .createQueryBuilder()
         .relation(Task, "tags")
@@ -59,6 +60,22 @@ export class TaskRepo extends Repository <Task> {
         .createQueryBuilder('user_project')
         .leftJoinAndSelect('user_project.tasks', 'task')
         .getMany()
+    }
+
+    taskAssignee(taskId: string, ids: UserProject[]) {
+        return this
+        .createQueryBuilder()
+        .relation(Task, "user_projects")
+        .of(taskId)
+        .add(ids)
+    }
+
+    removeAssignee(taskId: string, ids: UserProject[]) {
+        return this
+        .createQueryBuilder()
+        .relation(Task, "user_projects")
+        .of(taskId)
+        .remove(ids)
     }
 
     findTaskInBoard(id: string) {
