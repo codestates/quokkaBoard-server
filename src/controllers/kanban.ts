@@ -1,7 +1,7 @@
 import { Response } from 'express';
-import { getRepository, getCustomRepository, Column } from 'typeorm';
+import { getRepository, getCustomRepository } from 'typeorm';
 import { Board } from '@entity/Board';
-import { TypeReq, StrProps, StrNumProps, NumProps } from '@types';
+import { TypeReq, StrProps, NumProps } from '@types';
 import { BoardRepo } from '@repo/boardQ';
 
 
@@ -32,7 +32,7 @@ const kanban = {
         }
     },
 
-    removeBoard: async (req: TypeReq<StrNumProps>, res: Response) => {
+    removeBoard: async (req: TypeReq<StrProps>, res: Response) => {
         try {
             const boardRepo = getCustomRepository(BoardRepo);
             const findBoard = await boardRepo.findBoard(req.body);
@@ -53,7 +53,7 @@ const kanban = {
         }    
     },
 
-    updateBoard: async (req: TypeReq<StrNumProps>, res: Response) => {
+    updateBoard: async (req: TypeReq<StrProps>, res: Response) => {
         try {
             const boardRepo = getCustomRepository(BoardRepo);
             const findBoard = await boardRepo.findBoard(req.body);
@@ -99,7 +99,7 @@ const kanban = {
                 return a;
             }, init);
 
-            const columns: { [key: number]: any } = {}
+            const columns: { [key: string]: any } = {}
             for (let i=0; i < results.length; i++) {
                 const result = results[i];
                 columns[result.id] = result;

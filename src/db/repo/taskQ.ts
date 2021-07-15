@@ -1,6 +1,6 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { Task } from '@entity/Task';
-import { NumProps, TaskProps } from '@types';
+import { TaskProps } from '@types';
 import { Board } from '@entity/Board';
 
 
@@ -61,7 +61,7 @@ export class TaskRepo extends Repository <Task> {
         .getMany()
     }
 
-    findTaskInBoard(id: number) {
+    findTaskInBoard(id: string) {
         return this
         .createQueryBuilder("task")
         .innerJoin("task.board", "board", "boardId")
@@ -70,7 +70,7 @@ export class TaskRepo extends Repository <Task> {
         .getMany();
     }
 
-    removeTaskToBoard(boardId: number, taskId: number) {
+    removeTaskToBoard(boardId: string, taskId: string) {
         return this
         .createQueryBuilder()
         .relation(Board, "tasks")
@@ -78,11 +78,11 @@ export class TaskRepo extends Repository <Task> {
         .remove(taskId)
     }
 
-    joinTaskToBoard(boardId: number, taskId: number) {
+    joinTaskToBoard(boardId: string, taskId: string) {
         return this
         .createQueryBuilder()
         .relation(Board, "tasks")
         .of(boardId)
         .add(taskId)
-
+    }
 }

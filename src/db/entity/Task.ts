@@ -19,8 +19,8 @@ import { UserProject } from "./UserProject";;
 @Entity()
 export class Task {
 
-    @PrimaryGeneratedColumn() 
-    id!: number;
+    @PrimaryGeneratedColumn('uuid') 
+    id!: string;
 
     @Column()
     title!: string;

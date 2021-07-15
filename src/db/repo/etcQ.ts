@@ -6,6 +6,15 @@ import { StrNumProps } from '@types';
 @EntityRepository(Tag)
 export class TagRepo extends Repository <Tag> {
     
+    crateTag(tagData: object) {
+        return this
+        .createQueryBuilder("tag")
+        .insert()
+        .into(Tag)
+        .values(tagData)
+        .execute();
+    }
+
     findTag(data: StrNumProps) {
         return this
         .createQueryBuilder("tag")

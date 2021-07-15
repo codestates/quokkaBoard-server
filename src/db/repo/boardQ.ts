@@ -1,12 +1,12 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { Board } from '@entity/Board';
-import { StrNumProps } from '@types';
+import { StrProps } from '@types';
 
 
 @EntityRepository(Board)
 export class BoardRepo extends Repository <Board> {
 
-    findBoard(data: StrNumProps) {
+    findBoard(data: StrProps) {
         return this
         .createQueryBuilder("board")
         .where({id: data.boardId})
@@ -22,7 +22,7 @@ export class BoardRepo extends Repository <Board> {
         return idx.max;
     }
 
-    findTaskOnly(data: StrNumProps) {
+    findTaskOnly(data: StrProps) {
         return this
         .createQueryBuilder("board")
         .innerJoinAndSelect("board.tasks", "task")
@@ -32,16 +32,16 @@ export class BoardRepo extends Repository <Board> {
         .getRawMany();
     }
 
-    updateTitle(data: StrNumProps) {
+    updateTitle(data: StrProps) {
         return this
         .createQueryBuilder("board")
         .update(Board)
-        .set({title: data.boardTitle as string})
+        .set({title: data.boardTitle})
         .where({id: data.boardId})
         .execute();
     }
 
-    joinTaskToBoard(boardId: number, taskId: number) {
+    joinTaskToBoard(boardId: string, taskId: string) {
         return this
         .createQueryBuilder()
         .relation(Board, "tasks")

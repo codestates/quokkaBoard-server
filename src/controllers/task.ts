@@ -2,13 +2,13 @@ import { Response } from 'express';
 import { getRepository, getCustomRepository } from 'typeorm';
 import { Task } from '@entity/Task';
 import { TaskRepo } from '@repo/taskQ';
-import { TypeReq, StrProps, StrNumProps, TaskProps, NumProps } from '@types';
+import { TypeReq, StrProps, StrNumProps, TaskProps, NumProps, ShiftProps } from '@types';
 import { BoardRepo } from '@repo/boardQ';
 
 
 const task = {
 
-    createTask: async (req: TypeReq<StrNumProps>, res: Response) => {
+    createTask: async (req: TypeReq<StrProps>, res: Response) => {
         try {
             const { title, dueDate } = req.body;
             const taskRepo = getRepository(Task);
@@ -19,8 +19,8 @@ const task = {
             if(!findBoard) throw new Error('board');
             
             const newTask = new Task();
-            newTask.title = title as string;
-            newTask.due_date = dueDate as string;
+            newTask.title = title
+            newTask.due_date = dueDate
             newTask.projectId = findBoard.projectId;
             newTask.cIdx = uniqNum + 1;
             newTask.label_id = uniqNum + 1;
@@ -149,7 +149,7 @@ const task = {
         // }
     },
 
-    shiftTask: async (req: TypeReq<NumProps>, res: Response) => {
+    shiftTask: async (req: TypeReq<ShiftProps>, res: Response) => {
         try {
             const { cIdx, targetIdx, boardId, targetId } = req.body;
             const taskRepo = getCustomRepository(TaskRepo);
@@ -197,7 +197,7 @@ const task = {
                 return a;
             }, init);
 
-            const columns: { [key: number]: any } = {}
+            const columns: { [key: string]: any } = {}
             for (let i=0; i < results.length; i++) {
                 const result = results[i];
                 columns[result.id] = result;

@@ -26,6 +26,12 @@ export interface StrNumProps {
 }
 
 export interface TaskProps {
-    taskId: number;
+    taskId: string;
     [key: string]: string | number;
+}
+
+export interface ShiftProps {
+    boardId: string;
+    targetId: string;
+    [key: string]: number | string;
 }
