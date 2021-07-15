@@ -16,13 +16,17 @@ export interface StrArrProps {
     [key: string]: string | string[];
 }
 
+export interface StrNumProps {
+    [key: string]: string | number;
+}
+
+export interface ObjectProps {
+    [key: string]: object[]
+}
+
 export interface InviteUser {
     nickname: string[];
     projectId: string;
-}
-
-export interface StrNumProps {
-    [key: string]: string | number;
 }
 
 export interface TaskProps {
@@ -33,5 +37,6 @@ export interface TaskProps {
 export interface ShiftProps {
     boardId: string;
     targetId: string;
-    [key: string]: number | string;
+    cIdx: number;
+    targetIdx: number;
 }

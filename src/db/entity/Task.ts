@@ -29,7 +29,7 @@ export class Task {
     description!: string;
 
     @Column()
-    index!: number;
+    cIdx!: number;
 
     @Column()
     due_date!: string;
@@ -40,13 +40,13 @@ export class Task {
     @UpdateDateColumn()
     updated_at!: Date;
 
-    @Column()
-    boardId!: number;
-
     @Column({unique: true}) 
     label_id!: number;
 
-    @ManyToOne(() => Board, board => board.tasks, {primary: true, onDelete: "CASCADE"})
+    @Column('uuid') 
+    projectId!: string;
+
+    @ManyToMany(() => Board, board => board.tasks, {primary: true, onDelete: "CASCADE"})
     board!: Board;
 
     @ManyToMany(() => Tag, tag => tag.tasks)
@@ -57,7 +57,7 @@ export class Task {
     
     @ManyToMany(() => UserProject, user_project => user_project.tasks, {onDelete: "CASCADE"})
     @JoinTable({
-        name: 'user_project',
+        name: 'user_task',
         joinColumn: {
             name: 'taskId',
             referencedColumnName:'id'
@@ -68,6 +68,5 @@ export class Task {
         }
     })
     user_projects!: UserProject[];
-    projectId!: string;
-    cIdx: any;
+    
 }
