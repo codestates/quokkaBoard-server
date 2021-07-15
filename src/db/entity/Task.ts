@@ -13,14 +13,15 @@ import {
 import { Board } from "./Board";
 import { Tag } from "./Tag"
 import { Comment } from "./Comment";
-import { UserProject } from "./UserProject";;
+import { UserProject } from "./UserProject";
+import { Project } from "./Project"
 
 
 @Entity()
 export class Task {
 
-    @PrimaryGeneratedColumn() 
-    id!: number;
+    @PrimaryGeneratedColumn('uuid') 
+    id!: string;
 
     @Column()
     title!: string;
@@ -29,7 +30,7 @@ export class Task {
     description!: string;
 
     @Column()
-    index!: number;
+    cIdx!: number;
 
     @Column()
     due_date!: string;
@@ -40,20 +41,25 @@ export class Task {
     @UpdateDateColumn()
     updated_at!: Date;
 
-    @Column()
-    boardId!: number;
-
     @Column({unique: true}) 
     label_id!: number;
 
-    @ManyToOne(() => Board, board => board.tasks, {primary: true, onDelete: "CASCADE"})
-    board!: Board;
+    @Column('uuid') 
+    projectId!: string;
+
+    @ManyToMany(() => Board, board => board.tasks, {primary: true, onDelete: "CASCADE"})
+    board!: Board[];
 
     @ManyToMany(() => Tag, tag => tag.tasks)
     tags!: Tag[];
 
     @OneToMany(() => Comment, comment => comment.task)
     comments!: Comment[];
+
+    @ManyToOne(() => Project, project => project.tasks, {
+        primary: true, onDelete:'CASCADE'
+    })
+    project!: Project;
     
     @ManyToMany(() => UserProject, user_project => user_project.tasks, {onDelete: "CASCADE"})
     @JoinTable({
@@ -68,6 +74,6 @@ export class Task {
         }
     })
     user_projects!: UserProject[];
-    projectId!: string;
-    cIdx: any;
+    
 }
+

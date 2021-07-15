@@ -2,29 +2,32 @@ import { Response } from 'express';
 import { getRepository, getCustomRepository } from 'typeorm';
 import { Tag } from '@entity/Tag'
 import { TaskRepo } from '@repo/taskQ';
-import { TagRepo } from '@repo/etcQ'
-import { TypeReq, StrProps, StrNumProps, TaskProps } from '@types';
+import { TagRepo } from '@repo/tagQ'
+import { TypeReq, StrProps, StrNumProps, ObjectProps } from '@types';
 
 
 const tag = {
 
-    createTag: async (req: TypeReq<TaskProps>, res: Response) => {
+    createTag: async (req: TypeReq<ObjectProps>, res: Response) => {
         try {
-            const { tagContent, tagColor } = req.body;
-            const tagRepo = getRepository(Tag);
-            const taskRepo = getCustomRepository(TaskRepo);
-            const findTask = await taskRepo.findTask(req.body);
-            const findJoinId = await taskRepo.findProjectInTask(req.body);
-            
-            if(!findTask) throw new Error('task');
+            const tagRepo = getCustomRepository(TagRepo);
+            const findTag = await tagRepo.crateTag(req.body.labels)
 
-            const newTag = new Tag();
-            newTag.content = tagContent as string;
-            newTag.hex = tagColor as string;
-            newTag.projectId = findJoinId.project_id;
-            const findTag = await tagRepo.save(newTag);
+            // const { tagContent, tagColor } = req.body;
+            // const tagRepo = getRepository(Tag);
+            // const taskRepo = getCustomRepository(TaskRepo);
+            // const findTask = await taskRepo.findTask(req.body);
+            // const findJoinId = await taskRepo.findProjectInTask(req.body);
             
-            taskRepo.joinTagToTask(findTask.label_id, findTag.id)
+            // if(!findTask) throw new Error('task');
+
+            // const newTag = new Tag();
+            // newTag.content = tagContent as string;
+            // newTag.hex = tagColor as string;
+            // newTag.projectId = findJoinId.project_id;
+            // const findTag = await tagRepo.save(newTag);
+            
+            // taskRepo.joinTagToTask(findTask.label_id, findTag.id)
 
             res.status(200).send({ 
                 success: true, 

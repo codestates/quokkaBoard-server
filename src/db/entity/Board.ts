@@ -14,8 +14,8 @@ import { Task } from "./Task"
 @Entity()
 export class Board {
 
-    @PrimaryGeneratedColumn()
-    id!: number;
+    @PrimaryGeneratedColumn('uuid')
+    id!: string;
 
     @Column()
     title!: string;
