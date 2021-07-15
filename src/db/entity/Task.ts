@@ -57,7 +57,7 @@ export class Task {
     
     @ManyToMany(() => UserProject, user_project => user_project.tasks, {onDelete: "CASCADE"})
     @JoinTable({
-        name: 'user_project',
+        name: 'user_task',
         joinColumn: {
             name: 'taskId',
             referencedColumnName:'id'
