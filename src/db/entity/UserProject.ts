@@ -35,7 +35,7 @@ export class UserProject {
     @ManyToMany(() => Comment, comment => comment.user_projects)
     comments!: Comment[];
 
-    @ManyToMany(() => Task, task => task.user_projects)
+    @ManyToMany(() => Task, task => task.user_projects, {onDelete: "CASCADE"})
     tasks!: Task[];
 
 }

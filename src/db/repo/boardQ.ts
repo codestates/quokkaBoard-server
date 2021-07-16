@@ -56,6 +56,7 @@ export class BoardRepo extends Repository <Board> {
         .select(['board', 'task', 'task.id'])
         .where({projectId: id})
         .orderBy("board.bIdx", "ASC")
+        .addOrderBy("task.cIdx", "ASC")
         .getMany();
     }
 }

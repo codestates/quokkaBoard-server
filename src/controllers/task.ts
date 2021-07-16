@@ -170,39 +170,39 @@ const task = {
             const { cIdx, targetIdx, boardId, targetId } = req.body;
             const taskRepo = getCustomRepository(TaskRepo);
             const findTask = await taskRepo.findTaskInBoard(boardId);
-            const targetTask = await taskRepo.findTaskInBoard(targetId);
-            const task = findTask.filter(el => el.cIdx === cIdx);
-            const index = findTask.findIndex(el => el.cIdx === cIdx);
-            if(task.length === 0) throw Error;
+            // const targetTask = await taskRepo.findTaskInBoard(targetId);
+            // const task = findTask.filter(el => el.cIdx === cIdx);
+            // const index = findTask.findIndex(el => el.cIdx === cIdx);
+            // if(task.length === 0) throw Error;
 
-            findTask[index].cIdx = 0;
+            // findTask[index].cIdx = 0;
             
-            if(boardId === targetId) {
-                if(cIdx < targetIdx) findTask.map(el => {
-                    if(cIdx < el.cIdx && el.cIdx <= targetIdx) el.cIdx--
-                });
-                else findTask.map(el => {
-                    if(cIdx > el.cIdx && el.cIdx >= targetIdx) el.cIdx++
-                });
-                findTask[index].cIdx = targetIdx;
-                taskRepo.save(findTask); 
+            // if(boardId === targetId) {
+            //     if(cIdx < targetIdx) findTask.map(el => {
+            //         if(cIdx < el.cIdx && el.cIdx <= targetIdx) el.cIdx--
+            //     });
+            //     else findTask.map(el => {
+            //         if(cIdx > el.cIdx && el.cIdx >= targetIdx) el.cIdx++
+            //     });
+            //     findTask[index].cIdx = targetIdx;
+            //     taskRepo.save(findTask); 
             
-            } else {
-                const lastIdx = Math.max(...targetTask.map(el => el.cIdx));
-                taskRepo.removeTaskToBoard(boardId, task[0].id);
-                taskRepo.joinTaskToBoard(targetId, task[0].id);
+            // } else {
+            //     const lastIdx = Math.max(...targetTask.map(el => el.cIdx));
+            //     taskRepo.removeTaskToBoard(boardId, task[0].id);
+            //     taskRepo.joinTaskToBoard(targetId, task[0].id);
             
-                if(lastIdx === targetIdx) {
-                    findTask[index].cIdx = targetIdx + 1;
-                } else { 
-                    targetTask.map(el => {
-                        if(el.cIdx >= targetIdx) el.cIdx++
-                    });
-                    findTask[index].cIdx = targetIdx;
-                }
-                taskRepo.save(findTask);
-                taskRepo.save(targetTask);
-            }
+            //     if(lastIdx === targetIdx) {
+            //         findTask[index].cIdx = targetIdx + 1;
+            //     } else { 
+            //         targetTask.map(el => {
+            //             if(el.cIdx >= targetIdx) el.cIdx++
+            //         });
+            //         findTask[index].cIdx = targetIdx;
+            //     }
+            //     taskRepo.save(findTask);
+            //     taskRepo.save(targetTask);
+            // }
 
             const customBoardRepo = getCustomRepository(BoardRepo);
             const results = await customBoardRepo.findAllBoard(findTask[0].projectId);
