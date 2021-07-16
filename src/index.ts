@@ -4,7 +4,7 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
 import { createConnection } from 'typeorm';
-import ormconfig from '@ormconfig';
+import ormconfig from 'ormconfig';
 import 'reflect-metadata';
 import 'dotenv/config';
 
