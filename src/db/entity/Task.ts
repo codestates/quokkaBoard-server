@@ -47,10 +47,10 @@ export class Task {
     @Column('uuid') 
     projectId!: string;
 
-    @ManyToMany(() => Board, board => board.tasks)
+    @ManyToMany(() => Board, board => board.tasks, {onDelete: "CASCADE"})
     board!: Board[];
 
-    @ManyToMany(() => Tag, tag => tag.tasks)
+    @ManyToMany(() => Tag, tag => tag.tasks, {onDelete: "CASCADE"})
     tags!: Tag[];
 
     @OneToMany(() => Comment, comment => comment.task)

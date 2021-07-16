@@ -5,7 +5,9 @@ import { UserProject } from '@entity/UserProject';
 import { UserRepo } from '@repo/userQ';
 import { ProjectRepo } from '@repo/projectQ';
 import { UserProjectRepo } from '@repo/userProjectQ';
-import { TypeReq, StrProps, InviteUser, StrArrProps } from '@types';
+import { TypeReq, StrProps, StrArrProps } from '@types';
+import { TagRepo } from '@repo/tagQ';
+import { defaultLabel } from '@data/tagData'
 
 
 const project = {
@@ -33,6 +35,12 @@ const project = {
             newUserProject.userId = findUser[0].id;
             newUserProject.projectId = findProject.id;
             userProjectRepo.save(newUserProject);
+            
+            const labels: [{[key: string]: string}] = defaultLabel as any;
+            labels.forEach(el => el['projectId'] = findProject.id);
+
+            const tagRepo = getCustomRepository(TagRepo);
+            tagRepo.crateTag(labels);
 
             res.status(200).send({ 
                 success: true, 
@@ -180,6 +188,23 @@ const project = {
             : res.status(202).send({ 
                 succes: false,
                 message: '잘못된 프로젝트 정보입니다'
+            });
+        }
+    },
+
+    projectMembers: async (req: TypeReq<StrProps>, res: Response) => {
+        try {
+            const userProjectRepo = getCustomRepository(UserProjectRepo);
+            const findProjectUser = await userProjectRepo.findAllProjectUser(req.body);
+
+            res.status(200).send({ 
+                success: true,
+                data: findProjectUser
+            }); 
+        } catch (e) {
+            res.status(202).send({ 
+                success: false,
+                message: '잘못된 요청입니다' 
             });
         }
     },
