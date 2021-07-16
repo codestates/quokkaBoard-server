@@ -80,11 +80,11 @@ const user = {
                 const accToken = jwtToken.mintAccessToken(id);
                 const refToken = jwtToken.mintRefreshToken(id);
                 userRepo.saveRefToken(id, refToken);
-                // res.cookie('accessToken', accToken, { 
-                //     httpOnly: true, 
-                //     sameSite: 'none', 
-                //     secure: true 
-                // });
+                res.cookie('accessToken', accToken, { 
+                    httpOnly: true, 
+                    sameSite: 'none', 
+                    secure: true 
+                });
                 res.status(200).send({ 
                     success: true, 
                     data: { id, nickname, email, image }

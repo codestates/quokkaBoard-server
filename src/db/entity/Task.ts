@@ -35,6 +35,9 @@ export class Task {
     @Column({nullable: true})
     due_date!: string;
 
+    @Column('boolean' ,{default: false})
+    completed!: boolean;
+
     @CreateDateColumn()
     created_at!: Date;
 
