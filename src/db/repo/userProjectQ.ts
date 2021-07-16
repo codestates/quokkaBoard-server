@@ -1,6 +1,6 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { UserProject } from '@entity/UserProject';
-import { StrArrProps, StrProps } from '@types';
+import { StrProps } from '@types';
 
 
 @EntityRepository(UserProject)
@@ -21,6 +21,22 @@ export class UserProjectRepo extends Repository <UserProject> {
             userId: userId
         })
         .getMany();
+    }
+
+    findAllProjectUser(data: StrProps) {
+        return this
+        .createQueryBuilder("user_project")
+        .innerJoin("user_project.user", "user")
+        .select([
+            "user.id AS id" ,
+            "user.nickname AS nickname",
+            "user.email AS email",
+            "user.image AS image",
+            "user_project.authority AS authority",
+            "user_project.projectId AS projectId"
+        ])
+        .where({projectId: data.projectId})
+        .getRawMany();
     }
 
     changeUserAuth(id: number, authority: string) {
