@@ -7,7 +7,7 @@ import {
     ManyToOne,
     JoinTable 
 } from "typeorm";
-import { Task } from '@entity/Task';
+import { Task } from './Task';
 import { Project } from "./Project";
 
 

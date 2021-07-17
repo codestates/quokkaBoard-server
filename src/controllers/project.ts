@@ -7,7 +7,7 @@ import { ProjectRepo } from '@repo/projectQ';
 import { UserProjectRepo } from '@repo/userProjectQ';
 import { TypeReq, StrProps, StrArrProps } from '@types';
 import { TagRepo } from '@repo/tagQ';
-import { defaultLabel } from '@data/tagData'
+import { defaultLabel } from '@data/tagData';
 
 
 const project = {

@@ -14,13 +14,13 @@ export class Project {
     @Column()
     title!: string;
 
-    @Column({ nullable: true})
+    @Column({nullable: true})
     description!: string;
 
-    @Column({ nullable: true})
+    @Column({nullable: true})
     start_date!: string;
 
-    @Column({ nullable: true})
+    @Column({nullable: true})
     end_date!: string;
 
     @OneToMany(() => UserProject, user_project => user_project.project)
