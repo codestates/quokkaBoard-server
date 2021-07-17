@@ -40,8 +40,8 @@ export default class CreateUsers implements Seeder {
             { authority: "MASTER", userId: findUser[0].id, projectId: findProject[2].id },
             { authority: "MASTER", userId: findUser[1].id, projectId: findProject[3].id },
             { authority: "MASTER", userId: findUser[2].id, projectId: findProject[4].id },
-            { authority: "ADMIN", userId: findUser[0].id, projectId: findProject[1].id },
-            { authority: "ADMIN", userId: findUser[0].id, projectId: findProject[2].id },
+            { authority: "ADMIN", userId: findUser[0].id, projectId: findProject[3].id },
+            { authority: "ADMIN", userId: findUser[0].id, projectId: findProject[4].id },
             { authority: "ADMIN", userId: findUser[1].id, projectId: findProject[0].id },
             { authority: "ADMIN", userId: findUser[2].id, projectId: findProject[1].id }
         ];
