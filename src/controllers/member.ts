@@ -38,13 +38,19 @@ const member = {
             const followRepo = getRepository(Follow);
             const customFollowRepo = getCustomRepository(FollowRepo);
             
-            const followingUser = await userRepo.findOne({where: {id: userId}})
-            const followerUser = await userRepo.findOne({where: {id: followerId}})
+            const followingUser = await userRepo.findOne({
+                select: ['id', 'nickname', 'email', 'image'],
+                where: {id: userId}
+            })
+            const followerUser = await userRepo.findOne({
+                select: ['id', 'nickname', 'email', 'image'],
+                where: {id: followerId}
+            })
             if(!followingUser || !followerUser) throw new Error('user');
             
             const follow = await customFollowRepo.checkFollow(followingUser);         
             const check = follow.filter(el => el.userId === followerId)
-            if(check) throw Error;
+            if(check.length !== 0) throw Error;
             
             const newFollowRepo = followRepo.create({
                 following: followingUser, 
@@ -54,7 +60,7 @@ const member = {
             
             res.status(200).send({
                 success: true,
-                data: check
+                data: newFollowRepo
             });
         } catch (e) {
             e.message === 'user'

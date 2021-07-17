@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
-import { getCustomRepository } from 'typeorm';
-import { UserRepo } from '@repo/userQ';
-import jwtToken from '@token/jwt';
+import { getRepository } from 'typeorm';
+import { User } from '../db/entity/User';
+import jwtToken from '../token/jwt';
 import 'dotenv/config';
 
 
@@ -17,10 +17,11 @@ export const checkAuthority = async (req: Request, res: Response, next: NextFunc
     if(accPayload) next();
     else {
         const expPayload = jwtToken.checkExpToken(token);
-        const customUserRepo = getCustomRepository(UserRepo);
-        const findUser = await customUserRepo.findId(expPayload.id)
+        const userRepo = getRepository(User);
+        const findUser = await userRepo.findOne({where: {id: expPayload.id}})
         if(!findUser) return res.status(401).send({
-            success: false, message: '인증된 사용자가 아닙니다'
+            success: false, 
+            message: '인증된 사용자가 아닙니다'
         });
 
         const refPayload = jwtToken.checkRefToken(findUser.refresh_token!);
@@ -32,7 +33,8 @@ export const checkAuthority = async (req: Request, res: Response, next: NextFunc
             next();
         } else {
             res.status(202).send({ 
-                success: false, message: '다시 로그인해 주십시오' 
+                success: false, 
+                message: '다시 로그인해 주십시오' 
             });
         }
     }

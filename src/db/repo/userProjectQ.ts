@@ -26,8 +26,16 @@ export class UserProjectRepo extends Repository <UserProject> {
     findProjectList(data: StrProps) {
         return this
         .createQueryBuilder('user_project')
+        .innerJoin("user_project.project", "project")
+        .select([
+            "authority",
+            "userId",
+            "projectId",
+            "project.title AS title",
+            "project.description AS description"
+        ])
         .where({userId: data.userId})
-        .getMany();
+        .getRawMany();
     }
 
     findAllProjectUser(data: StrProps) {

@@ -26,16 +26,24 @@ export class UserProject {
     @Column("uuid")
     projectId!: string;
    
-    @ManyToOne(() => User, user => user.user_project, {primary: true, onDelete:'CASCADE'})
+    @ManyToOne(() => User, user => user.user_project, {
+        primary: true, onDelete:'CASCADE'
+    })
     user!: User;
     
-    @ManyToOne(() => Project, project => project.user_project, {primary: true, onDelete:'CASCADE'})
+    @ManyToOne(() => Project, project => project.user_project, {
+        primary: true, onDelete:'CASCADE'
+    })
     project!: Project;
 
-    @ManyToMany(() => Comment, comment => comment.user_projects, {onDelete: "CASCADE"})
+    @ManyToMany(() => Comment, comment => comment.user_projects, {
+        onDelete: "CASCADE"
+    })
     comments!: Comment[];
 
-    @ManyToMany(() => Task, task => task.user_projects, {onDelete: "CASCADE"})
+    @ManyToMany(() => Task, task => task.user_projects, {
+        onDelete: "CASCADE"
+    })
     tasks!: Task[];
 
 }

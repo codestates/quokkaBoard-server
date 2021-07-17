@@ -22,10 +22,14 @@ export class Comment {
     @Column()
     taskId!: number;
 
-    @ManyToOne(() => Task, task => task.comments, {primary:true, onDelete: "CASCADE"})
+    @ManyToOne(() => Task, task => task.comments, {
+        primary:true, onDelete: "CASCADE"
+    })
     task!: Task;
 
-    @ManyToMany(() => UserProject, user_project => user_project.comments, {onDelete: "CASCADE"})
+    @ManyToMany(() => UserProject, user_project => user_project.comments, {
+        onDelete: "CASCADE"
+    })
     @JoinTable({
         name: 'user_comment',
         joinColumn: {
