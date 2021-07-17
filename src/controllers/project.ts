@@ -192,6 +192,23 @@ const project = {
         }
     },
 
+    projectList: async (req: TypeReq<StrProps>, res: Response) => {
+        try {
+            const userProjectRepo = getCustomRepository(UserProjectRepo);
+            const findProjectList = await userProjectRepo.findProjectList(req.body);
+            console.log(findProjectList)
+            res.status(200).send({ 
+                success: true,
+                data: findProjectList
+            }); 
+        } catch (e) {
+            res.status(202).send({ 
+                success: false,
+                message: '잘못된 요청입니다' 
+            });
+        }
+    },
+
     projectMembers: async (req: TypeReq<StrProps>, res: Response) => {
         try {
             const userProjectRepo = getCustomRepository(UserProjectRepo);

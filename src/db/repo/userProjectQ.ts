@@ -23,6 +23,13 @@ export class UserProjectRepo extends Repository <UserProject> {
         .getMany();
     }
 
+    findProjectList(data: StrProps) {
+        return this
+        .createQueryBuilder('user_project')
+        .where({userId: data.userId})
+        .getMany();
+    }
+
     findAllProjectUser(data: StrProps) {
         return this
         .createQueryBuilder("user_project")
