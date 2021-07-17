@@ -1,4 +1,3 @@
-// import { ConnectionOptions } from 'typeorm';
 import { ConnectionOptions } from "typeorm-seeding"
 import 'dotenv/config';
 
