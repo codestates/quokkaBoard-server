@@ -1,12 +1,16 @@
 import { Factory, Seeder } from "typeorm-seeding"
-import { Connection } from "typeorm"
+import { Connection, getCustomRepository } from "typeorm"
 import { user } from "../../data/userData"
 import { project } from "../../data/projectData"
 import { defaultLabel } from "../../data/tagData"
+import { board, task } from "../../data/boardData"
 import { User } from "../entity/User"
 import { Project } from "../entity/Project"
 import { UserProject } from "../entity/UserProject"
+import { Board } from "../entity/Board"
+import { Task } from "../entity/Task"
 import { Tag } from "../entity/Tag"
+import { TaskRepo } from "../repo/taskQ"
 
 export default class CreateUsers implements Seeder {
     public async run(factory: Factory, connection: Connection): Promise<any> {
@@ -46,5 +50,49 @@ export default class CreateUsers implements Seeder {
             { authority: "ADMIN", userId: findUser[2].id, projectId: findProject[1].id }
         ];
         await connection.getRepository(UserProject).save(userProject);
+
+        const boardSeed: object[] = [];
+        for(let i=0; i < findProject.length; i++) {     
+            let uniqNum = 0;
+            board.forEach(el => {
+                uniqNum = uniqNum + 1;
+                const newBoard = new Board();
+                newBoard.title = el.title;
+                newBoard.bIdx = uniqNum;
+                newBoard.projectId = findProject[i].id
+                boardSeed.push(newBoard);
+            });
+        }
+        const findBoard = await connection.getRepository(Board).save(boardSeed);
+
+        let taskSeed: object[] = [];
+        let labelNum = 0
+        for(let i=0; i < findBoard.length; i++) {
+            let uniqNum = 0;
+            task.forEach(el => {
+                uniqNum = uniqNum + 1;
+                labelNum = labelNum + 1;
+                const newTask = new Task();
+                newTask.title = el.title;
+                newTask.description = el.description;
+                newTask.cIdx = uniqNum;
+                newTask.due_date = el.due_date;
+                newTask.label_id = labelNum;
+                newTask.projectId = findBoard[i].projectId;
+                newTask.completed = el.completed;
+                taskSeed.push(newTask);
+            });
+            const findTask = await connection.getRepository(Task).save(taskSeed);
+            const taskIds = findTask.map(el => el.id);
+            await connection.getCustomRepository(TaskRepo).joinTaskToBoard(findBoard[i].id, taskIds)
+            taskSeed = [];
+        }
+    
+        
+        
+        
+        
+            
+        
     }
 }   
