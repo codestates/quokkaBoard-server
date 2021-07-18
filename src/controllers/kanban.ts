@@ -22,7 +22,7 @@ const kanban = {
 
             res.status(200).send({ 
                 success: true, 
-                boardIndex: findBoard.bIdx
+                data: findBoard
             });
         } catch (e) {
             res.status(202).send({ 
@@ -68,6 +68,37 @@ const kanban = {
             res.status(202).send({
                 success: false,
                 message: '보드가 존재하지 않습니다' 
+            });
+        }
+    },
+
+    allBoardInfo: async (req: TypeReq<StrProps>, res: Response) => {
+        try {
+            const boardRepo = getCustomRepository(BoardRepo);
+            const results = await boardRepo.findAllBoard(req.body.projectId);
+            
+            const init: object[] = [];
+            const tasks = results.reduce((a, c) => {
+                a.push(...c.tasks.map(el => el))
+                return a;
+            }, init);
+            
+            const columns: object[] = [];
+            for (let i=0; i < results.length; i++) {
+                const tasks = results[i].tasks.map(el => el.id);
+                results[i].tasks = tasks as any
+                columns.push(results[i])
+            }
+            const data = { tasks, columns };
+
+            res.status(200).send({
+                success: true,
+                data
+            });
+        } catch (e) {
+            res.status(202).send({
+                success: false,
+                message: '잘못된 요청입니다' 
             });
         }
     },

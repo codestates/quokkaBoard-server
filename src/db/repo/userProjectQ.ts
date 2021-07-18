@@ -23,11 +23,38 @@ export class UserProjectRepo extends Repository <UserProject> {
         .getMany();
     }
 
+    findUserInProject(data: StrProps) {
+        return this
+        .createQueryBuilder("user_project")
+        .innerJoin("user_project.user", "user")
+        .select([
+            "user.id AS id" ,
+            "user.nickname AS nickname",
+            "user.email AS email",
+            "user.image AS image",
+            "user_project.authority AS authority",
+            "user_project.projectId AS projectId"
+        ])
+        .where({
+            userId: data.userId,
+            projectId: data.projectId
+        })
+        .getRawOne();
+    }
+
     findProjectList(data: StrProps) {
         return this
         .createQueryBuilder('user_project')
+        .innerJoin("user_project.project", "project")
+        .select([
+            "authority",
+            "userId",
+            "projectId",
+            "project.title AS title",
+            "project.description AS description"
+        ])
         .where({userId: data.userId})
-        .getMany();
+        .getRawMany();
     }
 
     findAllProjectUser(data: StrProps) {

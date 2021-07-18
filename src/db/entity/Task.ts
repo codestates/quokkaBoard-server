@@ -50,10 +50,14 @@ export class Task {
     @Column('uuid') 
     projectId!: string;
 
-    @ManyToMany(() => Board, board => board.tasks, {onDelete: "CASCADE"})
+    @ManyToMany(() => Board, board => board.tasks, {
+        onDelete: "CASCADE"
+    })
     board!: Board[];
 
-    @ManyToMany(() => Tag, tag => tag.tasks, {onDelete: "CASCADE"})
+    @ManyToMany(() => Tag, tag => tag.tasks, {
+        onDelete: "CASCADE"
+    })
     tags!: Tag[];
 
     @OneToMany(() => Comment, comment => comment.task)
@@ -64,7 +68,9 @@ export class Task {
     })
     project!: Project;
     
-    @ManyToMany(() => UserProject, user_project => user_project.tasks, {onDelete: "CASCADE"})
+    @ManyToMany(() => UserProject, user_project => user_project.tasks, {
+        onDelete: "CASCADE"
+    })
     @JoinTable({
         name: 'user_task',
         joinColumn: {

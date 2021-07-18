@@ -26,10 +26,14 @@ export class Tag {
     @Column("uuid")
     projectId!: string;
 
-    @ManyToOne(() => Project, project => project.tags, {onDelete: "CASCADE"})
+    @ManyToOne(() => Project, project => project.tags, {
+        onDelete: "CASCADE"
+    })
     project!: Project
     
-    @ManyToMany(() => Task, task => task.tags, {onDelete: "CASCADE"})
+    @ManyToMany(() => Task, task => task.tags, {
+        onDelete: "CASCADE"
+    })
     @JoinTable({
         name: 'task_tag',
         joinColumn: {

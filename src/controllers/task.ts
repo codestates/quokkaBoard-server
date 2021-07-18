@@ -15,6 +15,7 @@ const task = {
             const taskRepo = getRepository(Task);
             const boardRepo = getCustomRepository(BoardRepo);
             const customTaskRepo = getCustomRepository(TaskRepo);
+            
             const uniqNum = await customTaskRepo.getMaxIdx();
             const findBoard = await boardRepo.findBoard(req.body);
             if(!findBoard) throw new Error('board');
