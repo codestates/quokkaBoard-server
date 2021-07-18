@@ -14,5 +14,6 @@ projectRouter.post('/invite-member', project.inviteMember);
 projectRouter.post('/dashboard-info', project.dashBoardInfo);
 projectRouter.post('/project-members', project.projectMembers);
 projectRouter.post('/project-list', project.projectList);
+projectRouter.delete('/remove-member', project.removeMember);
 
 export default projectRouter;

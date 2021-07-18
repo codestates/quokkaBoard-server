@@ -226,6 +226,25 @@ const project = {
         }
     },
 
+    removeMember: async (req: TypeReq<StrProps>, res: Response) => {
+        try {
+            const userProjectRepo = getCustomRepository(UserProjectRepo);
+            const findProjectUser = await userProjectRepo.findUserInProject(req.body);
+            if(!findProjectUser) throw Error;
+            
+            userProjectRepo.delete(findProjectUser.id);
+            res.status(200).send({ 
+                success: true,
+                data: findProjectUser
+            }); 
+        } catch (e) {
+            res.status(202).send({ 
+                success: false,
+                message: '존재하지 않는 사용자입니다'
+            });
+        }
+    },
+
     dashBoardInfo: async (req: TypeReq<StrProps>, res: Response) => {
 
     },

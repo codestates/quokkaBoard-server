@@ -22,7 +22,7 @@ const kanban = {
 
             res.status(200).send({ 
                 success: true, 
-                boardIndex: findBoard.bIdx
+                data: findBoard
             });
         } catch (e) {
             res.status(202).send({ 
