@@ -14,6 +14,7 @@ taskRouter.patch('/update-task-name', task.updateTaskName);
 taskRouter.patch('/update-description', task.updateDescription);
 taskRouter.post('/add-assignee', task.addAssignee);
 taskRouter.delete('/delete-assignee', task.deleteAssignee);
-taskRouter.patch('/shift-task', task.shiftTask)
+taskRouter.patch('/shift-task', task.shiftTask);
+taskRouter.patch('/check-task', task.checkTask);
 
 export default taskRouter;

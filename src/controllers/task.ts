@@ -232,7 +232,29 @@ const task = {
                 message: '태스크가 존재하지 않습니다' 
             });
         }
-    }
+    },
+
+    checkTask: async (req: TypeReq<TaskProps>, res: Response) => {
+        try{
+            const taskRepo = getCustomRepository(TaskRepo);
+            const findTask = await taskRepo.findTask(req.body)
+            if(!findTask) throw Error;
+
+            !findTask.completed
+            ? taskRepo.checkTask(findTask.id, true)
+            : taskRepo.checkTask(findTask.id, false);
+            
+            res.status(200).send({
+                success: true,
+                data: findTask
+            });
+        } catch (e) {
+            res.status(202).send({
+                success: false,
+                message: '태스크가 존재하지 않습니다'
+            });
+        }
+    },
 }
 
 export default task;
