@@ -102,4 +102,14 @@ export class TaskRepo extends Repository <Task> {
         .of(boardId)
         .add(taskId)
     }
+
+    checkTask(taskId: string, bool: boolean) {
+        return this
+        .createQueryBuilder("task")
+        .update(Task)
+        .set({completed: bool})
+        .where({id: taskId})
+        .execute();
+    }
+
 }
