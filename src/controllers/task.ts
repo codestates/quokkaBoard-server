@@ -5,7 +5,6 @@ import { TaskRepo } from '@repo/taskQ';
 import { TypeReq, TaskProps, ShiftProps, StrArrProps, StrProps } from '@types';
 import { BoardRepo } from '@repo/boardQ';
 import { UserProjectRepo } from '@repo/userProjectQ';
-import { Board } from '@entity/Board';
 
 
 const task = {
@@ -13,14 +12,13 @@ const task = {
     createTask: async (req: TypeReq<StrArrProps>, res: Response) => {
         try {
             const { title, dueDate, tagId, userId } = req.body;
-            const taskRepo = getRepository(Task);
+            // const taskRepo = getRepository(Task);
             const boardRepo = getCustomRepository(BoardRepo);
-            const customTaskRepo = getCustomRepository(TaskRepo);
+            const taskRepo = getCustomRepository(TaskRepo);
             
-            const uniqNum = await customTaskRepo.getMaxIdx();
+            const uniqNum = await taskRepo.getMaxIdx();
             const findBoard = await boardRepo.findBoard(req.body);
             if(!findBoard) throw new Error('board');
-            console.log(findBoard)
             
             const newTask = new Task();
             newTask.title = title as string
@@ -30,13 +28,12 @@ const task = {
             newTask.label_id = uniqNum + 1;
             const findTask = await taskRepo.save(newTask);
             
-            console.log(findTask)
-            // const userProjectRepo = getCustomRepository(UserProjectRepo);
-            // const userProjectId = await userProjectRepo.findUserProjectId(userId, findBoard.projectId);
+            const userProjectRepo = getCustomRepository(UserProjectRepo);
+            const userProjectId = await userProjectRepo.findUserProjectId(userId, findBoard.projectId);
             
-            // boardRepo.joinTaskToBoard(findBoard.id, findTask.id);
-            // customTaskRepo.joinTagToTask(findTask.label_id, tagId);
-            // customTaskRepo.taskAssignee(findTask.id, userProjectId);
+            await boardRepo.joinTaskToBoard(findBoard.id, findTask.id);
+            await taskRepo.joinTagToTask(findTask.label_id, tagId);
+            await taskRepo.taskAssignee(findTask.id, userProjectId);
             
             res.status(200).send({ 
                 success: true, 
@@ -48,10 +45,9 @@ const task = {
                 success: false,
                 message: '존재하지 않는 보드입니다' 
             })
-            : res.status(202).send({ 
-                success: false,
-                message: '생성에 실패하였습니다' 
-            });
+            : res.status(500).send(
+                'server error'
+            );
         }
     },
 
