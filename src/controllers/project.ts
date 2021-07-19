@@ -6,7 +6,6 @@ import { UserRepo } from '@repo/userQ';
 import { ProjectRepo } from '@repo/projectQ';
 import { UserProjectRepo } from '@repo/userProjectQ';
 import { TypeReq, StrProps, StrArrProps } from '@types';
-import { TagRepo } from '@repo/tagQ';
 import { defaultLabel } from '@data/tagData';
 import { Tag } from '@entity/Tag';
 
@@ -183,7 +182,9 @@ const project = {
                     });
                     resData.push({ 
                         userId: el.id, 
-                        nickname: el.nickname 
+                        nickname: el.nickname,
+                        email: el.email,
+                        authority: 'READ'
                     });
                 });
                 await userProjectRepo.addProjectMember(userData);
