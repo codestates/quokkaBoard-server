@@ -31,7 +31,8 @@ export class UserProjectRepo extends Repository <UserProject> {
         .createQueryBuilder("user_project")
         .innerJoin("user_project.user", "user")
         .select([
-            "user.id AS id" ,
+            "user_project.id AS id",
+            "user.id AS userId" ,
             "user.nickname AS nickname",
             "user.email AS email",
             "user.image AS image",

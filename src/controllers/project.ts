@@ -68,7 +68,7 @@ const project = {
             const findAuth = await userProjectRepo.findAuthProject(req.body);
 
             if(!findAuth) throw new Error('id');
-            if(findAuth.authority !== 'MASTER') throw Error;// 권한체크 미들웨어 작성시 삭제
+            if(findAuth.authority !== 'MASTER') throw Error;
             else {
                 projectRepo.delete({ id: findAuth.projectId });
                 res.status(200).send({ success: true });
@@ -210,7 +210,7 @@ const project = {
         try {
             const userProjectRepo = getCustomRepository(UserProjectRepo);
             const findProjectList = await userProjectRepo.findProjectList(req.body);
-            console.log(findProjectList)
+            
             res.status(200).send({ 
                 success: true,
                 data: findProjectList
@@ -244,7 +244,7 @@ const project = {
         try {
             const userProjectRepo = getCustomRepository(UserProjectRepo);
             const findProjectUser = await userProjectRepo.findUserInProject(req.body);
-            if(!findProjectUser) throw Error;
+            if(!findProjectUser) throw new Error("user");
             
             userProjectRepo.delete(findProjectUser.id);
             res.status(200).send({ 
