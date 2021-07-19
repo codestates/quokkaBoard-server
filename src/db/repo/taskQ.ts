@@ -1,7 +1,7 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { Task } from '@entity/Task';
+import { Task } from '../entity/Task';
 import { TaskProps } from '@types';
-import { Board } from '@entity/Board';
+import { Board } from '../entity/Board';
 import { UserProject } from '@entity/UserProject';
 
 
@@ -95,7 +95,7 @@ export class TaskRepo extends Repository <Task> {
         .remove(taskId)
     }
 
-    joinTaskToBoard(boardId: string, taskId: string) {
+    joinTaskToBoard(boardId: string, taskId: string | string[]) {
         return this
         .createQueryBuilder()
         .relation(Board, "tasks")

@@ -1,4 +1,4 @@
-import { Response } from 'express';
+import { NextFunction, Response } from 'express';
 import { getRepository, getCustomRepository } from 'typeorm';
 import { Project } from '@entity/Project';
 import { UserProject } from '@entity/UserProject';
@@ -8,11 +8,12 @@ import { UserProjectRepo } from '@repo/userProjectQ';
 import { TypeReq, StrProps, StrArrProps } from '@types';
 import { TagRepo } from '@repo/tagQ';
 import { defaultLabel } from '@data/tagData';
+import { Tag } from '@entity/Tag';
 
 
 const project = {
 
-    createProject: async (req: TypeReq<StrProps>, res: Response) => {
+    createProject: async (req: TypeReq<StrProps>, res: Response, next: NextFunction) => {
         try {
             const { 
                 title, description, startDate, endDate 
@@ -21,7 +22,7 @@ const project = {
             const userRepo = getCustomRepository(UserRepo);
             const userProjectRepo = getRepository(UserProject);
             const findUser = await userRepo.findUser(req.body);
-            if(findUser.length === 0) throw Error;
+            if(findUser.length === 0) throw new Error('user');
         
             const newProject = new Project();
             newProject.title = title;
@@ -35,22 +36,29 @@ const project = {
             newUserProject.userId = findUser[0].id;
             newUserProject.projectId = findProject.id;
             userProjectRepo.save(newUserProject);
-            
+
             const labels: [{[key: string]: string}] = defaultLabel as any;
-            labels.forEach(el => el['projectId'] = findProject.id);
-
-            const tagRepo = getCustomRepository(TagRepo);
-            tagRepo.crateTag(labels);
-
+            const projectLabels: object[] = [];
+            labels.forEach(label =>  {
+                label['projectId'] = findProject.id
+                projectLabels.push(Object.assign({}, label))
+            });
+            const tagRepo = getRepository(Tag);
+            await tagRepo.save(projectLabels);
+        
             res.status(200).send({ 
                 success: true, 
                 projectId: findProject.id 
             });
         } catch (e) {
-            res.status(202).send({ 
+            e.message === 'user'
+            ? res.status(202).send({ 
                 success: false,
                 message: '잘못된 유저 정보입니다' 
-            });
+            })
+            : res.status(500).send(
+                'server error'
+            );
         }
     },
 
@@ -101,10 +109,9 @@ const project = {
                 success: false,
                 message: '잘못된 요청입니다'
             })
-            : res.status(202).send({ 
-                success: false,
-                message: '프로젝트 사용자가 아닙니다'
-            });
+            : res.status(500).send(
+                "server error"
+            )
         }
     },
 
@@ -156,8 +163,7 @@ const project = {
                 .filter((el, i, arr) => arr.indexOf(el) === arr.lastIndexOf(el));
             const findUser = await userRepo.findUser(req.body);
             
-            if(findUser.length === 0) throw new Error('user');
-            if(!findProject) throw Error;
+            if(findUser.length === 0 || !findProject) throw new Error('user');
             else {
                 const userData: object[] = [];
                 const resData: object[] = [];
@@ -172,7 +178,7 @@ const project = {
                         nickname: el.nickname 
                     });
                 });
-                userProjectRepo.addProjectMember(userData);
+                await userProjectRepo.addProjectMember(userData);
             
                 res.status(200).send({ 
                     success: true,
@@ -185,10 +191,9 @@ const project = {
                 succes: false,
                 message: '일치하는 사용자가 없습니다'
             })
-            : res.status(202).send({ 
-                succes: false,
-                message: '잘못된 프로젝트 정보입니다'
-            });
+            : res.status(500).send(
+                "server error"
+            );
         }
     },
 
@@ -246,7 +251,7 @@ const project = {
     },
 
     dashBoardInfo: async (req: TypeReq<StrProps>, res: Response) => {
-
+        
     },
 
 }

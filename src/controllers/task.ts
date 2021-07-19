@@ -27,6 +27,7 @@ const task = {
             newTask.cIdx = uniqNum + 1;
             newTask.label_id = uniqNum + 1;
             const findTask = await taskRepo.save(newTask);
+            const boardId = findBoard.id
             
             const userProjectRepo = getCustomRepository(UserProjectRepo);
             const userProjectId = await userProjectRepo.findUserProjectId(userId);
@@ -37,7 +38,7 @@ const task = {
             
             res.status(200).send({ 
                 success: true, 
-                data: findTask
+                data: findTask, boardId
             });
         } catch (e) {
             e.message = 'board'

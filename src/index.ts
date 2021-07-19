@@ -1,5 +1,5 @@
 /* Module setting */
-import express from 'express';
+import express, { ErrorRequestHandler, NextFunction } from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
@@ -41,6 +41,11 @@ app.use('/tag', tagRouter);
 app.get('/', (req, res) => {
     res.send('Welcom quokkaBoard')
 });
+app.use((req, res, next) => {
+    res.status(404).send("요청을 찾을 수 없습니다.")
+});
+
+
 
 /* DB & Server connect */
 createConnection(ormconfig)

@@ -10,14 +10,18 @@ const tag = {
 
     createTag: async (req: TypeReq<TaskProps>, res: Response) => {
         try {
-            const tagRepo = getCustomRepository(TagRepo);
+            const tagRepo = getRepository(Tag);
             const taskRepo = getCustomRepository(TaskRepo);
             const findTask = await taskRepo.findTask(req.body);
             if(!findTask) throw new Error('task');
             
             const labels: [{[key: string]: string}] = req.body.labels;
-            labels.forEach(el => el['projectId'] = findTask.projectId);
-            tagRepo.crateTag(req.body.labels);
+            const projectLabels: object[] = [];
+            labels.forEach(label => {
+                label['projectId'] = findTask.projectId
+                projectLabels.push(Object.assign({}, label))
+            });
+            await tagRepo.save(projectLabels);
 
             res.status(200).send({success: true})
         } catch (e) {
@@ -26,10 +30,9 @@ const tag = {
                 success: false,
                 message: '존재하지 않는 태스크입니다' 
             })
-            : res.status(202).send({ 
-                success: false,
-                message: '생성에 실패하였습니다' 
-            });
+            : res.status(500).send(
+                "server error"
+            );
         }
     },
 
