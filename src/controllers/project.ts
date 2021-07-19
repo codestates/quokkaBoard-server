@@ -95,13 +95,21 @@ const project = {
             if(!authority) throw new Error('auth');
         
             const findUser = (await userRepo.findUserAuth(email))
-                .filter(el => el.users_projectId === projectId);
-            if(findUser.length === 0) throw Error;
+                .filter(el => el.projectId === projectId);
+            if(findUser.length === 0) throw new Error('user');
+            console.log(findUser)
+            const data = {
+                userId: findUser[0].userId as string, 
+                projectId: findUser[0].projectId as string,
+                authority: authority
+            }
+            await userProjectRepo.changeUserAuth(data);
+            findUser[0].authority = authority;
 
-            userProjectRepo.changeUserAuth(findUser[0].users_id, authority);
             res.status(200).send({ 
                 success: true,
-                message: '권한이 변경되었습니다'
+                message: '권한이 변경되었습니다',
+                data: findUser
             }); 
         } catch (e) {
             return e.message === 'auth'
