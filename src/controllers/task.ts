@@ -5,6 +5,7 @@ import { TaskRepo } from '@repo/taskQ';
 import { TypeReq, TaskProps, ShiftProps, StrArrProps, StrProps } from '@types';
 import { BoardRepo } from '@repo/boardQ';
 import { UserProjectRepo } from '@repo/userProjectQ';
+import { Board } from '@entity/Board';
 
 
 const task = {
@@ -19,7 +20,8 @@ const task = {
             const uniqNum = await customTaskRepo.getMaxIdx();
             const findBoard = await boardRepo.findBoard(req.body);
             if(!findBoard) throw new Error('board');
-
+            console.log(findBoard)
+            
             const newTask = new Task();
             newTask.title = title as string
             newTask.due_date = dueDate as string
@@ -27,18 +29,18 @@ const task = {
             newTask.cIdx = uniqNum + 1;
             newTask.label_id = uniqNum + 1;
             const findTask = await taskRepo.save(newTask);
-            const boardId = findBoard.id
             
-            const userProjectRepo = getCustomRepository(UserProjectRepo);
-            const userProjectId = await userProjectRepo.findUserProjectId(userId, findBoard.projectId);
+            console.log(findTask)
+            // const userProjectRepo = getCustomRepository(UserProjectRepo);
+            // const userProjectId = await userProjectRepo.findUserProjectId(userId, findBoard.projectId);
             
-            boardRepo.joinTaskToBoard(findBoard.id, findTask.id);
-            customTaskRepo.joinTagToTask(findTask.label_id, tagId);
-            customTaskRepo.taskAssignee(findTask.id, userProjectId);
+            // boardRepo.joinTaskToBoard(findBoard.id, findTask.id);
+            // customTaskRepo.joinTagToTask(findTask.label_id, tagId);
+            // customTaskRepo.taskAssignee(findTask.id, userProjectId);
             
             res.status(200).send({ 
                 success: true, 
-                data: findTask, boardId
+                data: findTask
             });
         } catch (e) {
             e.message = 'board'
