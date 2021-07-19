@@ -7,6 +7,8 @@ import { createConnection } from 'typeorm';
 import ormconfig from 'ormconfig';
 import 'reflect-metadata';
 import 'dotenv/config';
+import fs from 'fs';
+import https from 'https';
 
 /* Routers */
 import userRouter from '@routes/user';
@@ -23,12 +25,13 @@ const port = process.env.SERVER_PORT || 4000;
 app.use(express.json());
 app.use(logger('dev'));
 app.use(express.urlencoded({extended: false}));
-app.use(cookieParser());
 app.use(cors({
-    origin: true,
-    credentials: true,
-    methods: ["GET", "POST", "DELETE", "PATCH", "PUT"]
+    origin: "*",
+    credentials: false,
+    preflightContinue:false,
+    methods: ["GET", "POST", "DELETE", "PATCH", "PUT", "OPTIONS"]
 }));
+app.use(cookieParser());
 
 /* API routing */
 app.use('/user', userRouter);
@@ -52,7 +55,7 @@ createConnection(ormconfig)
     .catch(err => console.log(err)
 );
 
-/////////////////////* local https test */////////////////////////////////
+// ///////////////////* local https test */////////////////////////////////
 //                                                                      //
 // const certKey = fs.readFileSync(__dirname + "/cert.pem", "utf-8");   //
 // const privKey = fs.readFileSync(__dirname + "/key.pem", "utf-8");    //
@@ -61,5 +64,4 @@ createConnection(ormconfig)
 // let server = https.createServer(asymmetricKey, app)                  //
 // .listen(port, () => console.log(`server listening on ${port}`))      //
 //                                                                      //
-//////////////////////////////////////////////////////////////////////////
-
+// ////////////////////////////////////////////////////////////////////////
