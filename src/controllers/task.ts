@@ -30,7 +30,7 @@ const task = {
             const boardId = findBoard.id
             
             const userProjectRepo = getCustomRepository(UserProjectRepo);
-            const userProjectId = await userProjectRepo.findUserProjectId(userId);
+            const userProjectId = await userProjectRepo.findUserProjectId(userId, findBoard.projectId);
             
             boardRepo.joinTaskToBoard(findBoard.id, findTask.id);
             customTaskRepo.joinTagToTask(findTask.label_id, tagId);
@@ -135,10 +135,11 @@ const task = {
             const taskRepo = getCustomRepository(TaskRepo);
             const userProjectRepo = getCustomRepository(UserProjectRepo);
             
-            const userProjectId = await userProjectRepo.findUserProjectId(userId);
+            const findProject = await taskRepo.findProjectInTask(req.body);
+            const userProjectId = await userProjectRepo.findUserProjectId(userId, findProject.projectId);
             if(userProjectId.length === 0 ) throw Error;
 
-            taskRepo.taskAssignee(taskId, userProjectId);
+            await taskRepo.taskAssignee(taskId, userProjectId);
             res.status(200).send({success: true});
         } catch (e) {
             res.status(202).send({
@@ -148,16 +149,17 @@ const task = {
         }
     },
 
-    deleteAssignee: async (req: TypeReq<StrProps>, res: Response) => {
+    deleteAssignee: async (req: TypeReq<TaskProps>, res: Response) => {
         try{
             const { taskId, userId } = req.body
             const taskRepo = getCustomRepository(TaskRepo);
             const userProjectRepo = getCustomRepository(UserProjectRepo);
             
-            const userProjectId = await userProjectRepo.findUserProjectId(userId);
+            const findProject = await taskRepo.findProjectInTask(req.body);
+            const userProjectId = await userProjectRepo.findUserProjectId(userId, findProject.projectId);
             if(userProjectId.length === 0 ) throw Error;
 
-            taskRepo.removeAssignee(taskId, userProjectId);
+            await taskRepo.removeAssignee(taskId, userProjectId);
             res.status(200).send({success: true});
         } catch (e) {
             res.status(202).send({

@@ -29,7 +29,10 @@ export class TaskRepo extends Repository <Task> {
         return this
         .createQueryBuilder('task')
         .innerJoin('task.project', 'project')
-        .select(['task.id', 'project.id'])
+        .select([
+            'task.id AS taskId', 
+            'project.id AS projectId'
+        ])
         .where({id: data.taskId})
         .getRawOne();
     }

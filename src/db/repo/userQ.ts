@@ -34,6 +34,14 @@ export class UserRepo extends Repository <User> {
         return this
         .createQueryBuilder("user")
         .leftJoinAndSelect("user.user_project", "users")
+        .select([
+            "user.id AS userId",
+            "user.email AS email",
+            "user.nickname AS nickname",
+            "user.image AS image",
+            "users.authority AS authority",
+            "users.projectId AS projectId"
+        ])
         .where({email: email})
         .getRawMany();
     }

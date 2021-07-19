@@ -13,12 +13,15 @@ export class UserProjectRepo extends Repository <UserProject> {
         .getOne();
     }
 
-    findUserProjectId(userId: string | string[]) {
+    findUserProjectId(userId: string | string[], projectId: string) {
         return this
         .createQueryBuilder("user_project")
         .select(["user_project.id"])
         .where("userId IN (:userId)", {
             userId: userId
+        })
+        .andWhere("projectId = :projectId", {
+            projectId: projectId
         })
         .getMany();
     }
@@ -73,12 +76,15 @@ export class UserProjectRepo extends Repository <UserProject> {
         .getRawMany();
     }
 
-    changeUserAuth(id: number, authority: string) {
+    changeUserAuth(data: StrProps) {
         return this
         .createQueryBuilder("user_project")
         .update(UserProject)
-        .set({authority: authority})
-        .where({id: id})
+        .set({authority: data.authority})
+        .where({
+            userId: data.userId, 
+            projectId: data.projectId
+        })
         .execute();
     }
 
