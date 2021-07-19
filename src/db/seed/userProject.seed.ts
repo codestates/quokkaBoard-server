@@ -87,12 +87,5 @@ export default class CreateUsers implements Seeder {
             await connection.getCustomRepository(TaskRepo).joinTaskToBoard(findBoard[i].id, taskIds)
             taskSeed = [];
         }
-    
-        
-        
-        
-        
-            
-        
     }
 }   
