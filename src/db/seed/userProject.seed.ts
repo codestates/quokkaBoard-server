@@ -11,6 +11,7 @@ import { Board } from "../entity/Board"
 import { Task } from "../entity/Task"
 import { Tag } from "../entity/Tag"
 import { TaskRepo } from "../repo/taskQ"
+import { UserProjectRepo } from "../repo/userProjectQ"
 
 export default class CreateUsers implements Seeder {
     public async run(factory: Factory, connection: Connection): Promise<any> {
@@ -38,18 +39,34 @@ export default class CreateUsers implements Seeder {
         );
         await connection.getRepository(Tag).save(projectLabels);
 
-        const userProject = [
-            { authority: "MASTER", userId: findUser[0].id, projectId: findProject[0].id },
-            { authority: "MASTER", userId: findUser[0].id, projectId: findProject[1].id },
-            { authority: "MASTER", userId: findUser[0].id, projectId: findProject[2].id },
-            { authority: "MASTER", userId: findUser[1].id, projectId: findProject[3].id },
-            { authority: "MASTER", userId: findUser[2].id, projectId: findProject[4].id },
-            { authority: "ADMIN", userId: findUser[0].id, projectId: findProject[3].id },
-            { authority: "ADMIN", userId: findUser[0].id, projectId: findProject[4].id },
-            { authority: "ADMIN", userId: findUser[1].id, projectId: findProject[0].id },
-            { authority: "ADMIN", userId: findUser[2].id, projectId: findProject[1].id }
-        ];
-        await connection.getRepository(UserProject).save(userProject);
+        // const userProject = [
+        //     { authority: "MASTER", userId: findUser[0].id, projectId: findProject[0].id },
+        //     { authority: "MASTER", userId: findUser[0].id, projectId: findProject[1].id },
+        //     { authority: "MASTER", userId: findUser[0].id, projectId: findProject[2].id },
+        //     { authority: "MASTER", userId: findUser[1].id, projectId: findProject[3].id },
+        //     { authority: "MASTER", userId: findUser[2].id, projectId: findProject[4].id },
+        //     { authority: "ADMIN", userId: findUser[0].id, projectId: findProject[3].id },
+        //     { authority: "ADMIN", userId: findUser[0].id, projectId: findProject[4].id },
+        //     { authority: "ADMIN", userId: findUser[1].id, projectId: findProject[0].id },
+        //     { authority: "ADMIN", userId: findUser[2].id, projectId: findProject[1].id }
+        // ];
+        // await connection.getRepository(UserProject).save(userProject);
+
+        const copyFindUser = findUser.slice();
+        for(let i=0; i < findProject.length; i++) {
+            let users = copyFindUser.splice(0, 3);
+            const userData: object[] = [];
+            users.forEach(el => {
+                userData.push({
+                    authority: 'ADMIN',
+                    userId: el.id,
+                    projectId: findProject[0].id
+                });
+            });
+            await connection
+                .getCustomRepository(UserProjectRepo)
+                .addProjectMember(userData);
+        }
 
         const boardSeed: object[] = [];
         for(let i=0; i < findProject.length; i++) {     
@@ -67,8 +84,8 @@ export default class CreateUsers implements Seeder {
 
         let taskSeed: object[] = [];
         let labelNum = 0
+        let uniqNum = 0;
         for(let i=0; i < findBoard.length; i++) {
-            let uniqNum = 0;
             task.forEach(el => {
                 uniqNum = uniqNum + 1;
                 labelNum = labelNum + 1;
@@ -87,5 +104,18 @@ export default class CreateUsers implements Seeder {
             await connection.getCustomRepository(TaskRepo).joinTaskToBoard(findBoard[i].id, taskIds)
             taskSeed = [];
         }
+        
+        for(let i=0; i < findProject.length; i++) {
+            const findTask = await connection.getRepository(Task).find({
+                where: {projectId: findProject[i].id}
+            });
+            const findUser = await connection.getRepository(UserProject).find({
+                where: {projectId: findProject[i].id}
+            });
+            findUser.forEach(el => {
+                
+            })
+        }
+
     }
 }   
