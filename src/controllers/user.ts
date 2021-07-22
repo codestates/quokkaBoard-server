@@ -29,10 +29,7 @@ const user = {
                 success: false, 
                 message: '잘못된 입력입니다' 
             })
-            : res.status(500).send({ 
-                success: false, 
-                message: '잘못된 입력입니다' 
-            })
+            : res.status(500).send('server error')
         } 
     },
 

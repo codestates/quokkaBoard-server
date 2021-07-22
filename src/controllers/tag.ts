@@ -30,9 +30,7 @@ const tag = {
                 success: false,
                 message: '존재하지 않는 태스크입니다' 
             })
-            : res.status(500).send(
-                "server error"
-            );
+            : res.status(500).send('server error');
         }
     },
 
@@ -46,7 +44,7 @@ const tag = {
             const findTag = await tagRepo.findTag(req.body);
             if(!findTag) throw new Error('tag');
 
-            tagRepo.updateTag(req.body)
+            await tagRepo.updateTag(req.body)
             res.status(200).send({success: true});
         } catch (e) {
             e.message = 'tag'
@@ -54,10 +52,7 @@ const tag = {
                 success: false,
                 message: '존재하지 않는 태그입니다' 
             })
-            : res.status(202).send({ 
-                success: false,
-                message: '생성에 실패하였습니다' 
-            });
+            : res.status(500).send('server error');
         }    
     },
 
