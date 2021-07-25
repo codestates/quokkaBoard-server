@@ -4,7 +4,7 @@ import { User } from '@entity/User';
 import { UserRepo } from '@repo/userQ';
 import { TypeReq, StrProps, StrArrProps } from '@types';
 import jwtToken from '@token/jwt';
-import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
+import axios from "axios";
 
 
 const user = {
