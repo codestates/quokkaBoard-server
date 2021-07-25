@@ -9,10 +9,10 @@ import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 
 const user = {
 
-    register: (req: TypeReq<StrProps>, res: Response) => {
+    register: async (req: TypeReq<StrProps>, res: Response) => {
         try {
             const { email, nickname, password } = req.body;
-            if(!password) throw Error;
+            if(!password) throw new Error('pass');
             
             const userRepo = getRepository(User);
             const newUser = new User();
@@ -20,14 +20,16 @@ const user = {
             newUser.nickname = nickname;
             newUser.password = password;
             newUser.hashPass();
-            userRepo.save(newUser);
+            await userRepo.save(newUser);
             
             res.status(200).send({ success: true });
         } catch (e) {
-            res.status(202).send({ 
+            e.message === 'pass'
+            ? res.status(202).send({ 
                 success: false, 
                 message: '잘못된 입력입니다' 
-            });
+            })
+            : res.status(500).send('server error')
         } 
     },
 
@@ -79,7 +81,8 @@ const user = {
                 const { id, nickname, email, image } = findUser[0];
                 const accToken = jwtToken.mintAccessToken(id);
                 const refToken = jwtToken.mintRefreshToken(id);
-                userRepo.saveRefToken(id, refToken);
+                await userRepo.saveRefToken(id, refToken);
+                
                 res.cookie('accessToken', accToken, { 
                     httpOnly: true, 
                     sameSite: 'none', 

@@ -55,9 +55,7 @@ const project = {
                 success: false,
                 message: '잘못된 유저 정보입니다' 
             })
-            : res.status(500).send(
-                'server error'
-            );
+            : res.status(500).send('server error');
         }
     },
 
@@ -95,8 +93,8 @@ const project = {
         
             const findUser = (await userRepo.findUserAuth(email))
                 .filter(el => el.projectId === projectId);
-            if(findUser.length === 0) throw new Error('user');
-            console.log(findUser)
+            if(findUser.length === 0) throw new Error('auth');
+            
             const data = {
                 userId: findUser[0].userId as string, 
                 projectId: findUser[0].projectId as string,
@@ -111,14 +109,12 @@ const project = {
                 data: findUser
             }); 
         } catch (e) {
-            return e.message === 'auth'
+            e.message === 'auth'
             ? res.status(202).send({ 
                 success: false,
                 message: '잘못된 요청입니다'
             })
-            : res.status(500).send(
-                "server error"
-            )
+            : res.status(500).send('server error');
         }
     },
 
@@ -135,10 +131,10 @@ const project = {
             
             if(!findProject) throw new Error('id');
             if(!findUser) throw new Error('user');
-            if(findUser.authority !== 'MASTER') throw Error;
             
             req.body.title = req.body.title || findProject.title;
-            projectRepo.editProject(req.body);
+            await projectRepo.editProject(req.body);
+            
             res.status(200).send({ success: true });
         } catch (e) {
             if(e.message === 'id') res.status(202).send({
@@ -149,10 +145,7 @@ const project = {
                 success: false, 
                 message: '프로젝트 사용자가 아닙니다'
             });
-            else res.status(202).send({
-                success: false,
-                message: '권한이 없습니다'
-            });
+            else res.status(500).send('server error');
         }
     },
 
@@ -200,9 +193,7 @@ const project = {
                 succes: false,
                 message: '일치하는 사용자가 없습니다'
             })
-            : res.status(500).send(
-                "server error"
-            );
+            : res.status(500).send('server error');
         }
     },
 
@@ -246,16 +237,18 @@ const project = {
             const findProjectUser = await userProjectRepo.findUserInProject(req.body);
             if(!findProjectUser) throw new Error("user");
             
-            userProjectRepo.delete(findProjectUser.id);
+            await userProjectRepo.delete(findProjectUser.id);
             res.status(200).send({ 
                 success: true,
                 data: findProjectUser
             }); 
         } catch (e) {
-            res.status(202).send({ 
+            e.message === "user"
+            ? res.status(202).send({ 
                 success: false,
                 message: '존재하지 않는 사용자입니다'
-            });
+            })
+            : res.status(500).send('server error')
         }
     },
 

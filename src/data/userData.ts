@@ -62,7 +62,38 @@ export const user = [
     {
         nickname: "k",
         email: "k@google.com",
-        role: "GUEST",
+        role: "NORMAL",
         password: "k"
     },
+    {
+        nickname: "l",
+        email: "l@google.com",
+        role: "NORMAL",
+        password: "l"
+    },
+    {
+        nickname: "m",
+        email: "m@google.com",
+        role: "NORMAL",
+        password: "m"
+    },
+    {
+        nickname: "n",
+        email: "n@google.com",
+        role: "NORMAL",
+        password: "n"
+    },
+    {
+        nickname: "o",
+        email: "o@google.com",
+        role: "NORMAL",
+        password: "o"
+    },
+    {
+        nickname: "p",
+        email: "p@google.com",
+        role: "NORMAL",
+        password: "p"
+    },
+    
 ]

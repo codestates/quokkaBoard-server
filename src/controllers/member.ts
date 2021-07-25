@@ -116,7 +116,7 @@ const member = {
                 where: {id: req.body.userId}
             });
 
-            if(!followingUser) throw new Error;
+            if(!followingUser) throw Error;
             const follow = await followRepo.checkFollow(followingUser);
             
             res.status(200).send({
