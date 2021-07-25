@@ -145,38 +145,70 @@ const user = {
         }
     },
 
-    
-
     socialLogin: async (req: TypeReq<StrArrProps>, res: Response) => {
             
-        const clientID = process.env.GOOGLE_CLIENT_ID;
-        const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
-        const userRepo = getCustomRepository(UserRepo)
-        // const findUser = userRepo.findUser(req.body)
+        const clientID = process.env.GITHUB_CLIENT_ID as string;
+        const clientSecret = process.env.GITHUB_CLIENT_SECRET as string;
+        let accessToken = '';
+        // github oauth
+        let userData: any = await axios({
+            method: 'post',
+            url: `https://github.com/login/oauth/access_token`,
+            headers: {
+              accept: 'application/json',
+            },
+            data: {
+              client_id: clientID,
+              client_secret: clientSecret,
+              code: req.body.authorizationCode
+            }
+          }).then((res: any) => {
+            accessToken = res.data.access_token
 
-        axios.post("https://oauth2.googleapis.com/token", {
-            client_id: clientID,
-            client_secret: clientSecret,
-            code: req.body.authorizationCode,
-            grant_type: 'authorization_code',
-            redirect_uri: 'http://localhost:4000/user/oauth-callBack' // 데이터를 받아오는 API 신설
+            let data = axios.get('https://api.github.com/user', {
+                headers: {
+                    authorization: `token ${accessToken}`,
+                }
+            })
+            return data; 
         })
-        .then((response: AxiosResponse) => { 
-            const accessToken = response.data.access_token;
-            const refreshToken = response.data.refresh_token; 
+        
+        try {  
+            const data = {nickname: userData.data.login};
+            const userRepo = getCustomRepository(UserRepo)
+            const findUser = await userRepo.findUser(data) //id를 먼저찾음.
+            
+            console.log("findUser: ", findUser)
 
-            // 구글 api에 정보 찾아오는 axios를 날려주자.
-
-            res.cookie('accessToken', accessToken, { 
-                httpOnly: true, 
-                sameSite: 'none', 
-                secure: true 
-            });    
+            if (findUser.length === 0) {
     
-        })
-        .catch((err: AxiosError) => {
-            res.status(202).send({ error: err})
-        })
+                const newUser = new User();
+                newUser.email = 'socialLogin@quokka.com';
+                newUser.nickname = userData.data.login;
+                newUser.image = userData.data.avata_url;
+                newUser.password = '';
+                userRepo.save(newUser);
+
+                return res.cookie('accessToken', accessToken, { 
+                    httpOnly: true, 
+                    sameSite: 'none', 
+                    secure: true 
+                }).status(200).send({success: true})    
+            
+            } else {
+                res.cookie('accessToken', accessToken, { 
+                    httpOnly: true, 
+                    sameSite: 'none', 
+                    secure: true 
+                }).status(200).send({success: true})
+            } 
+
+        } catch(error) { // 유저 데이터가 존재해서 acctoken만 전달      
+            res.status(202).send({ 
+                success: false, 
+                message: error
+            });
+        }
     
     },
 
