@@ -13,6 +13,7 @@ import { Tag } from "../entity/Tag"
 import { TaskRepo } from "../repo/taskQ"
 import { UserProjectRepo } from "../repo/userProjectQ"
 
+
 export default class CreateUsers implements Seeder {
     public async run(factory: Factory, connection: Connection): Promise<any> {
         
@@ -112,9 +113,8 @@ export default class CreateUsers implements Seeder {
             const findUser = await connection.getRepository(UserProject).find({
                 where: {projectId: findProject[i].id}
             });
-            findUser.forEach(el => {
-                
-            })
+            
+            await connection.getCustomRepository(TaskRepo).taskAssignee
         }
 
     }
