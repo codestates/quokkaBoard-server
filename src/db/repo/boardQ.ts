@@ -1,6 +1,5 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { Board } from '@entity/Board';
-import { StrArrProps, StrProps } from '@types';
+import { Board } from '../entity/Board';
 
 
 @EntityRepository(Board)

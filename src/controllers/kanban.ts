@@ -1,8 +1,8 @@
 import { Response } from 'express';
 import { getRepository, getCustomRepository } from 'typeorm';
-import { Board } from '@entity/Board';
-import { TypeReq, StrProps, NumProps } from '@types';
-import { BoardRepo } from '@repo/boardQ';
+import { Board } from '../db/entity/Board';
+import { TypeReq, StrProps, NumProps } from '../types';
+import { BoardRepo } from '../db/repo/boardQ';
 
 
 const kanban = {
