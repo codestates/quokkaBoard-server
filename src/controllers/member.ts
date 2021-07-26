@@ -1,6 +1,5 @@
 import { Response } from 'express';
 import { getCustomRepository, getRepository } from 'typeorm';
-import { Follow } from '../db/entity/Follow';
 import { UserRepo } from '../db/repo/userQ';
 import { TypeReq, StrProps } from '../types';
 import { User } from '../db/entity/User';
@@ -35,7 +34,6 @@ const member = {
         try {
             const { userId, followerId } = req.body
             const userRepo = getRepository(User);
-            // const followRepo = getRepository(Follow);
             const followRepo = getCustomRepository(FollowRepo);
             
             const followingUser = await userRepo.findOne({
@@ -76,14 +74,13 @@ const member = {
         try {
             const { userId, followerId } = req.body
             const userRepo = getRepository(User);
-            const followRepo = getRepository(Follow);
-            const customFollowRepo = getCustomRepository(FollowRepo);
+            const followRepo = getCustomRepository(FollowRepo);
             
             const followingUser = await userRepo.findOne({where: {id: userId}});
             const followerUser = await userRepo.findOne({where: {id: followerId}});
             if(!followingUser || !followerUser) throw new Error('user');
             
-            const follow = await customFollowRepo.checkFollow(followingUser);         
+            const follow = await followRepo.checkFollow(followingUser);         
             const check = follow.filter(el => el.userId === followerId)
             if(!check) throw new Error('user');
             followRepo.delete({id: check[0].id})
