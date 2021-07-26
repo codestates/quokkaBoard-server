@@ -5,21 +5,8 @@ import { UserProject } from '../entity/UserProject';
 import { StrProps } from '../../types';
 
 
-@EntityRepository(Board)
-export class updateBoard extends Repository <Board> {
-    
-    joinTaskToBoard(boardId: string, taskId: string) {
-        return this
-        .createQueryBuilder()
-        .relation(Board, "tasks")
-        .of(boardId)
-        .add(taskId)
-    }
-    
-}
-
 @EntityRepository(Task)
-export class updateTask extends Repository <Task> {
+export class UpdateRepo extends Repository <Task> {
     
     updateTask(data: StrProps) {
         return this

@@ -1,277 +1,289 @@
 import { Response } from 'express';
 import { getCustomRepository } from 'typeorm';
 import { Task } from '../db/entity/Task';
+import { Board } from '../db/entity/Board';
 import { TaskRepo } from '../db/repo/taskQ';
 import { TypeReq, TaskProps, ShiftProps, StrArrProps } from '../types';
 import { BoardRepo } from '../db/repo/boardQ';
 import { UserProjectRepo } from '../db/repo/userProjectQ';
-import { Board } from '@entity/Board';
+import { UpdateRepo } from '../db/repo/updateQ';
 
 
 const task = {
 
     createTask: async (req: TypeReq<StrArrProps>, res: Response) => {
-        // try {
-        //     const { title, dueDate, tagId, userId, boardId } = req.body;
-        //     const boardRepo = getCustomRepository(BoardRepo);
-        //     const taskRepo = getCustomRepository(TaskRepo);
+        try {
+            const { title, dueDate, tagId, userId, boardId } = req.body;
+            const boardRepo = getCustomRepository(BoardRepo);
+            const taskRepo = getCustomRepository(TaskRepo);
             
-        //     const uniqNum = await taskRepo.getMaxIdx();
-        //     const findBoard = await boardRepo.findBoard(boardId as string);
-        //     if(!findBoard) throw new Error('board');
+            const uniqNum = await taskRepo.getMaxIdx();
+            const findBoard = await boardRepo.findBoard(boardId as string);
+            if(!findBoard) throw new Error('board');
             
-        //     const newTask = new Task();
-        //     newTask.title = title as string
-        //     newTask.due_date = dueDate as string
-        //     newTask.projectId = findBoard.projectId;
-        //     newTask.cIdx = uniqNum + 1;
-        //     newTask.label_id = uniqNum + 1;
-        //     const findTask = await taskRepo.save(newTask);
+            const newTask = new Task();
+            newTask.title = title as string
+            newTask.due_date = dueDate as string
+            newTask.projectId = findBoard.projectId;
+            newTask.cIdx = uniqNum + 1;
+            newTask.label_id = uniqNum + 1;
+            const findTask = await taskRepo.save(newTask);
             
-        //     const userProjectRepo = getCustomRepository(UserProjectRepo);
-        //     const userProjectId = await userProjectRepo.findUserProjectId(userId, findBoard.projectId);
+            const userProjectRepo = getCustomRepository(UserProjectRepo);
+            const userProjectId = await userProjectRepo.findUserProjectId(userId, findBoard.projectId);
             
-        //     await boardRepo.joinTaskToBoard(findBoard.id, findTask.id);
-        //     await taskRepo.joinTagToTask(findTask.label_id, tagId);
-        //     await taskRepo.taskAssignee(findTask.id, userProjectId);
+            const updateRepo = getCustomRepository(UpdateRepo);
+            await updateRepo.joinTaskToBoard(findBoard.id, findTask.id);
+            await updateRepo.joinTagToTask(findTask.label_id, tagId);
+            await updateRepo.taskAssignee(findTask.id, userProjectId);
             
-        //     res.status(200).send({ 
-        //         success: true, 
-        //         data: findTask
-        //     });
-        // } catch (e) {
-        //     e.message = 'board'
-        //     ? res.status(202).send({ 
-        //         success: false,
-        //         message: '존재하지 않는 보드입니다' 
-        //     })
-        //     : res.status(500).send('server error');
-        // }
+            res.status(200).send({ 
+                success: true, 
+                data: findTask
+            });
+        } catch (e) {
+            e.message = 'board'
+            ? res.status(202).send({ 
+                success: false,
+                message: '존재하지 않는 보드입니다' 
+            })
+            : res.status(500).send('server error');
+        }
     },
 
     deleteTask: async (req: TypeReq<TaskProps>, res: Response) => {
-        // try {
-        //     const taskRepo = getCustomRepository(TaskRepo);
-        //     const findTask = await taskRepo.findTask(req.body);
-        //     if(!findTask) throw Error;
+        try {
+            const taskRepo = getCustomRepository(TaskRepo);
+            const findTask = await taskRepo.findTask(req.body);
+            if(!findTask) throw Error;
             
-        //     taskRepo.delete({id: findTask.id});
-        //     res.status(200).send({success: true});
-        // } catch (e) {
-        //     res.status(202).send({ 
-        //         success: false,
-        //         message: '존재하지 않는 태스크입니다'
-        //     });
-        // }    
+            taskRepo.delete({id: findTask.id});
+            res.status(200).send({success: true});
+        } catch (e) {
+            res.status(202).send({ 
+                success: false,
+                message: '존재하지 않는 태스크입니다'
+            });
+        }    
     },
 
     updateDueDate: async (req: TypeReq<TaskProps>, res: Response) => {
-        // try {
-        //     const taskRepo = getCustomRepository(TaskRepo);
-        //     const findTask = await taskRepo.findTask(req.body);
-        //     if(!findTask) throw new Error('task');
+        try {
+            const taskRepo = getCustomRepository(TaskRepo);
+            const findTask = await taskRepo.findTask(req.body);
+            if(!findTask) throw new Error('task');
             
-        //     req.body.title = req.body.title || findTask.title;
-        //     req.body.description = req.body.description || findTask.description;
-        //     req.body.dueDate = req.body.dueDate || findTask.due_date;
-        //     taskRepo.updateTask(req.body);
+            req.body.title = req.body.title || findTask.title;
+            req.body.description = req.body.description || findTask.description;
+            req.body.dueDate = req.body.dueDate || findTask.due_date;
 
-        //     res.status(200).send({success: true});
-        // } catch (e) {
-        //     e.message === 'task'
-        //     ? res.status(202).send({
-        //         success: false,
-        //         message: '존재하지 않는 태스크입니다' 
-        //     })
-        //     : res.status(500).send('server error')
-        // }
+            const updateRepo = getCustomRepository(UpdateRepo);
+            await updateRepo.updateTask(req.body);
+
+            res.status(200).send({success: true});
+        } catch (e) {
+            e.message === 'task'
+            ? res.status(202).send({
+                success: false,
+                message: '존재하지 않는 태스크입니다' 
+            })
+            : res.status(500).send('server error')
+        }
     },
 
     updateTaskName: async (req: TypeReq<TaskProps>, res: Response) => {
-        // try{
-        //     const taskRepo = getCustomRepository(TaskRepo);
-        //     const findTask = await taskRepo.findTask(req.body);
-        //     if(!findTask) throw new Error('task');
+        try{
+            const taskRepo = getCustomRepository(TaskRepo);
+            const findTask = await taskRepo.findTask(req.body);
+            if(!findTask) throw new Error('task');
         
-        //     req.body.title = req.body.title || findTask.title;
-        //     req.body.description = req.body.description || findTask.description;
-        //     req.body.dueDate = req.body.dueDate || findTask.due_date;
-        //     taskRepo.updateTask(req.body);
+            req.body.title = req.body.title || findTask.title;
+            req.body.description = req.body.description || findTask.description;
+            req.body.dueDate = req.body.dueDate || findTask.due_date;
 
-        //     res.status(200).send({success: true});
-        // } catch (e) {
-        //     e.message === 'task'
-        //     ? res.status(202).send({
-        //         success: false,
-        //         message: '존재하지 않는 태스크입니다' 
-        //     })
-        //     : res.status(500).send('server error')
-        // }
+            const updateRepo = getCustomRepository(UpdateRepo);
+            await updateRepo.updateTask(req.body);
+
+            res.status(200).send({success: true});
+        } catch (e) {
+            e.message === 'task'
+            ? res.status(202).send({
+                success: false,
+                message: '존재하지 않는 태스크입니다' 
+            })
+            : res.status(500).send('server error')
+        }
     },
 
     updateDescription: async (req: TypeReq<TaskProps>, res: Response) => {
-        // try{
-        //     const taskRepo = getCustomRepository(TaskRepo);
-        //     const findTask = await taskRepo.findTask(req.body);
-        //     if(!findTask) throw new Error('task');
+        try{
+            const taskRepo = getCustomRepository(TaskRepo);
+            const findTask = await taskRepo.findTask(req.body);
+            if(!findTask) throw new Error('task');
             
-        //     req.body.title = req.body.title || findTask.title;
-        //     req.body.description = req.body.description || findTask.description;
-        //     req.body.dueDate = req.body.dueDate || findTask.due_date;
-        //     taskRepo.updateTask(req.body);
+            req.body.title = req.body.title || findTask.title;
+            req.body.description = req.body.description || findTask.description;
+            req.body.dueDate = req.body.dueDate || findTask.due_date;
             
-        //     res.status(200).send({success: true});
-        // } catch (e) {
-        //     e.message === 'task'
-        //     ? res.status(202).send({
-        //         success: false,
-        //         message: '존재하지 않는 태스크입니다' 
-        //     })
-        //     : res.status(500).send('server error');
-        // }
+            const updateRepo = getCustomRepository(UpdateRepo);
+            await updateRepo.updateTask(req.body);
+            
+            res.status(200).send({success: true});
+        } catch (e) {
+            e.message === 'task'
+            ? res.status(202).send({
+                success: false,
+                message: '존재하지 않는 태스크입니다' 
+            })
+            : res.status(500).send('server error');
+        }
     },
 
     addAssignee: async (req: TypeReq<TaskProps>, res: Response) => {
-        // try{
-        //     const { taskId, userId } = req.body
-        //     const taskRepo = getCustomRepository(TaskRepo);
-        //     const userProjectRepo = getCustomRepository(UserProjectRepo);
+        try{
+            const { taskId, userId } = req.body
+            const taskRepo = getCustomRepository(TaskRepo);
+            const userProjectRepo = getCustomRepository(UserProjectRepo);
             
-        //     const findProject = await taskRepo.findProjectInTask(req.body);
-        //     const userProjectId = await userProjectRepo.findUserProjectId(userId, findProject.projectId);
-        //     if(userProjectId.length === 0 ) throw new Error('project');
+            const findProject = await taskRepo.findProjectInTask(req.body);
+            const userProjectId = await userProjectRepo.findUserProjectId(userId, findProject.projectId);
+            if(userProjectId.length === 0 ) throw new Error('project');
 
-        //     await taskRepo.taskAssignee(taskId, userProjectId);
-        //     res.status(200).send({success: true});
-        // } catch (e) {
-        //     e.message === 'message'
-        //     ? res.status(202).send({
-        //         success: false,
-        //         message: '프로젝트 사용자가 아닙니다'
-        //     })
-        //     : res.status(500).send('server error');
-        // }
+            const updateRepo = getCustomRepository(UpdateRepo)
+            await updateRepo.taskAssignee(taskId, userProjectId);
+            
+            res.status(200).send({success: true});
+        } catch (e) {
+            e.message === 'message'
+            ? res.status(202).send({
+                success: false,
+                message: '프로젝트 사용자가 아닙니다'
+            })
+            : res.status(500).send('server error');
+        }
     },
 
     deleteAssignee: async (req: TypeReq<TaskProps>, res: Response) => {
-        // try{
-        //     const { taskId, userId } = req.body
-        //     const taskRepo = getCustomRepository(TaskRepo);
-        //     const userProjectRepo = getCustomRepository(UserProjectRepo);
+        try{
+            const { taskId, userId } = req.body
+            const taskRepo = getCustomRepository(TaskRepo);
+            const userProjectRepo = getCustomRepository(UserProjectRepo);
             
-        //     const findProject = await taskRepo.findProjectInTask(req.body);
-        //     const userProjectId = await userProjectRepo.findUserProjectId(userId, findProject.projectId);
-        //     if(userProjectId.length === 0 ) throw Error;
+            const findProject = await taskRepo.findProjectInTask(req.body);
+            const userProjectId = await userProjectRepo.findUserProjectId(userId, findProject.projectId);
+            if(userProjectId.length === 0 ) throw Error;
 
-        //     await taskRepo.createQueryBuilder()
-        //         .relation(Task, "user_projects")
-        //         .of(taskId)
-        //         .remove(userProjectId)
+            await taskRepo.createQueryBuilder()
+                .relation(Task, "user_projects")
+                .of(taskId)
+                .remove(userProjectId);
 
-        //     res.status(200).send({success: true});
-        // } catch (e) {
-        //     res.status(202).send({
-        //         success: false,
-        //         message: '프로젝트 사용자가 아닙니다'
-        //     });
-        // }
+            res.status(200).send({success: true});
+        } catch (e) {
+            res.status(202).send({
+                success: false,
+                message: '프로젝트 사용자가 아닙니다'
+            });
+        }
     },
 
     shiftTask: async (req: TypeReq<ShiftProps>, res: Response) => {
-        // try {
-        //     const { cIdx, targetIdx, boardId, targetId } = req.body;
-        //     const taskRepo = getCustomRepository(TaskRepo);
-        //     const findTask = await taskRepo.findTaskInBoard(boardId);
-        //     const targetTask = await taskRepo.findTaskInBoard(targetId);
-        //     const task = findTask.filter(el => el.cIdx === cIdx);
-        //     const index = findTask.findIndex(el => el.cIdx === cIdx);
-        //     if(task.length === 0) throw new Error('task');
+        try {
+            const { cIdx, targetIdx, boardId, targetId } = req.body;
+            const taskRepo = getCustomRepository(TaskRepo);
+            const findTask = await taskRepo.findTaskInBoard(boardId);
+            const targetTask = await taskRepo.findTaskInBoard(targetId);
+            const task = findTask.filter(el => el.cIdx === cIdx);
+            const index = findTask.findIndex(el => el.cIdx === cIdx);
+            if(task.length === 0) throw new Error('task');
 
-        //     findTask[index].cIdx = 0;
+            findTask[index].cIdx = 0;
             
-        //     if(boardId === targetId) {
-        //         if(cIdx < targetIdx) findTask.map(el => {
-        //             if(cIdx < el.cIdx && el.cIdx <= targetIdx) el.cIdx--
-        //         });
-        //         else findTask.map(el => {
-        //             if(cIdx > el.cIdx && el.cIdx >= targetIdx) el.cIdx++
-        //         });
-        //         findTask[index].cIdx = targetIdx;
-        //         taskRepo.save(findTask); 
+            if(boardId === targetId) {
+                if(cIdx < targetIdx) findTask.map(el => {
+                    if(cIdx < el.cIdx && el.cIdx <= targetIdx) el.cIdx--
+                });
+                else findTask.map(el => {
+                    if(cIdx > el.cIdx && el.cIdx >= targetIdx) el.cIdx++
+                });
+                findTask[index].cIdx = targetIdx;
+                taskRepo.save(findTask); 
             
-        //     } else {
-        //         const lastIdx = Math.max(...targetTask.map(el => el.cIdx));
-        //         await taskRepo.createQueryBuilder()
-        //             .relation(Board, "tasks")
-        //             .of(boardId)
-        //             .remove(task[0].id)
-        //         await taskRepo.joinTaskToBoard(targetId, task[0].id);
+            } else {
+                const updateRepo = getCustomRepository(UpdateRepo);
+                const lastIdx = Math.max(...targetTask.map(el => el.cIdx));
+                await updateRepo.createQueryBuilder()
+                    .relation(Board, "tasks")
+                    .of(boardId)
+                    .remove(task[0].id)
+                await updateRepo.joinTaskToBoard(targetId, task[0].id);
             
-        //         if(lastIdx === targetIdx) {
-        //             findTask[index].cIdx = targetIdx + 1;
-        //         } else { 
-        //             targetTask.map(el => {
-        //                 if(el.cIdx >= targetIdx) el.cIdx++
-        //             });
-        //             findTask[index].cIdx = targetIdx;
-        //         }
-        //         taskRepo.save(findTask);
-        //         taskRepo.save(targetTask);
-        //     }
+                if(lastIdx === targetIdx) {
+                    findTask[index].cIdx = targetIdx + 1;
+                } else { 
+                    targetTask.map(el => {
+                        if(el.cIdx >= targetIdx) el.cIdx++
+                    });
+                    findTask[index].cIdx = targetIdx;
+                }
+                updateRepo.save(findTask);
+                updateRepo.save(targetTask);
+            }
 
-        //     const customBoardRepo = getCustomRepository(BoardRepo);
-        //     const results = await customBoardRepo.findAllBoard(findTask[0].projectId);
+            const customBoardRepo = getCustomRepository(BoardRepo);
+            const results = await customBoardRepo.findAllBoard(findTask[0].projectId);
             
-        //     const init: { [key: string]: object[] } = {}
-        //     const tasks = results.reduce((a,c) => {
-        //         a[c.id] = {...c.tasks.map(el => el)};
-        //         return a;
-        //     }, init);
+            const init: { [key: string]: object[] } = {}
+            const tasks = results.reduce((a,c) => {
+                a[c.id] = {...c.tasks.map(el => el)};
+                return a;
+            }, init);
 
-        //     const columns: { [key: string]: any } = {}
-        //     for (let i=0; i < results.length; i++) {
-        //         const result = results[i];
-        //         columns[result.id] = result;
-        //     }
-        //     const columnOrder = results.map(el => el.id);
-        //     const initialData = { tasks, columns, columnOrder };
+            const columns: { [key: string]: any } = {}
+            for (let i=0; i < results.length; i++) {
+                const result = results[i];
+                columns[result.id] = result;
+            }
+            const columnOrder = results.map(el => el.id);
+            const initialData = { tasks, columns, columnOrder };
             
-        //     res.status(200).send({
-        //         success: true,
-        //         initialData
-        //     });
-        // } catch (e) {
-        //     e.message === 'task'
-        //     ? res.status(202).send({
-        //         success: false,
-        //         message: '태스크가 존재하지 않습니다' 
-        //     })
-        //     : res.status(500).send('server error')
-        // }
+            res.status(200).send({
+                success: true,
+                initialData
+            });
+        } catch (e) {
+            e.message === 'task'
+            ? res.status(202).send({
+                success: false,
+                message: '태스크가 존재하지 않습니다' 
+            })
+            : res.status(500).send('server error')
+        }
     },
 
     checkTask: async (req: TypeReq<TaskProps>, res: Response) => {
-    //     try{
-    //         const taskRepo = getCustomRepository(TaskRepo);
-    //         const findTask = await taskRepo.findTask(req.body)
-    //         if(!findTask) throw new Error('task');
+        try{
+            const taskRepo = getCustomRepository(TaskRepo);
+            const updateRepo = getCustomRepository(UpdateRepo);
+            const findTask = await taskRepo.findTask(req.body);
+            if(!findTask) throw new Error('task');
 
-    //         !findTask.completed
-    //         ? await taskRepo.checkTask(findTask.id, true)
-    //         : await taskRepo.checkTask(findTask.id, false);
+            !findTask.completed
+            ? await updateRepo.checkTask(findTask.id, true)
+            : await updateRepo.checkTask(findTask.id, false);
             
-    //         res.status(200).send({
-    //             success: true,
-    //             data: findTask
-    //         });
-    //     } catch (e) {
-    //         e.message === 'task'
-    //         ? res.status(202).send({
-    //             success: false,
-    //             message: '태스크가 존재하지 않습니다'
-    //         })
-    //         : res.status(500).send('server error');
-    //     }
+            res.status(200).send({
+                success: true,
+                data: findTask
+            });
+        } catch (e) {
+            e.message === 'task'
+            ? res.status(202).send({
+                success: false,
+                message: '태스크가 존재하지 않습니다'
+            })
+            : res.status(500).send('server error');
+        }
     },
 }
 
