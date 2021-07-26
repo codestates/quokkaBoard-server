@@ -21,7 +21,7 @@ export class UpdateRepo extends Repository <Task> {
         .execute();
     }
 
-    joinTagToTask(labelId: number, tagId: string | string[]) {
+    joinTagToTask(labelId: number, tagId: string) {
         return this
         .createQueryBuilder()
         .relation(Task, "tags")
