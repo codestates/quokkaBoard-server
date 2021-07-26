@@ -10,9 +10,8 @@ const kanban = {
     createBoard: async (req: TypeReq<StrProps>, res: Response) => {
         try {
             const { projectId, boardTitle } = req.body;
-            const boardRepo = getRepository(Board);
-            const customBoardRepo = getCustomRepository(BoardRepo);
-            const uniqNum = await customBoardRepo.getMaxIdx();
+            const boardRepo = getCustomRepository(BoardRepo);
+            const uniqNum = await boardRepo.getMaxIdx();
             
             const newBoard = new Board();
             newBoard.title = boardTitle;
@@ -34,11 +33,12 @@ const kanban = {
 
     removeBoard: async (req: TypeReq<StrProps>, res: Response) => {
         try {
+            const boardId = req.body.boardId;
             const boardRepo = getCustomRepository(BoardRepo);
-            const findBoard = await boardRepo.findBoard(req.body);
+            const findBoard = await boardRepo.findBoard(boardId);
             if(!findBoard) throw Error;
 
-            const findTask = await boardRepo.findTaskOnly(req.body);
+            const findTask = await boardRepo.findTaskOnly(boardId);
             boardRepo.delete({id: findBoard.id});
             
             res.status(200).send({ 
@@ -55,20 +55,28 @@ const kanban = {
 
     updateBoard: async (req: TypeReq<StrProps>, res: Response) => {
         try {
+            const boardId = req.body.boardId;
             const boardRepo = getCustomRepository(BoardRepo);
-            const findBoard = await boardRepo.findBoard(req.body);
-            if(!findBoard) throw Error;
+            const findBoard = await boardRepo.findBoard(boardId);
+            if(!findBoard) throw new Error('board');
 
-            boardRepo.updateTitle(req.body);
+            await boardRepo.createQueryBuilder("board")
+                .update(Board)
+                .set({title: req.body.boardTitle})
+                .where({id: boardId})
+                .execute();
+            
             res.status(200).send({
                 success: true,
                 message: '타이틀이 변경 되었습니다'
             });
         } catch (e) {
-            res.status(202).send({
+            e.message === 'board'
+            ? res.status(202).send({
                 success: false,
-                message: '보드가 존재하지 않습니다' 
-            });
+                message: '보드가 존재하지 않습니다'
+            })
+            : res.status(500).send('server error');
         }
     },
 
@@ -108,7 +116,7 @@ const kanban = {
             const { bIdx, targetIdx } = req.body
             const boardRepo = getRepository(Board);
             const findBoard = await boardRepo.findOne({where: {bIdx: bIdx}});
-            if(!findBoard) throw Error;
+            if(!findBoard) throw new Error('board');
 
             const customBoardRepo = getCustomRepository(BoardRepo);
             const results = await customBoardRepo.findAllBoard(findBoard.projectId);
@@ -122,7 +130,7 @@ const kanban = {
                 if(bIdx > el.bIdx && el.bIdx >= targetIdx) el.bIdx++
             });
             results[index].bIdx = targetIdx;
-            boardRepo.save(results);
+            await boardRepo.save(results);
 
             const init: { [key: string]: object[] } = {}
             const tasks = results.reduce((a,c) => {
@@ -143,10 +151,12 @@ const kanban = {
                 initialData
             });
         } catch (e) {
-            res.status(202).send({
+            e.message === 'board'
+            ? res.status(202).send({
                 success: false,
                 message: '보드가 존재하지 않습니다' 
-            });
+            })
+            : res.status(500).send('server error');
         }
     }
 }

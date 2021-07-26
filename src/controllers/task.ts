@@ -11,12 +11,12 @@ const task = {
 
     createTask: async (req: TypeReq<StrArrProps>, res: Response) => {
         try {
-            const { title, dueDate, tagId, userId } = req.body;
+            const { title, dueDate, tagId, userId, boardId } = req.body;
             const boardRepo = getCustomRepository(BoardRepo);
             const taskRepo = getCustomRepository(TaskRepo);
             
             const uniqNum = await taskRepo.getMaxIdx();
-            const findBoard = await boardRepo.findBoard(req.body);
+            const findBoard = await boardRepo.findBoard(boardId as string);
             if(!findBoard) throw new Error('board');
             
             const newTask = new Task();
