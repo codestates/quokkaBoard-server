@@ -1,6 +1,6 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { User } from '../entity/User';
-import { StrProps, StrArrProps } from '@types';
+import { StrProps, StrArrProps } from '../../types';
 
 
 @EntityRepository(User)
@@ -58,24 +58,6 @@ export class UserRepo extends Repository <User> {
             projectId: data.projectId
         })
         .getRawMany();
-    }
-
-    modifyNickName(id: string, nickname: string) {
-        return this
-        .createQueryBuilder("user")
-        .update(User)
-        .set({nickname: nickname})
-        .where({id: id})
-        .execute();
-    }
-
-    modifyPassword(id: string, password: string) {
-        return this
-        .createQueryBuilder("user")
-        .update(User)
-        .set({password: password})
-        .where({id: id})
-        .execute();
     }
 
     saveRefToken(id: string, refToken: string | null) {

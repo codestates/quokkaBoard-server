@@ -48,9 +48,9 @@ const member = {
             })
             if(!followingUser || !followerUser) throw new Error('user');
             
-            const follow = await customFollowRepo.checkFollow(followingUser);         
-            const check = follow.filter(el => el.userId === followerId)
-            if(check.length !== 0) throw Error;
+            // const follow = await customFollowRepo.checkFollow(followingUser);         
+            // const check = follow.filter(el => el.userId === followerId)
+            // if(check.length !== 0) throw Error;
             
             const newFollowRepo = followRepo.create({
                 following: followingUser, 
@@ -86,14 +86,14 @@ const member = {
             const followerUser = await userRepo.findOne({where: {id: followerId}});
             if(!followingUser || !followerUser) throw new Error('user');
             
-            const follow = await customFollowRepo.checkFollow(followingUser);         
-            const check = follow.filter(el => el.userId === followerId)
-            if(!check) throw Error;
-            followRepo.delete({id: check[0].id})
+            // const follow = await customFollowRepo.checkFollow(followingUser);         
+            // const check = follow.filter(el => el.userId === followerId)
+            // if(!check) throw Error;
+            // followRepo.delete({id: check[0].id})
             
             res.status(200).send({
                 success: true,
-                data: check
+                // data: check
             });
         } catch (e) {
             e.message === 'user'
@@ -112,13 +112,14 @@ const member = {
         try {
             const userRepo = getRepository(User);
             const followRepo = getCustomRepository(FollowRepo);
-            const followingUser = await userRepo.findOne({
-                where: {id: req.body.userId}
-            });
+            // const followingUser = await userRepo.findOne({
+            //     where: {id: req.body.userId}
+            // });
 
-            if(!followingUser) throw Error;
-            const follow = await followRepo.checkFollow(followingUser);
-            
+            // if(!followingUser) throw Error;
+            // const follow = await followRepo.checkFollow(followingUser);
+            const follow = await followRepo.checkFollow(req.body);
+
             res.status(200).send({
                 success: true,
                 data: follow

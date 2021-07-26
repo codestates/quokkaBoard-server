@@ -1,9 +1,9 @@
 import { Response } from 'express';
 import { getCustomRepository, getRepository } from 'typeorm';
-import { User } from '@entity/User';
-import { UserRepo } from '@repo/userQ';
-import { TypeReq, StrProps, StrArrProps } from '@types';
-import jwtToken from '@token/jwt';
+import { User } from '../db/entity/User';
+import { UserRepo } from '../db/repo/userQ';
+import { TypeReq, StrProps, StrArrProps } from '../types';
+import jwtToken from '../token/jwt';
 import axios from "axios";
 
 
@@ -106,10 +106,10 @@ const user = {
         }
     },
 
-    logout: (req: TypeReq<StrProps>, res: Response) => {
+    logout: async (req: TypeReq<StrProps>, res: Response) => {
         try {
             const userRepo = getCustomRepository(UserRepo);
-            userRepo.saveRefToken(req.body.userId, null);
+            await userRepo.saveRefToken(req.body.userId, null);
 
             res.status(200).clearCookie('accessToken').send({ 
                 success: true, 

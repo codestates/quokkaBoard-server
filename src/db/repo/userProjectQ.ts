@@ -26,8 +26,8 @@ export class UserProjectRepo extends Repository <UserProject> {
         .getMany();
     }
 
-    async findUserInProject(data: StrProps) {
-        return await this
+    findUserInProject(data: StrProps) {
+        return this
         .createQueryBuilder("user_project")
         .innerJoin("user_project.user", "user")
         .select([
