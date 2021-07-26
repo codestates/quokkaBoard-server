@@ -40,19 +40,6 @@ export default class CreateUsers implements Seeder {
         );
         await connection.getRepository(Tag).save(projectLabels);
 
-        // const userProject = [
-        //     { authority: "MASTER", userId: findUser[0].id, projectId: findProject[0].id },
-        //     { authority: "MASTER", userId: findUser[0].id, projectId: findProject[1].id },
-        //     { authority: "MASTER", userId: findUser[0].id, projectId: findProject[2].id },
-        //     { authority: "MASTER", userId: findUser[1].id, projectId: findProject[3].id },
-        //     { authority: "MASTER", userId: findUser[2].id, projectId: findProject[4].id },
-        //     { authority: "ADMIN", userId: findUser[0].id, projectId: findProject[3].id },
-        //     { authority: "ADMIN", userId: findUser[0].id, projectId: findProject[4].id },
-        //     { authority: "ADMIN", userId: findUser[1].id, projectId: findProject[0].id },
-        //     { authority: "ADMIN", userId: findUser[2].id, projectId: findProject[1].id }
-        // ];
-        // await connection.getRepository(UserProject).save(userProject);
-
         const copyFindUser = findUser.slice();
         for(let i=0; i < findProject.length; i++) {
             let users = copyFindUser.splice(0, 3);
@@ -67,6 +54,14 @@ export default class CreateUsers implements Seeder {
             await connection
                 .getCustomRepository(UserProjectRepo)
                 .addProjectMember(userData);
+        }
+
+        for(let i=0; i < findProject.length; i++) {
+            let users = await connection.getRepository(UserProject).find({
+                where: {projectId: findProject[i]}
+            });
+            
+            // await connection.getCustomRepository(UserProjectRepo).changeUserAuth()
         }
 
         const boardSeed: object[] = [];

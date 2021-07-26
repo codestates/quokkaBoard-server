@@ -1,9 +1,9 @@
 import { Response } from 'express';
 import { getCustomRepository, getRepository } from 'typeorm';
-import { UserRepo } from '@repo/userQ';
-import { User } from '@entity/User';
-import { TypeReq, StrProps, StrArrProps } from '@types';
-import jwtToken from '@token/jwt';
+import { UserRepo } from '../db/repo/userQ';
+import { User } from '../db/entity/User';
+import { TypeReq, StrProps, StrArrProps } from '../types';
+import jwtToken from '../token/jwt';
 
 
 const modify = {
@@ -11,31 +11,37 @@ const modify = {
     nickname: async (req: TypeReq<StrArrProps>, res: Response) => {
         try {
             let { nickname } = req.body;
-            const userRepo = getRepository(User);
-            const customUserRepo = getCustomRepository(UserRepo);
-            
+            const userRepo = getCustomRepository(UserRepo);
             delete req.body.nickname;
-            const findUser = await customUserRepo.findUser(req.body);
-            const findNickName = await userRepo.findOne({where: {nickname: nickname}});
-            if(findUser.length === 0 || findNickName) throw Error;
-            
+
+            const findUser = await userRepo.findUser(req.body);
+            const findNickName = await userRepo.findOne(
+                {where: {nickname: nickname}
+            });
+            if(findUser.length === 0 || findNickName) throw new Error('user');
             if(nickname.length === 0) nickname = findUser[0].nickname;
-            customUserRepo.modifyNickName(findUser[0].id, nickname as string);
+            
+            await userRepo.createQueryBuilder("user")
+                .update(User)
+                .set({nickname: nickname as string})
+                .where({id: findUser[0].id})
+                .execute();
 
             res.status(200).send({ success: true });
         } catch (e) {
-            res.status(202).send({ 
+            e.message === 'user'
+            ? res.status(202).send({ 
                 success: false, 
                 message: '잘못된 요청입니다' 
-            });
+            })
+            : res.status(202).send('server error');
         }
     },
 
     password: async (req: TypeReq<StrProps>, res: Response) => {
         try {
             const { userId, password, newpassword } = req.body;
-            const userRepo = getRepository(User);
-            const customUserRepo = getCustomRepository(UserRepo);
+            const userRepo = getCustomRepository(UserRepo);
             const findUser = await userRepo.findOne({where: {id: userId}});
 
             if(!findUser) throw new Error('id');
@@ -43,11 +49,11 @@ const modify = {
             else {
                 findUser.password = newpassword;
                 findUser.hashPass();
-                userRepo.save(findUser);
+                await userRepo.save(findUser);
 
                 const accToken = jwtToken.mintAccessToken(userId);
                 const refToken = jwtToken.mintRefreshToken(userId);
-                customUserRepo.saveRefToken(userId, refToken);
+                await userRepo.saveRefToken(userId, refToken);
                 
                 res.clearCookie('accessToken');
                 res.cookie('accessToken', accToken, { 

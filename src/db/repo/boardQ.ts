@@ -1,15 +1,14 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { Board } from '@entity/Board';
-import { StrArrProps, StrProps } from '@types';
+import { Board } from '../entity/Board';
 
 
 @EntityRepository(Board)
 export class BoardRepo extends Repository <Board> {
 
-    findBoard(data: StrArrProps) {
+    findBoard(boardId: string) {
         return this
         .createQueryBuilder("board")
-        .where({id: data.boardId as string})
+        .where({id: boardId})
         .getOne();
     }
 
@@ -22,32 +21,23 @@ export class BoardRepo extends Repository <Board> {
         return idx.max;
     }
 
-    findTaskOnly(data: StrProps) {
+    findTaskOnly(boardId: string) {
         return this
         .createQueryBuilder("board")
         .innerJoinAndSelect("board.tasks", "task")
         .select(["task"])
-        .where({id: data.boardId})
+        .where({id: boardId})
         .orderBy("task.cIdx", "ASC")
         .getRawMany();
     }
 
-    updateTitle(data: StrProps) {
-        return this
-        .createQueryBuilder("board")
-        .update(Board)
-        .set({title: data.boardTitle})
-        .where({id: data.boardId})
-        .execute();
-    }
-
-    joinTaskToBoard(boardId: string, taskId: string) {
-        return this
-        .createQueryBuilder()
-        .relation(Board, "tasks")
-        .of(boardId)
-        .add(taskId)
-    }
+    // joinTaskToBoard(boardId: string, taskId: string) {
+    //     return this
+    //     .createQueryBuilder()
+    //     .relation(Board, "tasks")
+    //     .of(boardId)
+    //     .add(taskId)
+    // }
 
     findAllBoard(id: string) {
         return this

@@ -1,10 +1,9 @@
 import { Response } from 'express';
 import { getCustomRepository, getRepository } from 'typeorm';
-import { Follow } from '@entity/Follow';
-import { UserRepo } from '@repo/userQ';
-import { TypeReq, StrProps } from '@types';
-import { User } from '@entity/User';
-import { FollowRepo } from '@repo/followQ';
+import { UserRepo } from '../db/repo/userQ';
+import { TypeReq, StrProps } from '../types';
+import { User } from '../db/entity/User';
+import { FollowRepo } from '../db/repo/followQ';
 
 
 const member = {
@@ -35,8 +34,7 @@ const member = {
         try {
             const { userId, followerId } = req.body
             const userRepo = getRepository(User);
-            const followRepo = getRepository(Follow);
-            const customFollowRepo = getCustomRepository(FollowRepo);
+            const followRepo = getCustomRepository(FollowRepo);
             
             const followingUser = await userRepo.findOne({
                 select: ['id', 'nickname', 'email', 'image'],
@@ -48,9 +46,9 @@ const member = {
             })
             if(!followingUser || !followerUser) throw new Error('user');
             
-            const follow = await customFollowRepo.checkFollow(followingUser);         
+            const follow = await followRepo.checkFollow(followingUser);         
             const check = follow.filter(el => el.userId === followerId)
-            if(check.length !== 0) throw Error;
+            if(check.length !== 0) throw new Error('user');
             
             const newFollowRepo = followRepo.create({
                 following: followingUser, 
@@ -66,12 +64,9 @@ const member = {
             e.message === 'user'
             ? res.status(202).send({
                 success: false,
-                message: "존재하지 않는 사용자입니다"
+                message: "잘못된 요청입니다"
             })
-            : res.status(202).send({
-                success: false,
-                message: "이미 추가된 사용자입니다"
-            });
+            : res.status(202).send('server error');
         }
     },
 
@@ -79,16 +74,15 @@ const member = {
         try {
             const { userId, followerId } = req.body
             const userRepo = getRepository(User);
-            const followRepo = getRepository(Follow);
-            const customFollowRepo = getCustomRepository(FollowRepo);
+            const followRepo = getCustomRepository(FollowRepo);
             
             const followingUser = await userRepo.findOne({where: {id: userId}});
             const followerUser = await userRepo.findOne({where: {id: followerId}});
             if(!followingUser || !followerUser) throw new Error('user');
             
-            const follow = await customFollowRepo.checkFollow(followingUser);         
+            const follow = await followRepo.checkFollow(followingUser);         
             const check = follow.filter(el => el.userId === followerId)
-            if(!check) throw Error;
+            if(!check) throw new Error('user');
             followRepo.delete({id: check[0].id})
             
             res.status(200).send({
@@ -99,12 +93,9 @@ const member = {
             e.message === 'user'
             ? res.status(202).send({
                 success: false,
-                message: "존재하지 않는 사용자입니다"
+                message: "잘못된 요청입니다"
             })
-            : res.status(202).send({
-                success: false,
-                message: "이미 삭제된 사용자입니다"
-            });
+            : res.status(202).send('server error');
         }
     },
 
@@ -116,7 +107,7 @@ const member = {
                 where: {id: req.body.userId}
             });
 
-            if(!followingUser) throw Error;
+            if(!followingUser) throw new Error('user');
             const follow = await followRepo.checkFollow(followingUser);
             
             res.status(200).send({
@@ -124,10 +115,12 @@ const member = {
                 data: follow
             });
         } catch (e) {
-            res.status(202).send({
+            e.message === 'user'
+            ? res.status(202).send({
                 success: false,
-                message: "존재하지 않는 사용자입니다"
-            });
+                message: "잘못된 요청입니다"
+            })
+            : res.status(202).send('server error')
         }
     }
 }
