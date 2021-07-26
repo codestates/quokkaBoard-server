@@ -1,8 +1,8 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { Task } from '../entity/Task';
-import { TaskProps } from '@types';
+import { TaskProps } from '../../types';
 import { Board } from '../entity/Board';
-import { UserProject } from '@entity/UserProject';
+import { UserProject } from '../entity/UserProject';
 
 
 @EntityRepository(Task)
@@ -73,14 +73,6 @@ export class TaskRepo extends Repository <Task> {
         .add(ids)
     }
 
-    removeAssignee(taskId: string, ids: UserProject[]) {
-        return this
-        .createQueryBuilder()
-        .relation(Task, "user_projects")
-        .of(taskId)
-        .remove(ids)
-    }
-
     findTaskInBoard(id: string) {
         return this
         .createQueryBuilder("task")
@@ -88,14 +80,6 @@ export class TaskRepo extends Repository <Task> {
         .where("board.id = :id", {id: id})
         .orderBy("task.cIdx", "ASC")
         .getMany();
-    }
-
-    removeTaskToBoard(boardId: string, taskId: string) {
-        return this
-        .createQueryBuilder()
-        .relation(Board, "tasks")
-        .of(boardId)
-        .remove(taskId)
     }
 
     joinTaskToBoard(boardId: string, taskId: string | string[]) {

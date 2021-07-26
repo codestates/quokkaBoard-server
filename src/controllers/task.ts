@@ -1,10 +1,11 @@
 import { Response } from 'express';
-import { getRepository, getCustomRepository } from 'typeorm';
-import { Task } from '@entity/Task';
-import { TaskRepo } from '@repo/taskQ';
-import { TypeReq, TaskProps, ShiftProps, StrArrProps, StrProps } from '@types';
-import { BoardRepo } from '@repo/boardQ';
-import { UserProjectRepo } from '@repo/userProjectQ';
+import { getCustomRepository } from 'typeorm';
+import { Task } from '../db/entity/Task';
+import { TaskRepo } from '../db/repo/taskQ';
+import { TypeReq, TaskProps, ShiftProps, StrArrProps } from '../types';
+import { BoardRepo } from '../db/repo/boardQ';
+import { UserProjectRepo } from '../db/repo/userProjectQ';
+import { Board } from '@entity/Board';
 
 
 const task = {
@@ -162,7 +163,11 @@ const task = {
             const userProjectId = await userProjectRepo.findUserProjectId(userId, findProject.projectId);
             if(userProjectId.length === 0 ) throw Error;
 
-            await taskRepo.removeAssignee(taskId, userProjectId);
+            await taskRepo.createQueryBuilder()
+                .relation(Task, "user_projects")
+                .of(taskId)
+                .remove(userProjectId)
+
             res.status(200).send({success: true});
         } catch (e) {
             res.status(202).send({
@@ -196,8 +201,11 @@ const task = {
             
             } else {
                 const lastIdx = Math.max(...targetTask.map(el => el.cIdx));
-                taskRepo.removeTaskToBoard(boardId, task[0].id);
-                taskRepo.joinTaskToBoard(targetId, task[0].id);
+                await taskRepo.createQueryBuilder()
+                    .relation(Board, "tasks")
+                    .of(boardId)
+                    .remove(task[0].id)
+                await taskRepo.joinTaskToBoard(targetId, task[0].id);
             
                 if(lastIdx === targetIdx) {
                     findTask[index].cIdx = targetIdx + 1;
@@ -233,10 +241,12 @@ const task = {
                 initialData
             });
         } catch (e) {
-            res.status(202).send({
+            e.message === 'task'
+            ? res.status(202).send({
                 success: false,
                 message: '태스크가 존재하지 않습니다' 
-            });
+            })
+            : res.status(500).send('server error')
         }
     },
 
@@ -260,7 +270,7 @@ const task = {
                 success: false,
                 message: '태스크가 존재하지 않습니다'
             })
-            : res.status(202).send('server error');
+            : res.status(500).send('server error');
         }
     },
 }
