@@ -1,22 +1,19 @@
-import { NextFunction, Response } from 'express';
+import { Response } from 'express';
 import { getRepository, getCustomRepository } from 'typeorm';
-import { Project } from '@entity/Project';
-import { UserProject } from '@entity/UserProject';
-import { UserRepo } from '@repo/userQ';
-import { ProjectRepo } from '@repo/projectQ';
-import { UserProjectRepo } from '@repo/userProjectQ';
-import { TypeReq, StrProps, StrArrProps } from '@types';
-import { defaultLabel } from '@data/tagData';
-import { Tag } from '@entity/Tag';
+import { Project } from '../db/entity/Project';
+import { UserProject } from '../db/entity/UserProject';
+import { UserRepo } from '../db/repo/userQ';
+import { ProjectRepo, UserProjectRepo } from '../db/repo/userProjectQ';
+import { TypeReq, StrProps, StrArrProps } from '../types';
+import { defaultLabel } from '../data/tagData';
+import { Tag } from '../db/entity/Tag';
 
 
 const project = {
 
-    createProject: async (req: TypeReq<StrProps>, res: Response, next: NextFunction) => {
+    createProject: async (req: TypeReq<StrProps>, res: Response) => {
         try {
-            const { 
-                title, description, startDate, endDate 
-            } = req.body;
+            const { title, description, startDate, endDate } = req.body;
             const projectRepo = getRepository(Project);
             const userRepo = getCustomRepository(UserRepo);
             const userProjectRepo = getRepository(UserProject);
@@ -34,7 +31,7 @@ const project = {
             newUserProject.authority = 'MASTER';
             newUserProject.userId = findUser[0].id;
             newUserProject.projectId = findProject.id;
-            userProjectRepo.save(newUserProject);
+            await userProjectRepo.save(newUserProject);
 
             const labels: [{[key: string]: string}] = defaultLabel as any;
             const projectLabels: object[] = [];
@@ -65,22 +62,19 @@ const project = {
             const userProjectRepo = getCustomRepository(UserProjectRepo);
             const findAuth = await userProjectRepo.findAuthProject(req.body);
 
-            if(!findAuth) throw new Error('id');
-            if(findAuth.authority !== 'MASTER') throw Error;
+            if(!findAuth) throw new Error('user');
+            if(findAuth.authority !== 'MASTER') throw new Error('user');
             else {
-                projectRepo.delete({ id: findAuth.projectId });
-                res.status(200).send({ success: true });
+                projectRepo.delete({id: findAuth.projectId});
+                res.status(200).send({success: true});
             }
         } catch (e) {
-            return e.message === 'id'
+            return e.message === 'user'
             ? res.status(202).send({ 
                 success: false,
                 message: '잘못된 프로젝트 정보입니다'
             })
-            : res.status(202).send({ 
-                success: false,
-                message: '권한이 없습니다'
-            });
+            : res.status(202).send('server error');
         }
     },
 
@@ -100,7 +94,14 @@ const project = {
                 projectId: findUser[0].projectId as string,
                 authority: authority
             }
-            await userProjectRepo.changeUserAuth(data);
+            await userProjectRepo.createQueryBuilder("user_project")
+                .update(UserProject)
+                .set({authority: authority})
+                .where({
+                    userId: findUser[0].userId,
+                    projectId: findUser[0].projectId
+                })
+                .execute();
             findUser[0].authority = authority;
 
             res.status(200).send({ 
@@ -128,24 +129,28 @@ const project = {
             const userProjectRepo = getCustomRepository(UserProjectRepo);
             const findProject = await projectRepo.findProject(projectId);
             const findUser = await userProjectRepo.findAuthProject(req.body);
-            
-            if(!findProject) throw new Error('id');
-            if(!findUser) throw new Error('user');
+            if(!findProject || !findUser) throw new Error('user');
             
             req.body.title = req.body.title || findProject.title;
-            await projectRepo.editProject(req.body);
+            await projectRepo.createQueryBuilder("project")
+                .update(Project)
+                .set({
+                    title: req.body.title,
+                    description: req.body.description,
+                    start_date: req.body.startDate,
+                    end_date: req.body.endDate
+                })
+                .where({id: projectId})
+                .execute();
             
-            res.status(200).send({ success: true });
+            res.status(200).send({success: true});
         } catch (e) {
-            if(e.message === 'id') res.status(202).send({
+            e.message === 'user'
+            ? res.status(202).send({
                 success: false, 
-                message: '존재하지 않는 프로젝트입니다'
-            });
-            if (e.message === 'user') res.status(202).send({
-                success: false, 
-                message: '프로젝트 사용자가 아닙니다'
-            });
-            else res.status(500).send('server error');
+                message: '잘못된 요청입니다'
+            })
+            : res.status(500).send('server error');
         }
     },
 
@@ -180,7 +185,11 @@ const project = {
                         authority: 'READ'
                     });
                 });
-                await userProjectRepo.addProjectMember(userData);
+                await userProjectRepo.createQueryBuilder("user_project")
+                    .insert()
+                    .into(UserProject)
+                    .values(userData)
+                    .execute();
             
                 res.status(200).send({ 
                     success: true,

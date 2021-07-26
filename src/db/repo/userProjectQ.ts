@@ -1,7 +1,19 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { UserProject } from '@entity/UserProject';
-import { StrProps } from '@types';
+import { Project } from '../entity/Project';
+import { UserProject } from '../entity/UserProject';
+import { StrProps } from '../../types';
 
+@EntityRepository(Project)
+export class ProjectRepo extends Repository <Project> {
+    
+    findProject(id: string) {
+        return this
+        .createQueryBuilder("project")
+        .where({id: id})
+        .getOne();
+    }
+
+}
 
 @EntityRepository(UserProject)
 export class UserProjectRepo extends Repository <UserProject> {
@@ -75,27 +87,6 @@ export class UserProjectRepo extends Repository <UserProject> {
         ])
         .where({projectId: data.projectId})
         .getRawMany();
-    }
-
-    changeUserAuth(data: StrProps) {
-        return this
-        .createQueryBuilder("user_project")
-        .update(UserProject)
-        .set({authority: data.authority})
-        .where({
-            userId: data.userId, 
-            projectId: data.projectId
-        })
-        .execute();
-    }
-
-    addProjectMember(userData: object) {
-        return this
-        .createQueryBuilder("user_project")
-        .insert()
-        .into(UserProject)
-        .values(userData)
-        .execute();
     }
    
 }
