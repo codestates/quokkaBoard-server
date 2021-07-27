@@ -69,13 +69,13 @@ const user = {
         }
     },
 
-    login: async (req: TypeReq<StrArrProps>, res: Response) => {
+    login: async (req: TypeReq<StrProps>, res: Response) => {
         try {
             const userRepo = getCustomRepository(UserRepo);
             const findUser = await userRepo.findUser(req.body);
             
             if(findUser.length === 0) throw new Error('id');
-            if(!findUser[0].checkPass(req.body.password as string))
+            if(!findUser[0].checkPass(req.body.password))
             throw new Error('password');
             else {
                 const { id, nickname, email, image } = findUser[0];
@@ -83,11 +83,11 @@ const user = {
                 const refToken = jwtToken.mintRefreshToken(id);
                 await userRepo.saveRefToken(id, refToken);
                 
-                res.cookie('accessToken', accToken, { 
-                    httpOnly: true, 
-                    sameSite: 'none', 
-                    secure: true 
-                });
+                // res.cookie('accessToken', accToken, { 
+                //     httpOnly: true, 
+                //     sameSite: 'none', 
+                //     secure: true 
+                // });
                 res.status(200).send({ 
                     success: true, 
                     data: { id, nickname, email, image }

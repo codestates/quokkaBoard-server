@@ -31,14 +31,6 @@ export class BoardRepo extends Repository <Board> {
         .getRawMany();
     }
 
-    // joinTaskToBoard(boardId: string, taskId: string) {
-    //     return this
-    //     .createQueryBuilder()
-    //     .relation(Board, "tasks")
-    //     .of(boardId)
-    //     .add(taskId)
-    // }
-
     findAllBoard(id: string) {
         return this
         .createQueryBuilder("board")
@@ -49,4 +41,5 @@ export class BoardRepo extends Repository <Board> {
         .addOrderBy("task.cIdx", "ASC")
         .getMany();
     }
+    
 }

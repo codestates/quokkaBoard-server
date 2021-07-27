@@ -1,9 +1,9 @@
 import { Response } from 'express';
 import { getRepository, getCustomRepository } from 'typeorm';
-import { Tag } from '@entity/Tag'
-import { TaskRepo } from '@repo/taskQ';
-import { TagRepo } from '@repo/tagQ'
-import { TypeReq, StrProps, StrNumProps, TaskProps } from '@types';
+import { Tag } from '../db/entity/Tag'
+import { TaskRepo } from '../db/repo/taskQ';
+import { TagRepo } from '../db/repo/tagQ'
+import { TypeReq, StrProps, StrNumProps, TaskProps } from '../types';
 
 
 const tag = {
@@ -44,7 +44,15 @@ const tag = {
             const findTag = await tagRepo.findTag(req.body);
             if(!findTag) throw new Error('tag');
 
-            await tagRepo.updateTag(req.body)
+            await tagRepo.createQueryBuilder("tag")
+                .update(Tag)
+                .set({
+                    content: req.body.content as string,
+                    hex: req.body.hex as string
+                })
+                .where({id: req.body.tagId})
+                .execute();
+
             res.status(200).send({success: true});
         } catch (e) {
             e.message = 'tag'
