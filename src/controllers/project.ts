@@ -5,8 +5,9 @@ import { UserProject } from '../db/entity/UserProject';
 import { UserRepo } from '../db/repo/userQ';
 import { ProjectRepo, UserProjectRepo } from '../db/repo/userProjectQ';
 import { TypeReq, StrProps, StrArrProps } from '../types';
-import { defaultLabel } from '../data/tagData';
+import { defaultLabel } from '../db/data/tagData';
 import { Tag } from '../db/entity/Tag';
+import { convertDate } from '../util/date';
 
 
 const project = {
@@ -19,12 +20,15 @@ const project = {
             const userProjectRepo = getRepository(UserProject);
             const findUser = await userRepo.findUser(req.body);
             if(findUser.length === 0) throw new Error('user');
+
+            const start_date = convertDate(startDate);
+            const end_date = convertDate(endDate);
         
             const newProject = new Project();
             newProject.title = title;
             newProject.description = description;
-            newProject.start_date = startDate;
-            newProject.end_date = endDate;
+            newProject.start_date = start_date;
+            newProject.end_date = end_date;
             const findProject = await projectRepo.save(newProject);
             
             const newUserProject = new UserProject();

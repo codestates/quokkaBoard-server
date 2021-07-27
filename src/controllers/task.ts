@@ -1,12 +1,13 @@
-import { Response } from 'express';
-import { getCustomRepository } from 'typeorm';
-import { Task } from '../db/entity/Task';
-import { Board } from '../db/entity/Board';
-import { TaskRepo } from '../db/repo/taskQ';
-import { TypeReq, TaskProps, ShiftProps, StrArrProps } from '../types';
-import { BoardRepo } from '../db/repo/boardQ';
-import { UserProjectRepo } from '../db/repo/userProjectQ';
-import { UpdateRepo } from '../db/repo/updateQ';
+import { Response } from 'express'
+import { convertDate } from '../util/date'
+import { getCustomRepository } from 'typeorm'
+import { Task } from '../db/entity/Task'
+import { Board } from '../db/entity/Board'
+import { TaskRepo } from '../db/repo/taskQ'
+import { BoardRepo } from '../db/repo/boardQ'
+import { UpdateRepo } from '../db/repo/updateQ'
+import { UserProjectRepo } from '../db/repo/userProjectQ'
+import { TypeReq, TaskProps, ShiftProps, StrArrProps } from '../types'
 
 
 const task = {
@@ -21,9 +22,10 @@ const task = {
             const findBoard = await boardRepo.findBoard(boardId as string);
             if(!findBoard) throw new Error('board');
             
+            const due_date = convertDate(dueDate as string);
             const newTask = new Task();
-            newTask.title = title as string
-            newTask.due_date = dueDate as string
+            newTask.title = title as string;
+            newTask.due_date = due_date;
             newTask.projectId = findBoard.projectId;
             newTask.cIdx = uniqNum + 1;
             newTask.label_id = uniqNum + 1;

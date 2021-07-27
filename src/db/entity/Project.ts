@@ -18,10 +18,10 @@ export class Project {
     description!: string;
 
     @Column({nullable: true})
-    start_date!: string;
+    start_date!: Date;
 
     @Column({nullable: true})
-    end_date!: string;
+    end_date!: Date;
 
     @OneToMany(() => UserProject, user_project => user_project.project)
     user_project!: UserProject[];

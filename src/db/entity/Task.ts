@@ -33,7 +33,7 @@ export class Task {
     cIdx!: number;
 
     @Column({nullable: true})
-    due_date!: string;
+    due_date!: Date;
 
     @Column('boolean' ,{default: false})
     completed!: boolean;

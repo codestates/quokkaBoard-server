@@ -29,7 +29,7 @@ export class UpdateRepo extends Repository <Task> {
         .add(tagId)
     }
 
-    joinTaskToBoard(boardId: string, taskId: string) {
+    joinTaskToBoard(boardId: string, taskId: string | string[]) {
         return this
         .createQueryBuilder()
         .relation(Board, "tasks")
