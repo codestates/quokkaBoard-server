@@ -93,11 +93,6 @@ const project = {
                 .filter(el => el.projectId === projectId);
             if(findUser.length === 0) throw new Error('auth');
             
-            const data = {
-                userId: findUser[0].userId as string, 
-                projectId: findUser[0].projectId as string,
-                authority: authority
-            }
             await userProjectRepo.createQueryBuilder("user_project")
                 .update(UserProject)
                 .set({authority: authority})
@@ -230,7 +225,9 @@ const project = {
     projectMembers: async (req: TypeReq<StrProps>, res: Response) => {
         try {
             const userProjectRepo = getCustomRepository(UserProjectRepo);
-            const findProjectUser = await userProjectRepo.findAllProjectUser(req.body);
+            const findProjectUser = await userProjectRepo.findAllProjectUser(
+                req.body.projectId
+            );
 
             res.status(200).send({ 
                 success: true,
