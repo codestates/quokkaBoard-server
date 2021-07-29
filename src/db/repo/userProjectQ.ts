@@ -73,7 +73,7 @@ export class UserProjectRepo extends Repository <UserProject> {
         .getRawMany();
     }
 
-    findAllProjectUser(data: StrProps) {
+    findAllProjectUser(projectId: string) {
         return this
         .createQueryBuilder("user_project")
         .innerJoin("user_project.user", "user")
@@ -85,7 +85,7 @@ export class UserProjectRepo extends Repository <UserProject> {
             "user_project.authority AS authority",
             "user_project.projectId AS projectId"
         ])
-        .where({projectId: data.projectId})
+        .where({projectId: projectId})
         .getRawMany();
     }
    

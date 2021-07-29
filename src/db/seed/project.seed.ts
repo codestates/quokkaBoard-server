@@ -5,11 +5,12 @@ import { User } from '../entity/User'
 import { Follow } from '../entity/Follow'
 import { Project } from '../entity/Project'
 import { Tag } from '../entity/Tag'
-import { UserProject } from "../entity/UserProject"
-import { Board } from "../entity/Board"
-import { Task } from "../entity/Task"
+import { UserProject } from '../entity/UserProject'
+import { Board } from '../entity/Board'
+import { Task } from '../entity/Task'
 import { defaultLabel } from '../data/tagData'
-import { UpdateRepo } from '@repo/updateQ'
+import { UpdateRepo } from '../repo/updateQ'
+import { selectRandElement } from '../../util/rand'
 
 
 export default class CreateSeeds implements Seeder {
@@ -45,7 +46,7 @@ export default class CreateSeeds implements Seeder {
             const project = new Project();
             project.title = faker.company.companyName();
             project.description = faker.company.companySuffix();
-            project.start_date = faker.date.recent();
+            project.start_date = faker.date.between('2021-07-01', '2021-08-31')
             project.end_date = faker.date.future();
             return project;
         });
@@ -65,13 +66,13 @@ export default class CreateSeeds implements Seeder {
         /* UserProject seed */
         const copyUser = findUser.slice();
         for(let i=0; i < findProject.length; i++) {
-            let users = copyUser.splice(0, 3);
+            let users = copyUser.splice(0, 4);
             const userData: object[] = [];
             users.forEach(el => {
                 userData.push({
                     authority: 'ADMIN',
                     userId: el.id,
-                    projectId: findProject[0].id
+                    projectId: findProject[i].id
                 });
             });
             await connection.getRepository(UserProject)
@@ -87,6 +88,7 @@ export default class CreateSeeds implements Seeder {
             });
             users[0].authority = 'MASTER';
             users[2].authority = 'WRITE';
+            users[3].authority = 'WRITE';
             await connection.getRepository(UserProject).save(users);
         }
 
@@ -111,60 +113,43 @@ export default class CreateSeeds implements Seeder {
         for(let el of findBoard) {
             define(Task, (faker: typeof Faker) => {
                 uniqNum = uniqNum + 1;
-                Math.random() <= 0.25 ? bool = true : bool = false;
+                Math.random() <= 0.5 ? bool = true : bool = false;
 
                 const task = new Task();
                 task.title = faker.company.catchPhrase();
                 task.description = faker.company.catchPhraseDescriptor();
                 task.cIdx = uniqNum;
-                task.due_date = faker.date.soon();
+                task.due_date = faker.date.between('2021-07-01', '2021-12-31');
                 task.label_id = uniqNum;
                 task.completed = bool;
                 task.projectId = el.projectId;
                 return task;
             });
             const findTask = await factory(Task)().createMany(4);
-            const findUser = await connection.getRepository(UserProject).find({
-                where: {projectId: el.projectId}
-            });
+        
+        /* BoardTask Seed */
             const taskIds = findTask.map(el => el.id);
             await connection.getCustomRepository(UpdateRepo).joinTaskToBoard(el.id, taskIds);
-            // await connection.getCustomRepository(UpdateRepo).taskAssignee()
-        }
-
-        // let taskSeed: object[] = [];
-        // let labelNum = 0
-        // let uniqNum = 0;
-        // for(let i=0; i < findBoard.length; i++) {
-        //     task.forEach(el => {
-        //         uniqNum = uniqNum + 1;
-        //         labelNum = labelNum + 1;
-        //         const newTask = new Task();
-        //         newTask.title = el.title;
-        //         newTask.description = el.description;
-        //         newTask.cIdx = uniqNum;
-        //         newTask.due_date = el.due_date;
-        //         newTask.label_id = labelNum;
-        //         newTask.projectId = findBoard[i].projectId;
-        //         newTask.completed = el.completed;
-        //         taskSeed.push(newTask);
-        //     });
-        //     const findTask = await connection.getRepository(Task).save(taskSeed);
-        //     const taskIds = findTask.map(el => el.id);
-        //     await connection.getCustomRepository(UpdateRepo).joinTaskToBoard(findBoard[i].id, taskIds)
-        //     taskSeed = [];
-        // }
-        
-        // for(let i=0; i < findProject.length; i++) {
-        //     const findTask = await connection.getRepository(Task).find({
-        //         where: {projectId: findProject[i].id}
-        //     });
-        //     const findUser = await connection.getRepository(UserProject).find({
-        //         where: {projectId: findProject[i].id}
-        //     });
             
-        //     await connection.getCustomRepository(TaskRepo).taskAssignee
-        // }
-
+        /* UserTask Seed */
+        /* TaskTag Seed */
+            const findUserProject = await connection.getRepository(UserProject)
+                .find({where: {projectId: el.projectId}});
+            const findTag = await connection.getRepository(Tag)
+                .find({
+                    select: ["id"],
+                    where: {projectId: el.projectId}
+                });
+            for(let i=0; i<findTask.length; i++) {
+                await connection.getRepository(Task).createQueryBuilder()
+                    .relation(Task, "user_projects")
+                    .of(findTask[i].id)
+                    .add(findUserProject[i].id);
+                await connection.getRepository(Task).createQueryBuilder()
+                    .relation(Task, "tags")
+                    .of(findTask[i].label_id)
+                    .add(selectRandElement(findTag))
+            }
+        }
     }
 }   
