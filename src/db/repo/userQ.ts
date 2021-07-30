@@ -1,6 +1,6 @@
-import { EntityRepository, Repository } from 'typeorm';
-import { User } from '../entity/User';
-import { StrProps, StrArrProps } from '../../types';
+import { EntityRepository, Repository } from 'typeorm'
+import { User } from '../entity/User'
+import { StrProps, StrArrProps } from '../../types'
 
 
 @EntityRepository(User)

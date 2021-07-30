@@ -1,5 +1,5 @@
-import { ConnectionOptions } from "typeorm-seeding"
-import 'dotenv/config';
+import { ConnectionOptions } from 'typeorm-seeding'
+import 'dotenv/config'
 
 
 const ormconfig: ConnectionOptions = {

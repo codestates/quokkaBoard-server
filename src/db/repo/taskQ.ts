@@ -1,6 +1,6 @@
-import { EntityRepository, Repository } from 'typeorm';
-import { Task } from '../entity/Task';
-import { TaskProps } from '../../types';
+import { EntityRepository, Repository } from 'typeorm'
+import { Task } from '../entity/Task'
+import { TaskProps } from '../../types'
 
 
 @EntityRepository(Task)

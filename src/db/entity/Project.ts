@@ -1,9 +1,15 @@
-import "reflect-metadata";
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
-import { Board } from "./Board";
-import { Tag } from "./Tag";
-import { Task } from "./Task";
-import { UserProject } from "./UserProject";
+import 'reflect-metadata'
+import { 
+    Entity, 
+    PrimaryGeneratedColumn, 
+    Column, 
+    OneToMany 
+} from 'typeorm'
+import { Tag } from './Tag'
+import { Task } from './Task'
+import { Board } from './Board'
+import { UserProject } from './UserProject'
+
 
 @Entity()
 export class Project {

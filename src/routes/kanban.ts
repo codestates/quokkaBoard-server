@@ -1,10 +1,6 @@
-/* Module setting */
-import express from 'express';
+import express from 'express'
+import kanban from '../controllers/kanban'
 
-/* Import endpoint */
-import kanban from '@controllers/kanban';
-
-/* Endpoint routing */
 const kanbanRouter = express.Router();
 kanbanRouter.post('/create-board', kanban.createBoard);
 kanbanRouter.delete('/remove-board', kanban.removeBoard);

@@ -1,15 +1,15 @@
-import "reflect-metadata";
+import 'reflect-metadata'
 import { 
-    Entity, 
-    PrimaryGeneratedColumn, 
-    Column, 
-    OneToMany, 
-    CreateDateColumn, 
+    Entity,
+    PrimaryGeneratedColumn,
+    Column,
+    OneToMany,
+    CreateDateColumn,
     UpdateDateColumn
-} from "typeorm";
-import { UserProject } from "./UserProject";
-import { Follow } from "./Follow";
-import bcrypt from "bcrypt";
+} from 'typeorm'
+import { Follow } from './Follow'
+import { UserProject } from './UserProject'
+import bcrypt from 'bcrypt'
 
 
 @Entity()

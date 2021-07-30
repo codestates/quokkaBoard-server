@@ -1,12 +1,7 @@
-/* Module setting */
-import express from 'express';
+import express from 'express'
+import task from '../controllers/task'
 
-/* Import endpoint */
-import task from '@controllers/task';
-
-/* Endpoint routing */
 const taskRouter = express.Router();
-
 taskRouter.post('/create-task', task.createTask);
 taskRouter.delete('/delete-task', task.deleteTask);
 taskRouter.patch('/update-duedate', task.updateDueDate);

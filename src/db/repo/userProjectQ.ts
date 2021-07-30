@@ -1,18 +1,17 @@
-import { EntityRepository, Repository } from 'typeorm';
-import { Project } from '../entity/Project';
-import { UserProject } from '../entity/UserProject';
-import { StrProps } from '../../types';
+import { EntityRepository, Repository } from 'typeorm'
+import { Project } from '../entity/Project'
+import { UserProject } from '../entity/UserProject'
+import { StrProps } from '../../types'
+
 
 @EntityRepository(Project)
 export class ProjectRepo extends Repository <Project> {
-    
     findProject(id: string) {
         return this
         .createQueryBuilder("project")
         .where({id: id})
         .getOne();
     }
-
 }
 
 @EntityRepository(UserProject)

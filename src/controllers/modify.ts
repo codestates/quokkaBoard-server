@@ -1,9 +1,9 @@
-import { Response } from 'express';
-import { getCustomRepository, getRepository } from 'typeorm';
-import { UserRepo } from '../db/repo/userQ';
-import { User } from '../db/entity/User';
-import { TypeReq, StrProps, StrArrProps } from '../types';
-import jwtToken from '../token/jwt';
+import { Response } from 'express'
+import { getRepository, getCustomRepository } from 'typeorm'
+import { User } from '../db/entity/User'
+import { UserRepo } from '../db/repo/userQ'
+import jwtToken from '../token/jwt'
+import { TypeReq, StrProps, StrArrProps } from '../types'
 
 
 const modify = {
