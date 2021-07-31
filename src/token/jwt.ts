@@ -1,5 +1,5 @@
-import { sign, verify, Secret, JwtPayload } from "jsonwebtoken";
-import "dotenv/config";
+import { sign, verify, Secret, JwtPayload } from 'jsonwebtoken'
+import 'dotenv/config'
 
 
 const jwtToken = {

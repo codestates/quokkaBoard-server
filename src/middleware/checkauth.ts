@@ -1,8 +1,8 @@
-import { Request, Response, NextFunction } from 'express';
-import { getRepository } from 'typeorm';
-import { User } from '../db/entity/User';
-import jwtToken from '../token/jwt';
-import 'dotenv/config';
+import { Request, Response, NextFunction } from 'express'
+import { getRepository } from 'typeorm'
+import { User } from '../db/entity/User'
+import jwtToken from '../token/jwt'
+import 'dotenv/config'
 
 
 export const checkAuthority = async (req: Request, res: Response, next: NextFunction) => {

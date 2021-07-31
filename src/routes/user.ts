@@ -1,13 +1,8 @@
-/* Module setting */
-import express from 'express';
+import express from 'express'
+import user from '../controllers/user'
+import modify from '../controllers/modify'
 
-/* Import endpoint */
-import user from '@controllers/user';
-import modify from '@controllers/modify'; 
-
-/* Endpoint routing */
 const userRouter = express.Router();
-
 userRouter.post('/register', user.register);
 userRouter.post('/login', user.login);
 userRouter.post('/logout', user.logout);

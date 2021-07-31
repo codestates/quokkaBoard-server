@@ -1,10 +1,6 @@
-/* Module setting */
-import express from 'express';
+import express from 'express'
+import tag from '../controllers/tag'
 
-/* Import endpoint */
-import tag from '@controllers/tag';
-
-/* Endpoint routing */
 const tagRouter = express.Router();
 tagRouter.post('/create-tag', tag.createTag);
 tagRouter.put('/update-tag', tag.updateTag);

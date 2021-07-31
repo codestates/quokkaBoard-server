@@ -1,14 +1,14 @@
-import "reflect-metadata";
+import 'reflect-metadata'
 import { 
     Entity, 
     PrimaryGeneratedColumn, 
     Column,
     ManyToOne,
     ManyToMany,
-    JoinTable,
-} from "typeorm";
-import { Project } from "./Project";
-import { Task } from "./Task"
+    JoinTable
+} from 'typeorm'
+import { Task } from './Task'
+import { Project } from './Project'
 
 
 @Entity()

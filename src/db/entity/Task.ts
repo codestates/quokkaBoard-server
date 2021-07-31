@@ -1,20 +1,20 @@
-import "reflect-metadata";
+import 'reflect-metadata'
 import { 
-    Entity, 
-    PrimaryGeneratedColumn, 
-    Column, 
-    OneToMany, 
-    ManyToMany, 
+    Entity,
+    PrimaryGeneratedColumn,
+    Column,
+    OneToMany,
     ManyToOne,
+    ManyToMany,
     CreateDateColumn,
     UpdateDateColumn,
     JoinTable
-} from "typeorm";
-import { Board } from "./Board";
-import { Tag } from "./Tag"
-import { Comment } from "./Comment";
-import { UserProject } from "./UserProject";
-import { Project } from "./Project"
+} from 'typeorm'
+import { Tag } from './Tag'
+import { Board } from './Board'
+import { Project } from './Project'
+import { Comment } from './Comment'
+import { UserProject } from './UserProject'
 
 
 @Entity()

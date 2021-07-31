@@ -1,10 +1,6 @@
-/* Module setting */
-import express from 'express';
+import express from 'express'
+import project from '@controllers/project'
 
-/* Import endpoint */
-import project from '@controllers/project';
-
-/* Endpoint routing */
 const projectRouter = express.Router();
 projectRouter.post('/create-project', project.createProject);
 projectRouter.delete('/remove-project', project.removeProject);

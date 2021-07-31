@@ -1,8 +1,8 @@
-import { EntityRepository, Repository } from 'typeorm';
-import { Task } from '../entity/Task';
-import { Board } from '../entity/Board';
-import { UserProject } from '../entity/UserProject';
-import { StrProps } from '../../types';
+import { EntityRepository, Repository } from 'typeorm'
+import { Task } from '../entity/Task'
+import { Board } from '../entity/Board'
+import { UserProject } from '../entity/UserProject'
+import { StrProps } from '../../types'
 
 
 @EntityRepository(Task)

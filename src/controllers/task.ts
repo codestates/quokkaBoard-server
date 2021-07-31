@@ -75,11 +75,10 @@ const task = {
             const findTask = await taskRepo.findTask(req.body);
             if(!findTask) throw new Error('task');
             
+            const updateRepo = getCustomRepository(UpdateRepo);
             req.body.title = req.body.title || findTask.title;
             req.body.description = req.body.description || findTask.description;
-            req.body.dueDate = req.body.dueDate || findTask.due_date;
-
-            const updateRepo = getCustomRepository(UpdateRepo);
+            req.body.dueDate = convertDate(req.body.dueDate) || findTask.due_date;
             await updateRepo.updateTask(req.body);
 
             res.status(200).send({success: true});

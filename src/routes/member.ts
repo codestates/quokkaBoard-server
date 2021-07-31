@@ -1,10 +1,6 @@
-/* Module setting */
-import express from 'express';
+import express from 'express'
+import member from '../controllers/member'
 
-/* Import endpoint */
-import member from '@controllers/member';
-
-/* Endpoint routing */
 const memberRouter = express.Router();
 memberRouter.post('/search-follower', member.searchFollower);
 memberRouter.post('/add-follower', member.addFollower);

@@ -1,9 +1,9 @@
-import { Response } from 'express';
-import { getCustomRepository, getRepository } from 'typeorm';
-import { UserRepo } from '../db/repo/userQ';
-import { TypeReq, StrProps } from '../types';
-import { User } from '../db/entity/User';
-import { FollowRepo } from '../db/repo/followQ';
+import { Response } from 'express'
+import { getRepository, getCustomRepository } from 'typeorm'
+import { User } from '../db/entity/User'
+import { UserRepo } from '../db/repo/userQ'
+import { FollowRepo } from '../db/repo/followQ'
+import { TypeReq, StrProps } from '../types'
 
 
 const member = {

@@ -1,5 +1,5 @@
-import { EntityRepository, Repository } from 'typeorm';
-import { Board } from '../entity/Board';
+import { EntityRepository, Repository } from 'typeorm'
+import { Board } from '../entity/Board'
 
 
 @EntityRepository(Board)

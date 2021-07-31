@@ -1,9 +1,9 @@
-import { Response } from 'express';
-import { getRepository, getCustomRepository } from 'typeorm';
+import { Response } from 'express'
+import { getRepository, getCustomRepository } from 'typeorm'
 import { Tag } from '../db/entity/Tag'
-import { TaskRepo } from '../db/repo/taskQ';
+import { TaskRepo } from '../db/repo/taskQ'
 import { TagRepo } from '../db/repo/tagQ'
-import { TypeReq, StrProps, StrNumProps, TaskProps } from '../types';
+import { TypeReq, StrProps, StrNumProps, TaskProps } from '../types'
 
 
 const tag = {
