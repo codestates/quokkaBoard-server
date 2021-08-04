@@ -21,7 +21,7 @@ const kanban = {
 
             res.status(200).send({ 
                 success: true, 
-                data: findBoard
+                data: findBoard 
             });
         } catch (e) {
             res.status(202).send({ 
